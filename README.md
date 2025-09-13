@@ -56,14 +56,14 @@ A comprehensive job board platform that scrapes and aggregates tech job listings
 
 4. **Set up the database**
 
-   a. Push the schema to Supabase:
+   a. Apply the database migration:
    ```bash
-   npx prisma db push
+   supabase db push
    ```
 
-   b. Generate Prisma client:
+   b. Generate TypeScript types:
    ```bash
-   npx prisma generate
+   npm run generate-types
    ```
 
 5. **Run the development server**
@@ -147,6 +147,7 @@ NEXTAUTH_URL="http://localhost:3000"
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
+- `npm run generate-types` - Generate TypeScript types from Supabase schema
 
 ### Project Structure
 
@@ -163,12 +164,18 @@ src/
 │   ├── job-list.tsx      # Job listings container
 │   └── job-filters.tsx   # Search and filters
 ├── lib/                  # Utility libraries
-│   ├── scraper.ts        # Job scraping service
-│   ├── supabase.ts       # Supabase client
-│   └── utils.ts          # Helper functions
+│   ├── jobs/             # Job-related services
+│   │   └── enhanced-scraper.ts # Job scraping service
+│   ├── supabase/         # Supabase client and utilities
+│   └── utils/            # Helper functions
+├── trigger/              # Background job definitions
 └── types/               # TypeScript definitions
-    ├── database.ts      # Database types
-    └── job.ts           # Job-related types
+    └── database.ts      # Auto-generated Supabase types
+supabase/
+├── config.toml          # Supabase configuration
+├── migrations/          # Database migrations
+│   └── 001_initial_migration.sql
+└── README.md           # Supabase setup guide
 ```
 
 ## Deployment

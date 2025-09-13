@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Job, JobFilters } from '@/types/job'
-import { JobList } from '@/components/job-list'
-import { JobFiltersComponent } from '@/components/job-filters'
+import { Job, JobFilters } from '@/lib/types/job'
+import { JobList } from '@/components/jobs/job-list'
+import { JobFiltersComponent } from '@/components/jobs/job-filters'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
