@@ -1,8 +1,8 @@
 'use client'
 
-import { Job } from '@/types/job'
-import { formatDate, formatSalary, getJobTypeLabel, getExperienceLabel, truncateText, getInitials } from '@/lib/utils'
-import { MapPin, Clock, DollarSign, Users, ExternalLink, Building2 } from 'lucide-react'
+import { Job } from '@/lib/types/job'
+import { formatDate, formatSalary, getJobTypeLabel, getExperienceLabel, truncateText, getInitials } from '@/lib/actions/utils'
+import { MapPin, Clock, DollarSign, ExternalLink, Building2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'

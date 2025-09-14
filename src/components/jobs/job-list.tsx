@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Job, JobFilters } from '@/types/job'
+import { useState, useEffect, useCallback } from 'react'
+import { Job, JobFilters } from '@/lib/types/job'
 import { JobCard } from './job-card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -24,7 +24,7 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
     pages: 0
   })
 
-  const fetchJobs = async (page: number = 1) => {
+  const fetchJobs = useCallback(async (page: number = 1) => {
     try {
       setLoading(true)
       setError(null)
@@ -33,7 +33,7 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
         page: page.toString(),
         limit: pagination.limit.toString(),
         ...Object.fromEntries(
-          Object.entries(filters).filter(([_, value]) => value !== undefined && value !== '')
+          Object.entries(filters).filter(([, value]) => value !== undefined && value !== '')
         )
       })
 
@@ -52,11 +52,11 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filters, pagination.limit])
 
   useEffect(() => {
     fetchJobs(1)
-  }, [filters])
+  }, [fetchJobs])
 
   const handleLoadMore = () => {
     if (pagination.page < pagination.pages) {

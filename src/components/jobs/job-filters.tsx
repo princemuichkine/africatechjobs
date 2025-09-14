@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { JobFilters, JOB_TYPES, EXPERIENCE_LEVELS, AFRICAN_COUNTRIES } from '@/types/job'
+import { JobFilters, JOB_TYPES, EXPERIENCE_LEVELS, AFRICAN_COUNTRIES } from '@/lib/types/job'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -20,10 +20,10 @@ interface JobFiltersProps {
 export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFiltersProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const updateFilter = (key: keyof JobFilters, value: any) => {
+  const updateFilter = (key: keyof JobFilters, value: string | boolean | number | undefined) => {
     onFiltersChange({
       ...filters,
-      [key]: value
+      [key]: value === 'ALL' ? undefined : value
     })
   }
 
@@ -81,14 +81,14 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
           <div className="space-y-2">
             <Label htmlFor="country">Country</Label>
             <Select
-              value={filters.country || ''}
+              value={filters.country || 'ALL'}
               onValueChange={(value) => updateFilter('country', value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select country" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Countries</SelectItem>
+                <SelectItem value="ALL">All Countries</SelectItem>
                 {AFRICAN_COUNTRIES.map((country) => (
                   <SelectItem key={country} value={country.toUpperCase()}>
                     {country}
@@ -102,14 +102,14 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
           <div className="space-y-2">
             <Label htmlFor="type">Job Type</Label>
             <Select
-              value={filters.type || ''}
+              value={filters.type || 'ALL'}
               onValueChange={(value) => updateFilter('type', value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select job type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
+                <SelectItem value="ALL">All Types</SelectItem>
                 {Object.entries(JOB_TYPES).map(([key, label]) => (
                   <SelectItem key={key} value={key}>
                     {label}
@@ -158,14 +158,14 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
               <div className="space-y-2">
                 <Label htmlFor="experience">Experience Level</Label>
                 <Select
-                  value={filters.experienceLevel || ''}
+                  value={filters.experienceLevel || 'ALL'}
                   onValueChange={(value) => updateFilter('experienceLevel', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select experience level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Levels</SelectItem>
+                    <SelectItem value="ALL">All Levels</SelectItem>
                     {Object.entries(EXPERIENCE_LEVELS).map(([key, label]) => (
                       <SelectItem key={key} value={key}>
                         {label}
@@ -179,14 +179,14 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
               <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
                 <Select
-                  value={filters.category || ''}
+                  value={filters.category || 'ALL'}
                   onValueChange={(value) => updateFilter('category', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="ALL">All Categories</SelectItem>
                     <SelectItem value="Technology">Technology</SelectItem>
                     <SelectItem value="Engineering">Engineering</SelectItem>
                     <SelectItem value="Design">Design</SelectItem>

@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase/client'
+import type { Database } from '@/lib/types/database'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Get total jobs count
     const { count: totalJobs, error: totalError } = await supabase
@@ -59,19 +60,19 @@ export async function GET(request: NextRequest) {
 
     // Process country stats
     const countryCount: Record<string, number> = {}
-    countryStats?.forEach(job => {
+    countryStats?.forEach((job: Pick<Database['public']['Tables']['jobs']['Row'], 'country'>) => {
       countryCount[job.country] = (countryCount[job.country] || 0) + 1
     })
 
     // Process type stats
     const typeCount: Record<string, number> = {}
-    typeStats?.forEach(job => {
-      typeCount[job.type] = (typeCount[job.type] || 0) + 1
+    typeStats?.forEach((job: Pick<Database['public']['Tables']['jobs']['Row'], 'type'>) => {
+      typeCount[job.type || 'UNKNOWN'] = (typeCount[job.type || 'UNKNOWN'] || 0) + 1
     })
 
     // Process source stats
     const sourceCount: Record<string, number> = {}
-    sourceStats?.forEach(job => {
+    sourceStats?.forEach((job: Pick<Database['public']['Tables']['jobs']['Row'], 'source'>) => {
       sourceCount[job.source] = (sourceCount[job.source] || 0) + 1
     })
 
