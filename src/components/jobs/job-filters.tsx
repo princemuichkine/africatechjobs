@@ -1,41 +1,59 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { JobFilters, JOB_TYPES, EXPERIENCE_LEVELS, AFRICAN_COUNTRIES } from '@/lib/types/job'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Search, Filter, X } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import { useState } from "react";
+import {
+  JobFilters,
+  JOB_TYPES,
+  EXPERIENCE_LEVELS,
+  AFRICAN_COUNTRIES,
+} from "@/lib/types/job";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Search, Filter, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface JobFiltersProps {
-  filters: JobFilters
-  onFiltersChange: (filters: JobFilters) => void
-  onReset: () => void
+  filters: JobFilters;
+  onFiltersChange: (filters: JobFilters) => void;
+  onReset: () => void;
 }
 
-export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFiltersProps) {
-  const [showAdvanced, setShowAdvanced] = useState(false)
+export function JobFiltersComponent({
+  filters,
+  onFiltersChange,
+  onReset,
+}: JobFiltersProps) {
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const updateFilter = (key: keyof JobFilters, value: string | boolean | number | undefined) => {
+  const updateFilter = (
+    key: keyof JobFilters,
+    value: string | boolean | number | undefined,
+  ) => {
     onFiltersChange({
       ...filters,
-      [key]: value === 'ALL' ? undefined : value
-    })
-  }
+      [key]: value === "ALL" ? undefined : value,
+    });
+  };
 
   const clearFilter = (key: keyof JobFilters) => {
-    const newFilters = { ...filters }
-    delete newFilters[key]
-    onFiltersChange(newFilters)
-  }
+    const newFilters = { ...filters };
+    delete newFilters[key];
+    onFiltersChange(newFilters);
+  };
 
-  const activeFiltersCount = Object.values(filters).filter(value =>
-    value !== undefined && value !== '' && value !== null
-  ).length
+  const activeFiltersCount = Object.values(filters).filter(
+    (value) => value !== undefined && value !== "" && value !== null,
+  ).length;
 
   return (
     <Card>
@@ -68,8 +86,8 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
             <Input
               id="search"
               placeholder="Search by title, company, or keywords..."
-              value={filters.search || ''}
-              onChange={(e) => updateFilter('search', e.target.value)}
+              value={filters.search || ""}
+              onChange={(e) => updateFilter("search", e.target.value)}
               className="pl-10"
             />
           </div>
@@ -81,8 +99,8 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
           <div className="space-y-2">
             <Label htmlFor="country">Country</Label>
             <Select
-              value={filters.country || 'ALL'}
-              onValueChange={(value) => updateFilter('country', value)}
+              value={filters.country || "ALL"}
+              onValueChange={(value) => updateFilter("country", value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select country" />
@@ -102,8 +120,8 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
           <div className="space-y-2">
             <Label htmlFor="type">Job Type</Label>
             <Select
-              value={filters.type || 'ALL'}
-              onValueChange={(value) => updateFilter('type', value)}
+              value={filters.type || "ALL"}
+              onValueChange={(value) => updateFilter("type", value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select job type" />
@@ -125,7 +143,7 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
           <Checkbox
             id="remote"
             checked={filters.remote || false}
-            onCheckedChange={(checked) => updateFilter('remote', checked)}
+            onCheckedChange={(checked) => updateFilter("remote", checked)}
           />
           <Label htmlFor="remote">Remote work only</Label>
         </div>
@@ -136,7 +154,7 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
           variant="outline"
           className="w-full"
         >
-          {showAdvanced ? 'Hide' : 'Show'} Advanced Filters
+          {showAdvanced ? "Hide" : "Show"} Advanced Filters
         </Button>
 
         {/* Advanced Filters */}
@@ -149,8 +167,8 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
                 <Input
                   id="location"
                   placeholder="e.g., Lagos, Nairobi..."
-                  value={filters.location || ''}
-                  onChange={(e) => updateFilter('location', e.target.value)}
+                  value={filters.location || ""}
+                  onChange={(e) => updateFilter("location", e.target.value)}
                 />
               </div>
 
@@ -158,8 +176,8 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
               <div className="space-y-2">
                 <Label htmlFor="experience">Experience Level</Label>
                 <Select
-                  value={filters.experience || 'ALL'}
-                  onValueChange={(value) => updateFilter('experience', value)}
+                  value={filters.experience || "ALL"}
+                  onValueChange={(value) => updateFilter("experience", value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select experience level" />
@@ -174,7 +192,6 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
                   </SelectContent>
                 </Select>
               </div>
-
             </div>
           </div>
         )}
@@ -189,7 +206,7 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
                   Search: {filters.search}
                   <X
                     className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter('search')}
+                    onClick={() => clearFilter("search")}
                   />
                 </Badge>
               )}
@@ -198,7 +215,7 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
                   Country: {filters.country}
                   <X
                     className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter('country')}
+                    onClick={() => clearFilter("country")}
                   />
                 </Badge>
               )}
@@ -207,7 +224,7 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
                   Location: {filters.location}
                   <X
                     className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter('location')}
+                    onClick={() => clearFilter("location")}
                   />
                 </Badge>
               )}
@@ -216,7 +233,7 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
                   Type: {filters.type}
                   <X
                     className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter('type')}
+                    onClick={() => clearFilter("type")}
                   />
                 </Badge>
               )}
@@ -225,7 +242,7 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
                   Experience: {filters.experience}
                   <X
                     className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter('experience')}
+                    onClick={() => clearFilter("experience")}
                   />
                 </Badge>
               )}
@@ -234,7 +251,7 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
                   Remote Only
                   <X
                     className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter('remote')}
+                    onClick={() => clearFilter("remote")}
                   />
                 </Badge>
               )}
@@ -243,5 +260,5 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -32,4 +32,3 @@ export function generateNameAbbr(name: string): string {
 
   return match ? match[0].toUpperCase() : "";
 }
- 

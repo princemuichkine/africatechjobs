@@ -113,30 +113,32 @@ export function MobileMenu() {
             className="fixed inset-0 z-[99999] bg-background w-screen h-screen top-[50px] bottom-0 p-4"
           >
             <div className="flex flex-col">
-              {navigationLinks.map((link: { href: string; label: string }, index: number) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{
-                    delay: navigationLinks.length * 0.02 + index * 0.02,
-                    duration: 0.1,
-                  }}
-                >
-                  <Link
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "block py-5 text-sm font-medium",
-                      pathname === link.href
-                        ? "text-primary"
-                        : "text-[#878787]",
-                    )}
+              {navigationLinks.map(
+                (link: { href: string; label: string }, index: number) => (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: navigationLinks.length * 0.02 + index * 0.02,
+                      duration: 0.1,
+                    }}
                   >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
+                    <Link
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "block py-5 text-sm font-medium",
+                        pathname === link.href
+                          ? "text-primary"
+                          : "text-[#878787]",
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ),
+              )}
 
               <motion.div
                 initial={{ opacity: 0, x: -20 }}

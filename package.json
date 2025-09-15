@@ -7,10 +7,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "generate-types": "npx tsx scripts/generate-types.ts",
+    "format": "prettier --write .",
     "types": "/opt/homebrew/bin/supabase gen types typescript --project-id gmqfnzwsqlvsodrpvbfb > src/lib/types/database.ts",
-    "scrape": "node scripts/schedule-scraping.js",
-    "scrape:once": "curl -X POST http://localhost:3000/api/scrape",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

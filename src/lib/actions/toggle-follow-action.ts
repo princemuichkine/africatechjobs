@@ -25,12 +25,10 @@ export const toggleFollowAction = authActionClient
 
       if (action === "follow") {
         // Add follow relationship
-        const { error } = await supabase
-          .from("follows")
-          .insert({
-            follower_id: currentUserId,
-            following_id: userId,
-          });
+        const { error } = await supabase.from("follows").insert({
+          follower_id: currentUserId,
+          following_id: userId,
+        });
 
         if (error) {
           throw new Error(error.message);

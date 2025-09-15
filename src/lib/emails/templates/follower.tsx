@@ -54,8 +54,8 @@ export default function FollowerEmail({
               >
                 {followerName}
               </Link>{" "}
-              is now following you on Africa Tech Jobs. This means they&apos;ll get
-              notified when you share new rules and{" "}
+              is now following you on Africa Tech Jobs. This means they&apos;ll
+              get notified when you share new rules and{" "}
               <Link
                 href="https://cursor.directory/board"
                 className="underline text-black font-mono"

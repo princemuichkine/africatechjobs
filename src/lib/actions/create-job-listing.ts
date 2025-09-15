@@ -83,7 +83,7 @@ async function createJobListingCheckoutSession({
   customerName: string;
 }) {
   // Placeholder implementation - replace with actual Stripe integration
-  console.log('Creating checkout session for:', {
+  console.log("Creating checkout session for:", {
     plan,
     jobListingId,
     companyId,

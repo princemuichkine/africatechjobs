@@ -189,7 +189,6 @@ export function CompanyForm({
                 </FormItem>
               )}
             />
-
           </div>
         </ScrollArea>
 

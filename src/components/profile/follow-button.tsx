@@ -18,7 +18,6 @@ export function FollowButton({ slug, id }: Props) {
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const followAction = useAction(toggleFollowAction);
   const [isFollowing, setIsFollowing] = useState(false);
-  const supabase = createClient();
 
   useEffect(() => {
     setIsAuthenticated(isAuthenticatedClient());
@@ -26,6 +25,7 @@ export function FollowButton({ slug, id }: Props) {
 
   useEffect(() => {
     const fetchIsFollowing = async () => {
+      const supabase = createClient();
       const {
         data: { session },
       } = await supabase.auth.getSession();

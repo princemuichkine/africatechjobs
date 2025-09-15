@@ -6,11 +6,7 @@ import { CompanyHeader } from "./company-header";
 import { CompanyHero } from "./company-hero";
 import { CompanyJobs } from "./company-jobs";
 
-export async function Company({
-  slug,
-}: {
-  slug: string;
-}) {
+export async function Company({ slug }: { slug: string }) {
   const session = await getSession();
   const { data } = await getCompanyProfile(slug);
 

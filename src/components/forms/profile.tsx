@@ -54,7 +54,7 @@ const formSchema = z.object({
     })
     .nullable()
     .optional()
-    .transform((val) => val === "" ? null : val),
+    .transform((val) => (val === "" ? null : val)),
   social_x_link: z
     .string()
     .url({
@@ -62,7 +62,7 @@ const formSchema = z.object({
     })
     .nullable()
     .optional()
-    .transform((val) => val === "" ? null : val),
+    .transform((val) => (val === "" ? null : val)),
   is_public: z.boolean().optional(),
   slug: z.string().min(1, {
     message: "Username is required.",

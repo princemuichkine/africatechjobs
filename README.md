@@ -31,12 +31,14 @@ A comprehensive job board platform that scrapes and aggregates tech job listings
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd africatechjobs/apps/africatechjobs
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -48,6 +50,7 @@ A comprehensive job board platform that scrapes and aggregates tech job listings
    b. Go to Settings > API to get your project credentials
 
    c. Update the `.env` file with your Supabase credentials:
+
    ```env
    DATABASE_URL="postgresql://postgres:[YOUR_PASSWORD]@db.[YOUR_PROJECT_ID].supabase.co:5432/postgres"
    NEXT_PUBLIC_SUPABASE_URL="https://[YOUR_PROJECT_ID].supabase.co"
@@ -57,16 +60,19 @@ A comprehensive job board platform that scrapes and aggregates tech job listings
 4. **Set up the database**
 
    a. Apply the database migration:
+
    ```bash
    supabase db push
    ```
 
    b. Generate TypeScript types:
+
    ```bash
    npm run generate-types
    ```
 
 5. **Run the development server**
+
    ```bash
    npm run dev
    ```
@@ -103,6 +109,7 @@ curl -X POST http://localhost:3000/api/scrape
 ### Scraper Configuration
 
 Scrapers are configured in `src/lib/scraper.ts` with:
+
 - Rate limiting and error handling
 - Country-specific targeting
 - Duplicate detection
@@ -111,6 +118,7 @@ Scrapers are configured in `src/lib/scraper.ts` with:
 ## API Endpoints
 
 ### Jobs
+
 - `GET /api/jobs` - List jobs with filtering and pagination
 - `GET /api/jobs/[id]` - Get specific job details
 - `POST /api/jobs` - Create new job (admin)
@@ -118,10 +126,12 @@ Scrapers are configured in `src/lib/scraper.ts` with:
 - `DELETE /api/jobs/[id]` - Delete job (admin)
 
 ### Scraping
+
 - `POST /api/scrape` - Trigger job scraping
 - `GET /api/scrape` - Get scraping logs
 
 ### Statistics
+
 - `GET /api/stats` - Get platform statistics
 
 ## Environment Variables
@@ -208,6 +218,7 @@ MIT License - see LICENSE file for details
 ## Support
 
 For questions or support:
+
 - Open an issue on GitHub
 - Contact the maintainers
 

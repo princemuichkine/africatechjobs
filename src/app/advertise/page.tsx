@@ -30,10 +30,10 @@ export default function Advertise() {
               >
                 250,000 unique visitors monthly
               </a>{" "}
-              - and we&apos;re growing steadily. Our audience consists of developers,
-              engineering leaders, and technical decision-makers who are
-              actively seeking ways to improve their development workflow and
-              productivity.
+              - and we&apos;re growing steadily. Our audience consists of
+              developers, engineering leaders, and technical decision-makers who
+              are actively seeking ways to improve their development workflow
+              and productivity.
             </p>
           </section>
 

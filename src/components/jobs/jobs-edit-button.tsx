@@ -8,12 +8,15 @@ import { Button } from "../ui/button";
 export function JobsEditButton({
   ownerId,
   id,
-}: { ownerId: string; id: string }) {
-  const supabase = createClient();
+}: {
+  ownerId: string;
+  id: string;
+}) {
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     async function getUser() {
+      const supabase = createClient();
       const session = await supabase.auth.getSession();
 
       setUserId(session.data.session?.user?.id ?? null);

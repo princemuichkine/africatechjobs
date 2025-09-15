@@ -3,7 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CommandEmpty, CommandInput } from "@/components/ui/command";
-import { CommandDialog, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  CommandDialog,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
 interface Rule {
   title: string;
@@ -12,9 +16,7 @@ interface Rule {
 }
 
 const getRules = async () => {
-  const rules = await import("@/data/rules").then(
-    (mod) => mod.rules,
-  );
+  const rules = await import("@/data/rules").then((mod) => mod.rules);
   // Filter out duplicates based on title
   const uniqueRules = Array.from(
     new Map(rules.map((rule: Rule) => [rule.title, rule])).values(),

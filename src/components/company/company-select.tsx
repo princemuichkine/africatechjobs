@@ -49,7 +49,8 @@ export function CompanySelect({
         if (data) {
           setCompanies(data);
 
-          const initialCompany = data.find((c: Company) => c.id === value) || data[0];
+          const initialCompany =
+            data.find((c: Company) => c.id === value) || data[0];
           setSelectedCompany(initialCompany);
           onChange(initialCompany?.id ?? "");
         }

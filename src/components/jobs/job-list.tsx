@@ -1,72 +1,77 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useCallback } from 'react'
-import { Job, JobFilters } from '@/lib/types/job'
-import { JobCard } from './job-card'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { AlertCircle, RefreshCw } from 'lucide-react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useState, useEffect, useCallback } from "react";
+import { Job, JobFilters } from "@/lib/types/job";
+import { JobCard } from "./job-card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AlertCircle, RefreshCw } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface JobListProps {
-  filters?: JobFilters
-  onJobClick?: (job: Job) => void
+  filters?: JobFilters;
+  onJobClick?: (job: Job) => void;
 }
 
 export function JobList({ filters = {}, onJobClick }: JobListProps) {
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
     total: 0,
-    pages: 0
-  })
+    pages: 0,
+  });
 
-  const fetchJobs = useCallback(async (page: number = 1) => {
-    try {
-      setLoading(true)
-      setError(null)
+  const fetchJobs = useCallback(
+    async (page: number = 1) => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: pagination.limit.toString(),
-        ...Object.fromEntries(
-          Object.entries(filters).filter(([, value]) => value !== undefined && value !== '')
-        )
-      })
+        const params = new URLSearchParams({
+          page: page.toString(),
+          limit: pagination.limit.toString(),
+          ...Object.fromEntries(
+            Object.entries(filters).filter(
+              ([, value]) => value !== undefined && value !== "",
+            ),
+          ),
+        });
 
-      const response = await fetch(`/api/jobs?${params}`)
-      const data = await response.json()
+        const response = await fetch(`/api/jobs?${params}`);
+        const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch jobs')
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch jobs");
+        }
+
+        setJobs(data.jobs);
+        setPagination(data.pagination);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+        console.error("Error fetching jobs:", err);
+      } finally {
+        setLoading(false);
       }
-
-      setJobs(data.jobs)
-      setPagination(data.pagination)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      console.error('Error fetching jobs:', err)
-    } finally {
-      setLoading(false)
-    }
-  }, [filters, pagination.limit])
+    },
+    [filters, pagination.limit],
+  );
 
   useEffect(() => {
-    fetchJobs(1)
-  }, [fetchJobs])
+    fetchJobs(1);
+  }, [fetchJobs]);
 
   const handleLoadMore = () => {
     if (pagination.page < pagination.pages) {
-      fetchJobs(pagination.page + 1)
+      fetchJobs(pagination.page + 1);
     }
-  }
+  };
 
   const handleRetry = () => {
-    fetchJobs(1)
-  }
+    fetchJobs(1);
+  };
 
   if (loading && jobs.length === 0) {
     return (
@@ -86,7 +91,7 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
           </div>
         ))}
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -101,7 +106,7 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
           </Button>
         </AlertDescription>
       </Alert>
-    )
+    );
   }
 
   if (jobs.length === 0) {
@@ -110,12 +115,14 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
         <div className="text-gray-400 mb-4">
           <AlertCircle className="h-12 w-12 mx-auto" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">
+          No jobs found
+        </h3>
         <p className="text-gray-500">
           Try adjusting your filters or search terms to find more results.
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -128,11 +135,7 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
       {/* Job cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {jobs.map((job) => (
-          <JobCard
-            key={job.id}
-            job={job}
-            onViewDetails={onJobClick}
-          />
+          <JobCard key={job.id} job={job} onViewDetails={onJobClick} />
         ))}
       </div>
 
@@ -151,7 +154,7 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
                 Loading...
               </>
             ) : (
-              'Load More Jobs'
+              "Load More Jobs"
             )}
           </Button>
         </div>
@@ -177,5 +180,5 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

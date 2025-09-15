@@ -13,11 +13,7 @@ import {
   Text,
 } from "@react-email/components";
 
-export default function WelcomeEmail({
-  name = "there",
-}: {
-  name: string;
-}) {
+export default function WelcomeEmail({ name = "there" }: { name: string }) {
   return (
     <Html>
       <Head>
@@ -43,13 +39,15 @@ export default function WelcomeEmail({
             <Text className="text-xs leading-7 mb-6 font-mono">Hi {name},</Text>
 
             <Text className="text-xs leading-7 pb-2 font-mono">
-              Welcome to Africa Tech Jobs – your gateway to the best tech opportunities across Africa!
+              Welcome to Africa Tech Jobs – your gateway to the best tech
+              opportunities across Africa!
             </Text>
 
             <Text className="text-xs leading-7 pb-4 font-mono">
-              We&apos;re excited to have you join our community of tech professionals.
-              Whether you&apos;re looking for your next opportunity or connecting with
-              talented developers, you&apos;re in the right place.
+              We&apos;re excited to have you join our community of tech
+              professionals. Whether you&apos;re looking for your next
+              opportunity or connecting with talented developers, you&apos;re in
+              the right place.
             </Text>
 
             <Text className="text-xs leading-7 pb-2 font-mono">
@@ -101,9 +99,9 @@ export default function WelcomeEmail({
             </Text>
 
             <Text className="text-xs leading-7 mt-4 font-mono">
-              Africa Tech Jobs is more than just a platform – it&apos;s a community.
-              Connect with like-minded developers, share your knowledge, and be
-              part of the movement.
+              Africa Tech Jobs is more than just a platform – it&apos;s a
+              community. Connect with like-minded developers, share your
+              knowledge, and be part of the movement.
             </Text>
 
             <Section className="mt-2">

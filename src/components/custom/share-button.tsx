@@ -8,7 +8,10 @@ import { toast } from "sonner";
 export function ShareButton({
   slug,
   small,
-}: { slug: string; small?: boolean }) {
+}: {
+  slug: string;
+  small?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {

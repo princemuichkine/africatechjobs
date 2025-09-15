@@ -16,10 +16,11 @@ export default function About() {
       <div className="space-y-12 mt-10">
         <section>
           <p className="text-[#878787] leading-relaxed text-sm">
-            Our journey with Africa Tech Jobs has been transformative. As team of one
-            developer and a designer, we&apos;ve experienced firsthand how Africa Tech Jobs
-            significantly accelerated our development process. This efficiency
-            boost gave us the bandwidth to build our two startups,{" "}
+            Our journey with Africa Tech Jobs has been transformative. As team
+            of one developer and a designer, we&apos;ve experienced firsthand
+            how Africa Tech Jobs significantly accelerated our development
+            process. This efficiency boost gave us the bandwidth to build our
+            two startups,{" "}
             <a
               href="https://go.africatechjobs.com/8cX3F4o"
               className="text-primary border-border border-dashed border-b-[1px]"
@@ -41,24 +42,24 @@ export default function About() {
           <h2 className="text-xl mb-2">Our Approach</h2>
           <p className="text-[#878787] leading-relaxed text-sm">
             As a bootstrapped company, we believe in sustainable growth and
-            maintaining full control over our product vision. We&apos;re building our
-            platforms thoughtfully, prioritizing user needs over rapid scaling.
-            With Africa Tech Jobs, we&apos;re streamlining business operations, while with
-            Languine, we&apos;re building localization infrastructure that helps
-            fast-paced startups reach global audiences without slowing down
-            their development velocity.
+            maintaining full control over our product vision. We&apos;re
+            building our platforms thoughtfully, prioritizing user needs over
+            rapid scaling. With Africa Tech Jobs, we&apos;re streamlining
+            business operations, while with Languine, we&apos;re building
+            localization infrastructure that helps fast-paced startups reach
+            global audiences without slowing down their development velocity.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl mb-2">Open Source Commitment</h2>
           <p className="text-[#878787] leading-relaxed text-sm">
-            We&apos;re deeply committed to open source principles. Both Africa Tech Jobs and
-            Languine are being built in public, with transparency at their core.
-            We believe that collaboration with the community leads to better
-            products, and we&apos;re proud to contribute back to the open source
-            ecosystem. This commitment remains central to our mission, even as
-            we grow and evolve.
+            We&apos;re deeply committed to open source principles. Both Africa
+            Tech Jobs and Languine are being built in public, with transparency
+            at their core. We believe that collaboration with the community
+            leads to better products, and we&apos;re proud to contribute back to
+            the open source ecosystem. This commitment remains central to our
+            mission, even as we grow and evolve.
           </p>
         </section>
 
@@ -79,8 +80,8 @@ export default function About() {
             >
               @viktorhofte
             </a>{" "}
-            on X to stay updated with our latest developments on both Africa Tech Jobs and&apos;
-            Languine.
+            on X to stay updated with our latest developments on both Africa
+            Tech Jobs and&apos; Languine.
           </p>
         </section>
       </div>
