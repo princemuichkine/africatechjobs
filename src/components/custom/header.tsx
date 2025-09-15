@@ -3,20 +3,27 @@
 import { cn } from "@/lib/actions/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { AuthModal } from "@/components/custom/auth-modal";
 
 const navigationLinks = [
   { href: "/jobs", label: "Jobs" },
   { href: "/advertise", label: "Advertise" },
-  { href: "/companies", label: "Companies" },
 ] as const;
 
 export function Header() {
   const pathname = usePathname();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+
+  const handleAuthSuccess = () => {
+    setAuthModalOpen(false);
+  };
 
   return (
     <div className="flex justify-between items-center mt-2 md:mt-0">
-      <div className="md:fixed z-20 flex justify-center items-center top-0 px-6 py-2 w-full bg-background backdrop-filter backdrop-blur-sm bg-opacity-30">
+      <div className="md:fixed z-20 flex justify-end items-center top-0 px-6 py-2 w-full bg-background backdrop-filter backdrop-blur-sm bg-opacity-30">
         <div className="flex items-center gap-5">
           {navigationLinks.map((link: { href: string; label: string }) => (
             <Link
@@ -37,14 +44,20 @@ export function Header() {
             variant="outline"
             size="sm"
             className="rounded-sm"
-            asChild
+            onClick={() => setAuthModalOpen(true)}
           >
-            <Link href="/login">
-              Sign In
-            </Link>
+            Sign In
           </Button>
         </div>
       </div>
+
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        mode={authMode}
+        onModeChange={setAuthMode}
+        onAuthSuccess={handleAuthSuccess}
+      />
     </div>
   );
 }

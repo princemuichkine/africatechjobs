@@ -1,0 +1,51 @@
+{
+  "name": "Suparaise",
+  "short_name": "Suparaise",
+  "description": "Agents that apply to funds for you, on autopilot",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "categories": [
+    "business",
+    "finance",
+    "productivity",
+    "fundraising",
+    "ai",
+    "saas",
+    "ai agents",
+    "investing",
+    "venture capital",
+    "vc",
+    "angel investing",
+    "developer_tools",
+    "startup"
+  ],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/banner.png",
+      "sizes": "1200x600",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/banner.png",
+      "sizes": "1200x600",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

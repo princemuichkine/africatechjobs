@@ -1,5 +1,6 @@
 import { Banner } from "@/components/custom/banner";
 import "./globals.css";
+import { Footer } from "@/components/custom/footer";
 import { Header } from "@/components/custom/header";
 import { GlobalModals } from "@/components/modals/global-modals";
 import { Button } from "@/components/ui/button";
@@ -8,8 +9,14 @@ import { cn } from "@/lib/actions/utils";
 import { OpenPanelComponent } from "@openpanel/nextjs";
 import { PlusIcon } from "lucide-react";
 import type { Metadata } from "next";
+import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Africa Tech Jobs",
@@ -72,7 +79,8 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cn(
-        "whitespace-pre-line antialiased bg-background text-foreground font-sans",
+        "whitespace-pre-line antialiased bg-background text-foreground",
+        geist.variable,
       )}
     >
       <body>
@@ -101,6 +109,7 @@ export default function RootLayout({
             </a>
 
             <Banner />
+            <Footer />
             <Toaster />
             <GlobalModals />
             <OpenPanelComponent

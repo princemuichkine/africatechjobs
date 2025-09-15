@@ -15,7 +15,7 @@ export default async function Page() {
 
   return (
     <div className="max-w-screen-xl mx-auto px-6 py-12 md:mt-24 pb-32">
-      <h1 className="text-xl mb-2">Featured Jobs</h1>
+      <h1 className="text-xl mb-2">Featured jobs</h1>
       <p className="text-sm text-[#878787] mb-8">
         Browse positions or{" "}
         <Link href="/jobs/new" className="border-b border-border border-dashed">

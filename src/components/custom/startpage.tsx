@@ -78,7 +78,7 @@ export function Startpage({ jobs }: { jobs?: Job[] | null }) {
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
               <TrendingUp className="mr-2 h-4 w-4" />
-              Featured Jobs
+              Featured jobs
             </Badge>
             <h2 className="text-3xl font-bold mb-4">Latest Opportunities</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
