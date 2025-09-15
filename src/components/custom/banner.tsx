@@ -103,7 +103,7 @@ export function Banner() {
       clearTimeout(timer);
       clearInterval(interval);
     };
-  }, [isVisible]);
+  }, [isVisible, banners.length]);
 
   const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

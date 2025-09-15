@@ -6,21 +6,29 @@ import { z } from "zod";
 import { actionClient } from "./safe-action";
 
 export const voteAction = actionClient
+  .metadata({
+    actionName: "vote",
+  })
   .schema(
     z.object({
       slug: z.string(),
     }),
   )
-  .action(async ({ parsedInput: { slug } }: { parsedInput: { slug: string } }) => {
-    const clientIP = await headers().then((headers) =>
-      headers.get("x-forwarded-for"),
-    );
+  .action(async ({ parsedInput }: { parsedInput: { slug: string } }) => {
+    const { slug } = parsedInput;
+    const clientIP = (await headers()).get("x-forwarded-for");
 
-    const hasVoted = await redis.sadd(`rules:${slug}:ip:${clientIP}`, true);
+    if (!clientIP) {
+      throw new Error("Unable to get client IP");
+    }
 
-    if (!hasVoted) {
+    const hasVoted = await redis.sadd(`rules:${slug}:ip:${clientIP}`, "voted");
+
+    if (hasVoted === 0) {
       throw new Error("You have already voted");
     }
 
     await redis.incr(`rules:${slug}`);
+
+    return { success: true };
   });

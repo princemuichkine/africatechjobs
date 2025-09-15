@@ -12,7 +12,7 @@ interface Rule {
 }
 
 const getRules = async () => {
-  const rules = await import("@directories/data/rules").then(
+  const rules = await import("@/data/rules").then(
     (mod) => mod.rules,
   );
   // Filter out duplicates based on title
@@ -46,7 +46,7 @@ export function CommandMenu({
     };
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, []);
+  }, [setOpen]);
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>

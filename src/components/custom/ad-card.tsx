@@ -15,7 +15,7 @@ export function AdCard({ ad }: { ad: Ad }) {
       ad_url: ad.link,
       type: "ad_card",
     });
-  }, [ad]);
+  }, [ad, op]);
 
   return (
     <Card className="bg-background p-4 max-h-[calc(100vh-8rem)] aspect-square flex flex-col">
@@ -35,7 +35,7 @@ export function AdCard({ ad }: { ad: Ad }) {
         >
           <div className="h-full relative">
             <Image
-              src={ad.imageUrl}
+              src={ad.logoUrl}
               alt={`${ad.title} preview`}
               fill
               className="object-cover"

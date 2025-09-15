@@ -1,4 +1,4 @@
-import WelcomeEmail from "@/emails/templates/welcome";
+import WelcomeEmail from "@/lib/emails/templates/welcome";
 import { resend } from "@/lib/utils/resend";
 import { createClient } from "@/lib/supabase/server";
 import { waitUntil } from "@vercel/functions";

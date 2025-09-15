@@ -17,7 +17,7 @@ export function CompanyList({ data }: { data?: Company[] | null }) {
     );
 
     setCompanies(filteredCompanies ?? []);
-  }, [search]);
+  }, [search, data]);
 
   return (
     <div className="mt-8">

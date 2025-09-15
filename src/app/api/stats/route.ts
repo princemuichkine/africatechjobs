@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/lib/types/database'
 
 export async function GET() {
   try {
+    const supabase = await createClient()
     // Get total jobs count
     const { count: totalJobs, error: totalError } = await supabase
       .from('jobs')

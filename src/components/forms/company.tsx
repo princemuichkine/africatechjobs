@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { nanoid } from "nanoid";
@@ -43,29 +42,7 @@ const formSchema = z.object({
       message: "Bio must be less than 500 characters.",
     })
     .optional(),
-  website: z
-    .string()
-    .transform((val) => (val === "" ? null : val))
-    .pipe(
-      z
-        .string()
-        .url({
-          message: "Please enter a valid website URL.",
-        })
-        .nullable(),
-    ),
-  social_x_link: z
-    .string()
-    .transform((val) => (val === "" ? null : val))
-    .pipe(
-      z
-        .string()
-        .url({
-          message: "Please enter a valid X URL.",
-        })
-        .nullable(),
-    ),
-  is_public: z.boolean().default(true),
+  website: z.string().optional(),
   image: z.string().url().nullable(),
 });
 
@@ -75,8 +52,6 @@ type CompanyData = {
   location?: string;
   bio?: string;
   website?: string;
-  social_x_link?: string;
-  public?: boolean;
   image?: string;
 };
 
@@ -87,7 +62,7 @@ export function CompanyForm({
   data?: CompanyData;
   redirect?: boolean;
 }) {
-  const [_, setReload] = useQueryState(
+  const [, setReload] = useQueryState(
     "reload",
     parseAsBoolean.withDefault(false),
   );
@@ -110,8 +85,6 @@ export function CompanyForm({
       location: data?.location ?? "",
       bio: data?.bio ?? "",
       website: data?.website ?? "",
-      social_x_link: data?.social_x_link ?? "",
-      is_public: data?.public ?? true,
       image: data?.image ?? null,
     },
   });
@@ -123,10 +96,8 @@ export function CompanyForm({
       location: data.location || null,
       bio: data.bio || null,
       website: data.website || null,
-      social_x_link: data.social_x_link || null,
-      is_public: data.is_public,
       image: data.image || null,
-      redirect,
+      shouldRedirect: false,
     });
   };
 
@@ -219,46 +190,6 @@ export function CompanyForm({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="social_x_link"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>X Profile</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://x.com/your-profile"
-                      {...field}
-                      type="url"
-                      value={field.value || ""}
-                      className="placeholder:text-[#878787] border-border"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="is_public"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between border border-border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-sm">Public Profile</FormLabel>
-                    <p className="text-xs text-[#878787]">
-                      Make your company visible to everyone
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
           </div>
         </ScrollArea>
 

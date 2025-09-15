@@ -14,7 +14,7 @@ export function AdRulePage({ ad }: { ad: Ad }) {
       ad_url: ad.link,
       type: "ad_rule_page",
     });
-  }, [ad]);
+  }, [ad, op]);
 
   return (
     <div className="flex flex-col border border-border p-3 py-2">

@@ -39,7 +39,7 @@ export default function FollowerEmail({
         />
       </Head>
       <Preview>
-        {followerName} is now following you on Cursor Directory!
+        {followerName} is now following you on Africa Tech Jobs!
       </Preview>
       <Tailwind>
         <Body className="bg-white font-mono">
@@ -54,7 +54,7 @@ export default function FollowerEmail({
               >
                 {followerName}
               </Link>{" "}
-              is now following you on Cursor Directory. This means they&apos;ll get
+              is now following you on Africa Tech Jobs. This means they&apos;ll get
               notified when you share new rules and{" "}
               <Link
                 href="https://cursor.directory/board"

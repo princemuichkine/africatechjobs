@@ -61,7 +61,7 @@ export function CompanySelect({
     if (reload) {
       setQueryStates({ reload: false, addCompany: false });
     }
-  }, [reload]);
+  }, [reload, onChange, setQueryStates, supabase, value]);
 
   return (
     <div className="flex items-center gap-4">

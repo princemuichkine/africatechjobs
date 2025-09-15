@@ -35,7 +35,7 @@ export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function getUser() {
@@ -60,7 +60,7 @@ export function MobileMenu() {
     if (!user) {
       getUser();
     }
-  }, [pathname]);
+  }, [pathname, supabase, user]);
 
   useEffect(() => {
     if (isOpen) {

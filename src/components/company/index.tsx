@@ -1,4 +1,5 @@
 import { getSession } from "@/lib/supabase/auth";
+import { getCompanyProfile } from "@/data/queries";
 import { format } from "date-fns";
 import { CompanyContent } from "./company-content";
 import { CompanyHeader } from "./company-header";
@@ -7,16 +8,11 @@ import { CompanyJobs } from "./company-jobs";
 
 export async function Company({
   slug,
-  isCompanyPage = false,
 }: {
   slug: string;
-  isCompanyPage?: boolean;
 }) {
   const session = await getSession();
-  const { data } = await getCompanyProfile(
-    slug,
-    isCompanyPage ? session?.user?.id : undefined,
-  );
+  const { data } = await getCompanyProfile(slug);
 
   const isOwner = session?.user?.id === data?.owner_id;
 

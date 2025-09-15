@@ -1,4 +1,4 @@
-import { Login } from "@/components/login";
+import { Login } from "@/components/custom/login";
 import { Suspense } from "react";
 
 export default function LoginPage() {

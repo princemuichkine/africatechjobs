@@ -110,9 +110,9 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">All Types</SelectItem>
-                {Object.entries(JOB_TYPES).map(([key, label]) => (
-                  <SelectItem key={key} value={key}>
-                    {label}
+                {JOB_TYPES.map((type, index) => (
+                  <SelectItem key={index} value={type}>
+                    {type}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -158,45 +158,23 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
               <div className="space-y-2">
                 <Label htmlFor="experience">Experience Level</Label>
                 <Select
-                  value={filters.experienceLevel || 'ALL'}
-                  onValueChange={(value) => updateFilter('experienceLevel', value)}
+                  value={filters.experience || 'ALL'}
+                  onValueChange={(value) => updateFilter('experience', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select experience level" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="ALL">All Levels</SelectItem>
-                    {Object.entries(EXPERIENCE_LEVELS).map(([key, label]) => (
-                      <SelectItem key={key} value={key}>
-                        {label}
+                    {EXPERIENCE_LEVELS.map((level, index) => (
+                      <SelectItem key={index} value={level}>
+                        {level}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Category */}
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Select
-                  value={filters.category || 'ALL'}
-                  onValueChange={(value) => updateFilter('category', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ALL">All Categories</SelectItem>
-                    <SelectItem value="Technology">Technology</SelectItem>
-                    <SelectItem value="Engineering">Engineering</SelectItem>
-                    <SelectItem value="Design">Design</SelectItem>
-                    <SelectItem value="Marketing">Marketing</SelectItem>
-                    <SelectItem value="Sales">Sales</SelectItem>
-                    <SelectItem value="Finance">Finance</SelectItem>
-                    <SelectItem value="Operations">Operations</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
           </div>
         )}
@@ -235,19 +213,19 @@ export function JobFiltersComponent({ filters, onFiltersChange, onReset }: JobFi
               )}
               {filters.type && (
                 <Badge variant="secondary" className="flex items-center gap-1">
-                  Type: {JOB_TYPES[filters.type as keyof typeof JOB_TYPES]}
+                  Type: {filters.type}
                   <X
                     className="h-3 w-3 cursor-pointer"
                     onClick={() => clearFilter('type')}
                   />
                 </Badge>
               )}
-              {filters.experienceLevel && (
+              {filters.experience && (
                 <Badge variant="secondary" className="flex items-center gap-1">
-                  Experience: {EXPERIENCE_LEVELS[filters.experienceLevel as keyof typeof EXPERIENCE_LEVELS]}
+                  Experience: {filters.experience}
                   <X
                     className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter('experienceLevel')}
+                    onClick={() => clearFilter('experience')}
                   />
                 </Badge>
               )}

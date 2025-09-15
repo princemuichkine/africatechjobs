@@ -29,7 +29,7 @@ export const FilterInput = ({ onSearch, clearSearch }: FilterInputProps) => {
         placeholder="Search..."
         value={searchTerm}
         onChange={handleSearch}
-        className="border-none focus:!ring-0 focus:!border-none bg-transparent text-primary outline-none !placeholder-[#606060] border border-border text-sm text-[#606060] pl-0"
+        className="border-none focus:!ring-0 focus:!border-none bg-transparent outline-none !placeholder-[#606060] border border-border text-sm text-[#606060] pl-0"
       />
       {searchTerm ? (
         <X

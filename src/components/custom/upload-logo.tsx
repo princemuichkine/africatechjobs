@@ -17,8 +17,8 @@ export default function UploadLogo({
   image,
 }: UploadLogoProps) {
   const [preview, setPreview] = useState<string | null>(image ?? null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [, setIsDragging] = useState(false);
+  const [, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File) => {
@@ -47,7 +47,7 @@ export default function UploadLogo({
       const fileExt = file.name.split(".").pop();
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
 
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("avatars")
         .upload(`${prefix}/${fileName}`, file, {
           cacheControl: "3600",

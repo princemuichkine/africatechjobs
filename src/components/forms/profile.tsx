@@ -49,27 +49,21 @@ const formSchema = z.object({
     .nullable(),
   website: z
     .string()
-    .transform((val) => (val === "" ? null : val))
-    .pipe(
-      z
-        .string()
-        .url({
-          message: "Please enter a valid website URL.",
-        })
-        .nullable(),
-    ),
+    .url({
+      message: "Please enter a valid website URL.",
+    })
+    .nullable()
+    .optional()
+    .transform((val) => val === "" ? null : val),
   social_x_link: z
     .string()
-    .transform((val) => (val === "" ? null : val))
-    .pipe(
-      z
-        .string()
-        .url({
-          message: "Please enter a valid X URL.",
-        })
-        .nullable(),
-    ),
-  is_public: z.boolean().default(true),
+    .url({
+      message: "Please enter a valid X URL.",
+    })
+    .nullable()
+    .optional()
+    .transform((val) => val === "" ? null : val),
+  is_public: z.boolean().optional(),
   slug: z.string().min(1, {
     message: "Username is required.",
   }),
@@ -79,9 +73,9 @@ type ProfileData = {
   name?: string;
   status?: string;
   bio?: string;
-  work?: string;
-  website?: string;
-  social_x_link?: string;
+  work?: string | null;
+  website?: string | null | undefined;
+  social_x_link?: string | null | undefined;
   is_public?: boolean;
   slug?: string;
 };
@@ -92,14 +86,14 @@ export function ProfileForm({ data }: { data: ProfileData }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: data?.name,
+      name: data?.name ?? "",
       status: data?.status ?? "",
       bio: data?.bio ?? "",
-      work: data?.work ?? "",
-      website: data?.website ?? "",
-      social_x_link: data?.social_x_link ?? "",
+      work: data?.work ?? null,
+      website: data?.website ?? null,
+      social_x_link: data?.social_x_link ?? null,
       is_public: data?.is_public ?? true,
-      slug: data?.slug,
+      slug: data?.slug ?? "",
     },
   });
 
@@ -111,7 +105,7 @@ export function ProfileForm({ data }: { data: ProfileData }) {
       work: data.work || null,
       website: data.website || null,
       social_x_link: data.social_x_link || null,
-      is_public: data.is_public,
+      is_public: data.is_public ?? true,
       slug: data.slug,
     });
   };

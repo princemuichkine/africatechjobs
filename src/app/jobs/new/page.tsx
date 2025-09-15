@@ -1,13 +1,13 @@
 import { JobForm } from "@/components/forms/job";
-import { GithubSignin } from "@/components/github-signin";
-import { GoogleSignin } from "@/components/google-signin";
-import { getSession } from "@/utils/supabase/auth";
+import { GithubSignin } from "@/components/custom/github-signin";
+import { GoogleSignin } from "@/components/custom/google-signin";
+import { getSession } from "@/lib/supabase/auth";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Create a new job listing | Cursor Directory",
+  title: "Create a new job listing | Africa Tech Jobs",
   description:
-    "Create a new job listing on Cursor Directory and reach 300k+ developers today.",
+    "Create a new job listing on Africa Tech Jobs and reach 300k+ developers today.",
 };
 
 export default async function Page() {

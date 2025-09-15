@@ -33,7 +33,7 @@ export default function WelcomeEmail({
         />
       </Head>
       <Preview>
-        Welcome to Cursor Directory – the home for everything Cursor!
+        Welcome to Africa Tech Jobs – Find your dream tech job in Africa!
       </Preview>
       <Tailwind>
         <Body className="bg-white font-mono">
@@ -43,104 +43,89 @@ export default function WelcomeEmail({
             <Text className="text-xs leading-7 mb-6 font-mono">Hi {name},</Text>
 
             <Text className="text-xs leading-7 pb-2 font-mono">
-              Welcome to Cursor Directory – the home for everything Cursor!
+              Welcome to Africa Tech Jobs – your gateway to the best tech opportunities across Africa!
             </Text>
 
             <Text className="text-xs leading-7 pb-4 font-mono">
-              Here, you&apos;ll find a thriving community of developers, creators,
-              and enthusiasts exploring and pushing the limits of Cursor.
-              Whether you&apos;re here to discover new tools, share insights, or find
-              opportunities, you&apos;re in the right place.
+              We&apos;re excited to have you join our community of tech professionals.
+              Whether you&apos;re looking for your next opportunity or connecting with
+              talented developers, you&apos;re in the right place.
             </Text>
 
             <Text className="text-xs leading-7 pb-2 font-mono">
-              Here&apos;s what you can do in Cursor Directory:
+              Here&apos;s what you can do in Africa Tech Jobs:
             </Text>
 
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://cursor.directory/rules"
+                href="https://africatechjobs.com/jobs"
                 className="underline text-black font-mono"
               >
-                Explore Cursor Rules
+                Browse Jobs
               </Link>{" "}
-              – Browse existing rules or generate your own based on your needs
+              – Discover tech positions across Africa from top companies
             </Text>
 
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://cursor.directory/board"
+                href="https://africatechjobs.com/companies"
                 className="underline text-black font-mono"
               >
-                Stay updated with the Board
+                Explore Companies
               </Link>{" "}
-              – Post, follow, and engage with the latest Cursor&apos;related
-              discussions
+              – Learn about tech companies hiring in Africa
             </Text>
 
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://cursor.directory/mcp"
+                href="https://africatechjobs.com/advertise"
                 className="underline text-black font-mono"
               >
-                Dive into MCPs
+                Post a Job
               </Link>{" "}
-              – Discover and contribute to the growing MCP ecosystem
+              – Employers can post job openings to reach top talent
             </Text>
 
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://cursor.directory/learn"
+                href="https://africatechjobs.com/about"
                 className="underline text-black font-mono"
               >
-                Learn & Level Up
+                About Us
               </Link>{" "}
-              – Watch videos, read guides, and master Cursor with in-depth
-              learning resources
+              – Learn more about our mission to connect African tech talent
             </Text>
 
             <Text className="text-xs leading-7 mt-4 font-mono">
-              Cursor Directory is more than just a platform – it&apos;s a community.
+              Africa Tech Jobs is more than just a platform – it&apos;s a community.
               Connect with like-minded developers, share your knowledge, and be
               part of the movement.
             </Text>
 
             <Section className="mt-2">
               <Text className="text-xs leading-7 mb-6 font-mono">
-                Jump in and start exploring:{" "}
+                Ready to get started?{" "}
                 <Link
-                  href="https://cursor.directory"
+                  href="https://africatechjobs.com"
                   className="underline text-black font-mono"
                 >
-                  cursor.directory
+                  africatechjobs.com
                 </Link>
               </Text>
             </Section>
 
             <Text className="text-xs leading-7 font-mono">
-              Looking forward to seeing what you create!
+              Looking forward to helping you find your next opportunity!
             </Text>
 
             <Text className="text-xs leading-7 mt-2 font-mono">
-              Best,
+              Best regards,
               <br />
-              <Link
-                href="https://twitter.com/pontusab"
-                className="text-black font-mono text-xs leading-7 underline"
-              >
-                @Pontus
-              </Link>{" "}
-              &{" "}
-              <Link
-                href="https://twitter.com/viktorhofte"
-                className="text-black font-mono text-xs leading-7 underline"
-              >
-                @Viktor
-              </Link>
+              The Africa Tech Jobs Team
             </Text>
 
             <Footer />

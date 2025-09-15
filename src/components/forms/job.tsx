@@ -44,7 +44,7 @@ const formSchema = z.object({
     .max(500, {
       message: "Description must be less than 500 characters.",
     }),
-  link: z.string().url({
+  url: z.string().url({
     message: "Please enter a valid job posting URL.",
   }),
   workplace: z.enum(["On site", "Remote", "Hybrid"]),
@@ -64,7 +64,7 @@ export function JobForm() {
       title: "",
       location: "",
       description: "",
-      link: "",
+      url: "",
       workplace: "On site",
       experience: "",
       plan: "standard",
@@ -77,7 +77,7 @@ export function JobForm() {
       title: values.title,
       location: values.location,
       description: values.description,
-      link: values.link,
+      url: values.url,
       workplace: values.workplace,
       experience: values.experience ?? null,
       plan: values.plan,
@@ -207,7 +207,7 @@ export function JobForm() {
 
           <FormField
             control={form.control}
-            name="link"
+            name="url"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Link to job page</FormLabel>

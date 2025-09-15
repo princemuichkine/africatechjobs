@@ -1,18 +1,18 @@
 import { EditJobForm } from "@/components/forms/edit-job";
-import { GithubSignin } from "@/components/github-signin";
-import { GoogleSignin } from "@/components/google-signin";
+import { GithubSignin } from "@/components/custom/github-signin";
+import { GoogleSignin } from "@/components/custom/google-signin";
 import { JobListingSwitch } from "@/components/jobs/jobs-listing-switch";
 import { getJobById } from "@/data/queries";
-import { getSession } from "@/utils/supabase/auth";
+import { getSession } from "@/lib/supabase/auth";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 type Params = Promise<{ id: string }>;
 
 export const metadata: Metadata = {
-  title: "Edit job listing | Cursor Directory",
+  title: "Edit job listing | Africa Tech Jobs",
   description:
-    "Edit a job listing on Cursor Directory and reach 300k+ developers today.",
+    "Edit a job listing on Africa Tech Jobs and reach 300k+ developers today.",
 };
 
 export default async function Page({ params }: { params: Params }) {

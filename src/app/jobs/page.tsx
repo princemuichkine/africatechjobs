@@ -1,11 +1,11 @@
 import { JobsFeatured } from "@/components/jobs/jobs-featured";
-import { JobsList } from "@/components/jobs/jobs-list";
+import { JobList } from "@/components/jobs/job-list";
 import { getFeaturedJobs } from "@/data/queries";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Jobs | Cursor Directory",
-  description: "Find your next job with Cursor Directory",
+  title: "Jobs | Africa Tech Jobs",
+  description: "Find your next job with Africa Tech Jobs",
 };
 
 export const revalidate = 3600;
@@ -25,7 +25,7 @@ export default async function Page() {
       </p>
 
       <JobsFeatured data={featuredJobs} />
-      <JobsList />
+      <JobList />
     </div>
   );
 }

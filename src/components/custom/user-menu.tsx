@@ -31,7 +31,7 @@ export function UserMenu() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [_, setQueryStates] = useQueryStates({
+  const [, setQueryStates] = useQueryStates({
     addCompany: parseAsBoolean.withDefault(false),
     redirect: parseAsBoolean.withDefault(false),
   });
@@ -59,7 +59,7 @@ export function UserMenu() {
     if (!user) {
       getUser();
     }
-  }, [pathname]);
+  }, [pathname, supabase, user]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

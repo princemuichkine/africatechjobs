@@ -31,13 +31,13 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
                         </h3>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <Building2 className="h-4 w-4" />
-                            <span className="font-medium">{job.companyName}</span>
+                            <span className="font-medium">{job.companyName || 'Unknown Company'}</span>
                         </div>
                     </div>
                     <div className="flex-shrink-0 ml-4">
                         <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
                             <span className="text-sm font-semibold text-blue-600">
-                                {getInitials(job.companyName)}
+                                {getInitials(job.companyName || 'Unknown Company')}
                             </span>
                         </div>
                     </div>
@@ -60,10 +60,10 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
                     {/* Job Type and Experience */}
                     <div className="flex flex-wrap gap-2">
                         <Badge variant="outline" className="text-xs">
-                            {getJobTypeLabel(job.type)}
+                            {getJobTypeLabel(job.type || 'FULL_TIME')}
                         </Badge>
                         <Badge variant="outline" className="text-xs">
-                            {getExperienceLabel(job.experienceLevel)}
+                            {getExperienceLabel(job.experienceLevel || 'ENTRY_LEVEL')}
                         </Badge>
                         <Badge variant="outline" className="text-xs">
                             {job.source}
@@ -74,15 +74,17 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
                     {(job.salary || job.salaryMin || job.salaryMax) && (
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                             <DollarSign className="h-4 w-4" />
-                            <span>{formatSalary(job.salaryMin, job.salaryMax, job.currency)}</span>
+                            <span>{formatSalary(job.salaryMin ?? undefined, job.salaryMax ?? undefined, job.currency ?? undefined)}</span>
                         </div>
                     )}
 
                     {/* Posted Date */}
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <Clock className="h-4 w-4" />
-                        <span>Posted {formatDate(job.postedAt)}</span>
-                    </div>
+                    {job.postedAt && (
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <Clock className="h-4 w-4" />
+                            <span>Posted {formatDate(job.postedAt)}</span>
+                        </div>
+                    )}
 
                     {/* Description Preview */}
                     <p className="text-sm text-gray-600 line-clamp-3">

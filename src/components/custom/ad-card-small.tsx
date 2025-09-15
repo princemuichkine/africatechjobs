@@ -16,7 +16,7 @@ export function AdCardSmall({ ad, small }: { ad: Ad; small?: boolean }) {
       ad_url: ad.link,
       type: "ad_card_small",
     });
-  }, [ad]);
+  }, [ad, op]);
 
   return (
     <Card
