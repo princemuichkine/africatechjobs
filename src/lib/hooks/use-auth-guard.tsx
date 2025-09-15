@@ -35,10 +35,10 @@ export const useIsAnonymous = () => {
     const checkAnonymousStatus = async () => {
       try {
         const session = await createClient().auth.getSession();
-        if (session.data?.user) {
+        if (session.data?.session?.user) {
           // User is authenticated, check if they're anonymous
           setIsAnonymous(false); // For now, we'll assume authenticated users are not anonymous
-          // In the future, we could check session.data.user.isAnonymous if available
+          // In the future, we could check session.data.session.user.isAnonymous if available
         } else {
           // User is not authenticated
           setIsAnonymous(false);
@@ -65,7 +65,7 @@ export const AuthGuardProvider = ({
   initialIsGuest?: boolean;
 }) => {
   const router = useRouter();
-  const [isGuest, setIsGuest] = useState(initialIsGuest);
+  const [isGuest] = useState(initialIsGuest);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');

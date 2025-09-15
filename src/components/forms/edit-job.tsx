@@ -22,7 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 
@@ -66,10 +66,10 @@ export type JobData = {
 export function EditJobForm({ data }: { data: JobData }) {
   const { execute, isExecuting } = useAction(updateJobListingAction, {
     onSuccess: () => {
-      toast.success("Job listing updated successfully");
+      toast({ type: 'success', description: 'Job listing updated successfully' });
     },
     onError: () => {
-      toast.error("Failed to update job listing");
+      toast({ type: 'error', description: 'Failed to update job listing' });
     },
   });
 

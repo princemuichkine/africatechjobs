@@ -3,7 +3,7 @@
 import { cn } from "@/lib/actions/utils";
 import { Check, Share } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export function ShareButton({
   slug,
@@ -17,7 +17,7 @@ export function ShareButton({
   const handleCopy = () => {
     navigator.clipboard.writeText(`${window.location.origin}/${slug}`);
     setCopied(true);
-    toast("URL copied to clipboard");
+    toast({ type: 'default', description: 'URL copied to clipboard' });
 
     setTimeout(() => {
       setCopied(false);

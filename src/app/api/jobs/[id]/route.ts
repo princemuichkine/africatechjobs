@@ -3,14 +3,15 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const resolvedParams = await params;
     const supabase = await createClient();
     const { data: job, error } = await supabase
       .from("jobs")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", resolvedParams.id)
       .eq("is_active", true)
       .single();
 
@@ -37,16 +38,17 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const resolvedParams = await params;
     const supabase = await createClient();
     const body = await request.json();
 
     const { data, error } = await supabase
       .from("jobs")
       .update(body)
-      .eq("id", params.id)
+      .eq("id", resolvedParams.id)
       .select()
       .single();
 
@@ -70,14 +72,15 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const resolvedParams = await params;
     const supabase = await createClient();
     const { error } = await supabase
       .from("jobs")
       .update({ is_active: false })
-      .eq("id", params.id);
+      .eq("id", resolvedParams.id);
 
     if (error) {
       console.error("Error deleting job:", error);

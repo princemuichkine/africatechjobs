@@ -2,7 +2,7 @@
 
 import React, { type ReactNode } from 'react';
 import { toast as sonnerToast } from 'sonner';
-import { CheckCircle, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, AlertTriangle } from 'lucide-react';
 
 const iconsByType: Record<
   'success' | 'error' | 'info' | 'notice' | 'default',
@@ -10,7 +10,7 @@ const iconsByType: Record<
 > = {
   success: (
     <div style={{ color: '#22c55e', transform: 'scale(1.25)' }}>
-      <CheckCircle />
+      <CheckCircle2 />
     </div>
   ),
   error: (
@@ -20,17 +20,17 @@ const iconsByType: Record<
   ),
   info: (
     <div style={{ color: '#f97316', transform: 'scale(1.25)' }}>
-      <CheckCircle />
+      <CheckCircle2 />
     </div>
   ),
   notice: (
     <div style={{ color: '#0891b2', transform: 'scale(1.25)' }}>
-      <CheckCircle />
+      <CheckCircle2 />
     </div>
   ),
   default: (
     <div style={{ color: '#000000', transform: 'scale(1.25)' }}>
-      <CheckCircle />
+      <CheckCircle2 />
     </div>
   ),
 };
@@ -121,7 +121,7 @@ export function toast({ type = 'info', description }: ToastOptions) {
   }
 }
 
-function Toast(props: ToastProps) {
+export function Toast(props: ToastProps) {
   const { id, type, description } = props;
 
   const getToastStyle = (
@@ -227,7 +227,7 @@ function Toast(props: ToastProps) {
   );
 }
 
-interface ToastProps {
+export interface ToastProps {
   id: string | number;
   type: 'success' | 'error' | 'info' | 'notice' | 'default';
   description: string;

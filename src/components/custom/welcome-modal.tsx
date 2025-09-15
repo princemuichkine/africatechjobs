@@ -15,10 +15,6 @@ const crimson = Crimson_Text({
   display: 'swap',
 });
 
-// Environment variables for enabled providers
-// Enable by default in development, or when explicitly set to 'true'
-const isDev = process.env.NODE_ENV === 'development';
-
 const StyleToggleDemo = () => {
   const [isEnabled, setIsEnabled] = useState(false);
 
@@ -556,7 +552,7 @@ const FeaturesSection = () => {
               </CardHeader>
               <CardContent className="p-6 text-sm text-muted-foreground grow flex flex-col justify-between items-center">
                 <div className="w-full flex flex-col items-center grow justify-center">
-                  <StyleToggleDemo inView={card4InView} />
+                  <StyleToggleDemo />
                 </div>
                 <p className="text-center w-full mt-8">
                   Trained on your writing to apply your unique style.

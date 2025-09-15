@@ -3,7 +3,7 @@
 import { toggleJobListingAction } from "@/lib/actions/toggle-job-listing";
 import { Switch } from "@/components/ui/switch";
 import { useTransition } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export function JobListingSwitch({
   id,
@@ -18,11 +18,9 @@ export function JobListingSwitch({
     startTransition(async () => {
       try {
         await toggleJobListingAction({ id, active: !active });
-        toast.success(
-          `Job listing ${!active ? "activated" : "deactivated"} successfully`,
-        );
+        toast({ type: 'success', description: `Job listing ${!active ? "activated" : "deactivated"} successfully` });
       } catch (error) {
-        toast.error("Failed to update job listing status");
+        toast({ type: 'error', description: 'Failed to update job listing status' });
         console.error("Error toggling job listing:", error);
       }
     });

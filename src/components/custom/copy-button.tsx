@@ -5,7 +5,7 @@ import { cn } from "@/lib/actions/utils";
 import { Check, Copy } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export function CopyButton({
   content,
@@ -23,9 +23,7 @@ export function CopyButton({
     execute({ slug });
     navigator.clipboard.writeText(content);
     setCopied(true);
-    toast(
-      "Copied to clipboard. Add a .cursorrules file to your project and paste the rule.",
-    );
+    toast({ type: 'default', description: 'Copied to clipboard. Add a .cursorrules file to your project and paste the rule.' });
 
     setTimeout(() => {
       setCopied(false);

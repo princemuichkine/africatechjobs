@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/toast';
 import { CheckCircle as SealCheck, Loader2 as Spinner } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -48,7 +48,7 @@ export function FeedbackWidget({ className }: { className?: string }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!userId) {
-      toast.error('Please login to submit feedback');
+      toast({ type: 'error', description: 'Please login to submit feedback' });
       return;
     }
 
@@ -68,7 +68,7 @@ export function FeedbackWidget({ className }: { className?: string }) {
       }, 2500);
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      toast.error('Failed to submit feedback. Please try again.');
+      toast({ type: 'error', description: 'Failed to submit feedback. Please try again.' });
       setStatus('error');
     }
   };

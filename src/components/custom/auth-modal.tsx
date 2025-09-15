@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/toast';
 import { LoaderIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -42,8 +42,6 @@ export const AuthModal = ({
     const [forgotPasswordMode, setForgotPasswordMode] = useState<
         'request' | 'reset' | null
     >(null);
-    const [otpCode, setOtpCode] = useState('');
-    const [newPassword, setNewPassword] = useState('');
 
     // Only reset forgot password state on successful completion or explicit back navigation
     const handleModalOpenChange = (newOpen: boolean) => {
@@ -51,7 +49,7 @@ export const AuthModal = ({
         // Don't reset forgot password state when modal closes - preserve user's progress
     };
 
-    const handleEmailAuth = async (formData: FormData) => {
+    const handleEmailAuth = async () => {
         // Use state values instead of FormData since inputs are controlled
         const currentEmail = email;
         const currentPassword = password;
@@ -78,7 +76,7 @@ export const AuthModal = ({
 
                 setIsEmailLoading(false);
                 setIsSuccessful(true);
-                toast.success('Account created! Welcome to Africa Tech Jobs!');
+                toast({ type: 'success', description: 'Account created! Welcome to Africa Tech Jobs!' });
                 // Clear inputs on successful auth
                 setEmail('');
                 setPassword('');
@@ -88,7 +86,7 @@ export const AuthModal = ({
                 setIsEmailLoading(false);
                 setIsSuccessful(false);
                 console.error('Email Signup Error:', error);
-                toast.error(error instanceof Error ? error.message : 'Failed to create account.');
+                toast({ type: 'error', description: error instanceof Error ? error.message : 'Failed to create account.' });
             }
         } else {
             setIsEmailLoading(true);
@@ -107,7 +105,7 @@ export const AuthModal = ({
 
                 setIsEmailLoading(false);
                 setIsSuccessful(true);
-                toast.success('Signed in successfully! Welcome back!');
+                toast({ type: 'success', description: 'Signed in successfully! Welcome back!' });
                 // Clear inputs on successful auth
                 setEmail('');
                 setPassword('');
@@ -118,7 +116,7 @@ export const AuthModal = ({
                 setIsEmailLoading(false);
                 setIsSuccessful(false);
                 console.error('Email Login Error:', error);
-                toast.error(error instanceof Error ? error.message : 'Failed to sign in.');
+                toast({ type: 'error', description: error instanceof Error ? error.message : 'Failed to sign in.' });
             }
         }
     };
@@ -145,7 +143,7 @@ export const AuthModal = ({
             setIsSocialLoading(null);
             setIsSuccessful(false);
             console.error(`Social Auth Error (${provider}):`, error);
-            toast.error(error instanceof Error ? error.message : `Failed to authenticate with ${provider}.`);
+            toast({ type: 'error', description: error instanceof Error ? error.message : `Failed to authenticate with ${provider}.` });
         }
     };
 
@@ -170,11 +168,11 @@ export const AuthModal = ({
             setEmail(email);
             setForgotPasswordMode('reset');
             setIsEmailLoading(false);
-            toast.success('Password reset link sent to your email.');
+            toast({ type: 'success', description: 'Password reset link sent to your email.' });
         } catch (error) {
             setIsEmailLoading(false);
             console.error('Forgot password error:', error);
-            toast.error(error instanceof Error ? error.message : 'Failed to send reset link.');
+            toast({ type: 'error', description: error instanceof Error ? error.message : 'Failed to send reset link.' });
         }
     };
 
@@ -245,8 +243,6 @@ export const AuthModal = ({
                                     type="button"
                                     onClick={() => {
                                         setForgotPasswordMode(null);
-                                        setOtpCode('');
-                                        setNewPassword('');
                                     }}
                                     className="font-medium text-muted-foreground hover:text-primary"
                                 >
@@ -282,8 +278,6 @@ export const AuthModal = ({
                                     type="button"
                                     onClick={() => {
                                         setForgotPasswordMode(null);
-                                        setOtpCode('');
-                                        setNewPassword('');
                                     }}
                                     className="font-medium text-muted-foreground hover:text-primary"
                                 >
