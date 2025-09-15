@@ -26,7 +26,7 @@ export async function sendFeedbackToDiscord({
     // For now, just log the feedback. You can integrate with your preferred
     // feedback service (email, database, external API, etc.)
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Feedback Action] Error processing feedback:', error);
 
     let errorMessage =
