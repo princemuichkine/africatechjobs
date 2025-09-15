@@ -64,7 +64,7 @@ export function FollowButton({ slug, id }: Props) {
   return (
     <>
       <Button
-        className="rounded-full"
+        className="rounded-sm"
         onClick={handleFollow}
         variant={isFollowing ? "outline" : "default"}
         disabled={followAction.isExecuting}

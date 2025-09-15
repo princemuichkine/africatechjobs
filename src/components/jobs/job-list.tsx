@@ -77,7 +77,7 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
     return (
       <div className="space-y-4">
         {Array.from({ length: 6 }).map((_, index) => (
-          <div key={index} className="border rounded-lg p-6">
+          <div key={index} className="border rounded-sm p-6">
             <div className="space-y-3">
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
@@ -164,7 +164,7 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
       {loading && jobs.length > 0 && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
-            <div key={`loading-${index}`} className="border rounded-lg p-6">
+            <div key={`loading-${index}`} className="border rounded-sm p-6">
               <div className="space-y-3">
                 <Skeleton className="h-6 w-3/4" />
                 <Skeleton className="h-4 w-1/2" />

@@ -44,7 +44,7 @@ export function JobsFeatured({
           <Link href="/jobs/new">
             <Button
               variant="outline"
-              className="rounded-full h-8 flex items-center gap-2 border-border"
+              className="rounded-sm h-8 flex items-center gap-2 border-border"
             >
               Add job listing
               <Plus className="size-4" />
@@ -61,14 +61,14 @@ export function JobsFeatured({
               <CardContent className="flex flex-col gap-4 p-4">
                 <div className="flex items-center gap-3">
                   <Link href={`/c/${job.company.slug}`}>
-                    <Avatar className="size-12 rounded-none">
+                    <Avatar className="size-12 rounded-sm">
                       {job.company.image ? (
                         <AvatarImage
                           src={job.company.image}
                           alt={job.company.name}
                         />
                       ) : (
-                        <AvatarFallback className="bg-[#1c1c1c] rounded-none">
+                        <AvatarFallback className="bg-[#1c1c1c] rounded-sm">
                           {job.company.name.charAt(0)}
                         </AvatarFallback>
                       )}
@@ -95,7 +95,7 @@ export function JobsFeatured({
                 <Button
                   variant="secondary"
                   size="sm"
-                  className="w-fit bg-[#1c1c1c] text-[#878787] hover:bg-[#2c2c2c] rounded-full font-mono text-xs"
+                  className="w-fit bg-[#1c1c1c] text-[#878787] hover:bg-[#2c2c2c] rounded-sm font-mono text-xs"
                   asChild
                 >
                   <a

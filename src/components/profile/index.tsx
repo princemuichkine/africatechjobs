@@ -42,16 +42,16 @@ export async function Profile({
       />
 
       <Tabs defaultValue="posts" className="w-full mt-14">
-        <TabsList className="w-full justify-start border-b rounded-none h-12 bg-transparent p-0 gap-2">
+        <TabsList className="w-full justify-start border-b rounded-sm h-12 bg-transparent p-0 gap-2">
           <TabsTrigger
             value="posts"
-            className="rounded-none h-full data-[state=active]:border-b-2 data-[state=active]:border-primary px-0"
+            className="rounded-sm h-full data-[state=active]:border-b-2 data-[state=active]:border-primary px-0"
           >
             Posts
           </TabsTrigger>
           <TabsTrigger
             value="companies"
-            className="rounded-none h-full data-[state=active]:border-b-2 data-[state=active]:border-primary"
+            className="rounded-sm h-full data-[state=active]:border-b-2 data-[state=active]:border-primary"
           >
             Companies
           </TabsTrigger>

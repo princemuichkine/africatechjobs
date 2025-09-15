@@ -13,7 +13,7 @@ export function GithubSignin({ redirectTo }: { redirectTo?: string }) {
   return (
     <Button
       variant="outline"
-      className="border border-border rounded-full"
+      className="border border-border rounded-sm"
       onClick={() => {
         supabase.auth.signInWithOAuth({
           provider: "github",

@@ -15,9 +15,9 @@ export function CompanyCard({ company }: { company: Company }) {
     <Card className="bg-transparent border-none pb-4 border-b-[1px] border-border">
       <Link href={`/c/${company.slug}`}>
         <CardHeader className="flex flex-row items-center gap-4 p-0">
-          <Avatar className="size-10 border border-border rounded-none">
+          <Avatar className="size-10 border border-border rounded-sm">
             <AvatarImage src={company.image} alt={company.name} />
-            <AvatarFallback className="text-sm font-mono rounded-none bg-transparent">
+            <AvatarFallback className="text-sm font-mono rounded-sm bg-transparent">
               {company.name.charAt(0)}
             </AvatarFallback>
           </Avatar>

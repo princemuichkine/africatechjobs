@@ -33,7 +33,7 @@ export function JobsBuy() {
 
         <Link href="/jobs/new">
           <Button
-            className="font-mono mt-12 text-sm h-9 rounded-full border-white bg-transparent hover:bg-white hover:text-black transition-colors"
+            className="font-mono mt-12 text-sm h-9 rounded-sm border-white bg-transparent hover:bg-white hover:text-black transition-colors"
             variant="outline"
           >
             Add job listing

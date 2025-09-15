@@ -84,10 +84,10 @@ export function MobileMenu() {
       <div className="md:hidden mr-4">
         {user ? (
           <Avatar
-            className="size-6 rounded-none cursor-pointer"
+            className="size-6 rounded-sm cursor-pointer"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <AvatarImage src={user?.image} className="rounded-none" />
+            <AvatarImage src={user?.image} className="rounded-sm" />
             <AvatarFallback className="text-xs bg-[#878787]">
               {user?.name?.charAt(0)}
             </AvatarFallback>
@@ -157,14 +157,14 @@ export function MobileMenu() {
                     >
                       <Button
                         variant="outline"
-                        className="h-8 rounded-full w-full mb-4 border-border"
+                        className="h-8 rounded-sm w-full mb-4 border-border"
                       >
                         Profile
                       </Button>
                     </Link>
                     <Button
                       variant="outline"
-                      className="bg-white text-black h-8 rounded-full w-full"
+                      className="bg-white text-black h-8 rounded-sm w-full"
                       onClick={handleSignOut}
                     >
                       Sign Out
@@ -174,7 +174,7 @@ export function MobileMenu() {
                   <Link href="/login" onClick={() => setIsOpen(false)}>
                     <Button
                       variant="outline"
-                      className="bg-white text-black h-8 rounded-full w-full"
+                      className="bg-white text-black h-8 rounded-sm w-full"
                     >
                       Sign In
                     </Button>

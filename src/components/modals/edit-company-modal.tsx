@@ -26,7 +26,7 @@ export function EditCompanyModal({ data }: { data: CompanyData }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-8 rounded-full">Edit Company</Button>
+        <Button className="h-8 rounded-sm">Edit Company</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[525px]">

@@ -91,7 +91,7 @@ export default function About() {
         alt="Africa Tech Jobs founders"
         width={1920}
         height={1080}
-        className="rounded-lg mb-12 mt-12"
+        className="rounded-sm mb-12 mt-12"
       />
     </div>
   );

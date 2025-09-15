@@ -32,7 +32,7 @@ export function AdRulePage({ ad }: { ad: Ad }) {
         }}
       >
         <div className="flex items-center gap-2">
-          <div className="size-6 rounded-full overflow-hidden">
+          <div className="size-6 rounded-sm overflow-hidden">
             <Image
               quality={100}
               src={ad.logoUrl}

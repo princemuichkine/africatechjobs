@@ -142,7 +142,7 @@ export default function UploadLogo({
           src={preview}
           alt="Logo preview"
           fill
-          className="object-cover rounded-lg"
+          className="object-cover rounded-sm"
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center text-primary">

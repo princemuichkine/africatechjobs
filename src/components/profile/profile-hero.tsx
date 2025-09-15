@@ -102,7 +102,7 @@ export function ProfileHero({
 
       {isOwner && (
         <button
-          className="absolute bottom-4 left-4 bg-black rounded-full size-8 flex items-center justify-center"
+          className="absolute bottom-4 left-4 bg-black rounded-sm size-8 flex items-center justify-center"
           onClick={() => fileInputRef.current?.click()}
           type="button"
         >

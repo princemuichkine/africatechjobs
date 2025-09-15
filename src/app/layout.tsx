@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: "Africa Tech Jobs",
   description:
     "Find your dream tech job in Africa. Connect with top companies and build your career in the growing African tech ecosystem.",
+  metadataBase: new URL("https://africatechjobs.com"),
   icons: [
     {
       rel: "icon",
@@ -71,13 +72,13 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={cn(
-        "whitespace-pre-line antialiased bg-background text-foreground !dark font-sans",
+        "whitespace-pre-line antialiased bg-background text-foreground font-sans",
       )}
     >
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
@@ -91,7 +92,7 @@ export default function RootLayout({
               rel="noreferrer"
             >
               <Button
-                className="hidden size-[48px] bg-[#F5F5F3]/30 text-black border border-black rounded-full font-medium fixed bottom-4 left-6 z-10 backdrop-blur-lg dark:bg-[#F5F5F3]/30 dark:text-white dark:border-white"
+                className="hidden size-[48px] bg-[#F5F5F3]/30 text-black border border-black rounded-sm font-medium fixed bottom-4 left-6 z-10 backdrop-blur-lg dark:bg-[#F5F5F3]/30 dark:text-white dark:border-white"
                 variant="outline"
                 size="icon"
               >
@@ -102,15 +103,14 @@ export default function RootLayout({
             <Banner />
             <Toaster />
             <GlobalModals />
+            <OpenPanelComponent
+              clientId={process.env.NEXT_PUBLIC_OPENPANEL_CLIENT_ID!}
+              trackScreenViews
+              disabled={process.env.NODE_ENV === "development"}
+            />
           </NuqsAdapter>
         </ThemeProvider>
       </body>
-
-      <OpenPanelComponent
-        clientId={process.env.NEXT_PUBLIC_OPENPANEL_CLIENT_ID!}
-        trackScreenViews
-        disabled={process.env.NODE_ENV === "development"}
-      />
     </html>
   );
 }

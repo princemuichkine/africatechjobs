@@ -40,7 +40,7 @@ export function CompanyList({ data }: { data?: Company[] | null }) {
 
           <Button
             variant="outline"
-            className="mt-4 rounded-full border-border"
+            className="mt-4 rounded-sm border-border"
             onClick={() => setSearch(null)}
           >
             Clear search

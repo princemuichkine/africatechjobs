@@ -36,7 +36,7 @@ export function CopyButton({
     <button
       onClick={handleCopy}
       className={cn(
-        "text-xs bg-black text-white dark:bg-white dark:text-black rounded-full flex items-center justify-center",
+        "text-xs bg-black text-white dark:bg-white dark:text-black rounded-sm flex items-center justify-center",
         small ? "p-1.5 size-7" : "p-2 size-9",
       )}
       type="button"

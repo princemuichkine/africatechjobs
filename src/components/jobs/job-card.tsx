@@ -55,7 +55,7 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
             </div>
           </div>
           <div className="flex-shrink-0 ml-4">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-sm bg-blue-100 flex items-center justify-center">
               <span className="text-sm font-semibold text-blue-600">
                 {getInitials(job.companyName || "Unknown Company")}
               </span>

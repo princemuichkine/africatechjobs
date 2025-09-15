@@ -25,7 +25,7 @@ export function EditProfileModal({ data }: { data: ProfileData }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-8 rounded-full">Edit Profile</Button>
+        <Button className="h-8 rounded-sm">Edit Profile</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[525px]">

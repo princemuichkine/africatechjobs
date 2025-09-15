@@ -234,11 +234,10 @@ export function JobForm() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button
                       type="button"
-                      className={`p-4 border rounded-lg cursor-pointer text-left ${
-                        field.value === "standard"
+                      className={`p-4 border rounded-sm cursor-pointer text-left ${field.value === "standard"
                           ? "border-primary"
                           : "border-border"
-                      }`}
+                        }`}
                       onClick={() => field.onChange("standard")}
                     >
                       <div>Standard</div>
@@ -250,11 +249,10 @@ export function JobForm() {
                     </button>
                     <button
                       type="button"
-                      className={`p-4 border rounded-lg cursor-pointer text-left ${
-                        field.value === "featured"
+                      className={`p-4 border rounded-sm cursor-pointer text-left ${field.value === "featured"
                           ? "border-primary"
                           : "border-border"
-                      }`}
+                        }`}
                       onClick={() => field.onChange("featured")}
                     >
                       <div>Featured</div>
@@ -267,11 +265,10 @@ export function JobForm() {
                   </div>
                   <button
                     type="button"
-                    className={`p-4 border rounded-lg cursor-pointer text-left ${
-                      field.value === "premium"
+                    className={`p-4 border rounded-sm cursor-pointer text-left ${field.value === "premium"
                         ? "border-primary"
                         : "border-border"
-                    }`}
+                      }`}
                     onClick={() => field.onChange("premium")}
                   >
                     <div>Premium</div>

@@ -41,7 +41,7 @@ export function JobsCard({
       <CardHeader className="p-0 space-y-2">
         <div className="flex items-center gap-2 relative">
           <Link href={`/c/${company.slug}`}>
-            <Avatar className="size-4 rounded-none">
+            <Avatar className="size-4 rounded-sm">
               {company.image ? (
                 <AvatarImage src={company.image} alt={company.name} />
               ) : (
@@ -90,7 +90,7 @@ export function JobsCard({
             <Button
               variant="secondary"
               size="sm"
-              className="w-fit bg-[#1c1c1c] text-[#878787] hover:bg-[#2c2c2c] rounded-full font-mono text-xs"
+              className="w-fit bg-[#1c1c1c] text-[#878787] hover:bg-[#2c2c2c] rounded-sm font-mono text-xs"
               asChild
             >
               <a

@@ -42,7 +42,7 @@ export function Startpage({ jobs }: { jobs?: Job[] | null }) {
       {/* Stats Section */}
       <section className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <div className="bg-card rounded-lg p-6 border">
+          <div className="bg-card rounded-sm p-6 border">
             <div className="flex items-center">
               <Briefcase className="h-8 w-8 text-primary mr-4" />
               <div>
@@ -51,7 +51,7 @@ export function Startpage({ jobs }: { jobs?: Job[] | null }) {
               </div>
             </div>
           </div>
-          <div className="bg-card rounded-lg p-6 border">
+          <div className="bg-card rounded-sm p-6 border">
             <div className="flex items-center">
               <Users className="h-8 w-8 text-primary mr-4" />
               <div>
@@ -60,7 +60,7 @@ export function Startpage({ jobs }: { jobs?: Job[] | null }) {
               </div>
             </div>
           </div>
-          <div className="bg-card rounded-lg p-6 border">
+          <div className="bg-card rounded-sm p-6 border">
             <div className="flex items-center">
               <MapPin className="h-8 w-8 text-primary mr-4" />
               <div>

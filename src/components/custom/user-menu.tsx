@@ -69,7 +69,7 @@ export function UserMenu() {
   if (isLoading) {
     return (
       <div className="flex items-center gap-2">
-        <Skeleton className="size-6 rounded-none" />
+        <Skeleton className="size-6 rounded-sm" />
       </div>
     );
   }
@@ -85,8 +85,8 @@ export function UserMenu() {
         <div className="flex items-center gap-2">
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
-              <Avatar className="size-6 rounded-none cursor-pointer">
-                <AvatarImage src={user?.image} className="rounded-none" />
+              <Avatar className="size-6 rounded-sm cursor-pointer">
+                <AvatarImage src={user?.image} className="rounded-sm" />
                 <AvatarFallback className="text-xs bg-[#878787]">
                   {user?.name?.charAt(0)}
                 </AvatarFallback>
@@ -125,7 +125,7 @@ export function UserMenu() {
         <Link href={`/login?next=${pathname}`}>
           <Button
             variant="outline"
-            className="bg-white text-black h-8 rounded-full"
+            className="bg-white text-black h-8 rounded-sm"
           >
             Sign In
           </Button>
