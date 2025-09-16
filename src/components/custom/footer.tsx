@@ -10,9 +10,13 @@ import { BackgroundText } from '@/components/design/background-text'
 import { animateThemeSweep } from '@/lib/utils/theme-transition'
 import { animations } from '@/lib/utils/lottie-animations'
 import { getSoundEnabled, setSoundEnabled } from '@/lib/utils/sound'
+import { useTranslation } from '@/lib/contexts/translation-context'
+import { t } from '@/lib/i18n/translations'
+import { LanguageSwitcher } from '@/components/design/language-switcher'
 
 export const Footer = () => {
     const { theme, setTheme } = useTheme()
+    const { currentLanguage } = useTranslation()
     const [mounted, setMounted] = React.useState(false)
     const [soundEnabled, setSoundEnabledState] = React.useState<boolean>(true)
 
@@ -65,7 +69,7 @@ export const Footer = () => {
                             onClick={playClickSound}
                             className="text-sm text-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent dark:hover:bg-sidebar-accent px-2 py-1.5 rounded-sm transition-colors"
                         >
-                            Privacy
+                            {t('footer.privacy', currentLanguage)}
                         </Link>
                         <span className="hidden sm:inline text-foreground/80">|</span>
                         <Link
@@ -74,7 +78,7 @@ export const Footer = () => {
                             onClick={playClickSound}
                             className="text-sm text-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent dark:hover:bg-sidebar-accent px-2 py-1.5 rounded-sm transition-colors"
                         >
-                            Terms
+                            {t('footer.terms', currentLanguage)}
                         </Link>
                     </div>
 
@@ -85,7 +89,7 @@ export const Footer = () => {
                             rel="noopener noreferrer"
                             onClick={playClickSound}
                             className="text-black dark:text-white hover:text-[#000000] dark:hover:text-[#FFFFFF] transition-colors"
-                            aria-label="Follow us on X"
+                            aria-label={t('footer.follow_x', currentLanguage)}
                         >
                             <XIcon className="h-5 w-5" />
                         </Link>
@@ -95,7 +99,7 @@ export const Footer = () => {
                             rel="noopener noreferrer"
                             onClick={playClickSound}
                             className="text-black dark:text-white hover:text-[#6f42c1] dark:hover:text-[#6f42c1] transition-colors"
-                            aria-label="Follow us on Github"
+                            aria-label={t('footer.follow_github', currentLanguage)}
                         >
                             <GitHubIcon className="h-5 w-5" />
                         </Link>
@@ -104,7 +108,7 @@ export const Footer = () => {
 
                 <div className="mt-4 pt-4 border-t flex justify-between items-center">
                     <p className="text-xs text-foreground/80">
-                        © {new Date().getFullYear()} afritechjobs.com by{' '}
+                        {t('footer.copyright_start', currentLanguage, { year: new Date().getFullYear() })}
                         <Link
                             href="https://lomi.africa"
                             target="_blank"
@@ -112,18 +116,19 @@ export const Footer = () => {
                             onClick={playClickSound}
                             className="hover:text-white transition-colors"
                         >
-                            lomi.
-                        </Link>{' '}
-                        — All rights reserved.
+                            {t('footer.copyright_link', currentLanguage)}
+                        </Link>
+                        {t('footer.copyright_end', currentLanguage)}
                     </p>
                     <div className="flex items-center gap-2">
+                        <LanguageSwitcher className="mr-2" />
                         <button
                             onClick={toggleTheme}
                             className="h-6 w-6 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors [&_svg]:fill-current"
                             aria-label={
                                 mounted
-                                    ? `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`
-                                    : 'Toggle theme'
+                                    ? t('footer.toggle_theme', currentLanguage, { mode: theme === 'dark' ? 'light' : 'dark' })
+                                    : t('footer.toggle_theme', currentLanguage, { mode: 'theme' })
                             }
                         >
                             {mounted ? (
@@ -144,7 +149,7 @@ export const Footer = () => {
                         <button
                             onClick={toggleSound}
                             className="h-6 w-6 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors [&_svg]:fill-current"
-                            aria-label={soundEnabled ? 'Turn sound off' : 'Turn sound on'}
+                            aria-label={soundEnabled ? t('footer.turn_sound_off', currentLanguage) : t('footer.turn_sound_on', currentLanguage)}
                         >
                             <LottieIcon
                                 animationData={

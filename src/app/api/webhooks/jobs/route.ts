@@ -17,8 +17,6 @@ function verifyWebhookSignature(signature: string | null): boolean {
 // Simple job processing client (can be replaced with Trigger.dev)
 class JobProcessingClient {
   async sendEvent(event: { name: string; payload: { source: string; job: Record<string, unknown>; received_at: string } }) {
-    console.log('Job event received:', event);
-
     // TODO: Replace with Trigger.dev client when configured
     // For now, process the job directly
     try {
@@ -35,7 +33,6 @@ class JobProcessingClient {
         completed_at: new Date().toISOString()
       });
 
-      console.log(`Job from ${source} processed successfully`);
     } catch (error) {
       console.error('Error processing job:', error);
     }

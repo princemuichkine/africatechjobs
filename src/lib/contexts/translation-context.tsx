@@ -50,6 +50,13 @@ export function TranslationProvider({
   const setLanguage = (lang: Language) => {
     setCurrentLanguage(lang)
     setLocalStorageItem('afritechjobs.language', lang)
+
+    // Dispatch custom event for layout to detect language changes
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('languageChange', {
+        detail: { language: lang }
+      }))
+    }
   }
 
   return (

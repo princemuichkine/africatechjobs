@@ -8,22 +8,13 @@ interface SendFeedbackParams {
 
 export async function sendFeedbackToDiscord({
   feedbackContent,
-  userEmail,
-  userId,
 }: SendFeedbackParams): Promise<{ success: boolean; error?: string }> {
   if (!feedbackContent) {
     return { success: false, error: 'Feedback content cannot be empty.' };
   }
 
   try {
-    // Log feedback to console for development
-    console.log('[Feedback Action] New feedback received:', {
-      userId: userId || 'N/A',
-      userEmail: userEmail || 'N/A',
-      feedback: feedbackContent,
-    });
-
-    // For now, just log the feedback. You can integrate with your preferred
+    // For now, just process the feedback. You can integrate with your preferred
     // feedback service (email, database, external API, etc.)
     return { success: true };
   } catch (error: unknown) {

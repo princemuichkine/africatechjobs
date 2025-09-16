@@ -3,5 +3,17 @@
     "message": "Nous utilisons des cookies pour comprendre comment vous utilisez le produit et nous aider à l'améliorer.",
     "accept": "Accepter",
     "decline": "Refuser"
+  },
+  "footer": {
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "copyright_start": "© {year} afritechjobs.com par ",
+    "copyright_link": "lomi.",
+    "copyright_end": " — Tous droits réservés.",
+    "follow_x": "Suivez-nous sur X",
+    "follow_github": "Suivez-nous sur Github",
+    "toggle_theme": "Basculer vers le mode {mode}",
+    "turn_sound_off": "Couper le son",
+    "turn_sound_on": "Activer le son"
   }
 }

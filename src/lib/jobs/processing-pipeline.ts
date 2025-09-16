@@ -40,7 +40,7 @@ export class JobProcessingPipeline {
       const normalizedJob = await this.normalizeJobData(rawJobData, source);
 
       // 2. Duplicate Detection (using fuzzy matching)
-      const isDuplicate = await this.detectDuplicate(normalizedJob);
+      const isDuplicate = await this.detectDuplicate();
       if (isDuplicate) return { status: 'duplicate', jobId: isDuplicate.id };
 
       // 3. Location & Company Resolution
@@ -54,10 +54,10 @@ export class JobProcessingPipeline {
       if (qualityScore < 0.7) return { status: 'low_quality' };
 
       // 6. Save to Database
-      const savedJob = await this.saveJob(classifiedJob);
+      const savedJob = await this.saveJob();
 
       // 7. Real-time Notifications
-      await this.triggerNotifications(savedJob);
+      await this.triggerNotifications();
 
       return { status: 'success', jobId: savedJob.id };
     } catch (error) {
@@ -82,13 +82,13 @@ export class JobProcessingPipeline {
     };
   }
 
-  private async detectDuplicate(job: NormalizedJob): Promise<{ id: string } | null> {
+  private async detectDuplicate(): Promise<{ id: string } | null> {
     // Use fuzzy string matching on title + company + location
-    const similarity = await this.calculateSimilarity(job);
+    const similarity = await this.calculateSimilarity();
     return similarity.score > 0.85 ? similarity.match : null;
   }
 
-  private async calculateSimilarity(_job: NormalizedJob): Promise<{ match: { id: string } | null; score: number }> {
+  private async calculateSimilarity(): Promise<{ match: { id: string } | null; score: number }> {
     // Placeholder for similarity calculation
     // In a real implementation, this would use fuzzy string matching
     return { match: null, score: 0 };
@@ -96,9 +96,9 @@ export class JobProcessingPipeline {
 
   private async enrichJobData(job: NormalizedJob): Promise<ProcessedJob> {
     // Geocode locations, resolve company data, extract skills
-    const coordinates = await this.geocodeLocation(job.location);
+    const coordinates = await this.geocodeLocation();
     const company = await this.resolveCompany(job.company_name);
-    const extracted_skills = await this.extractSkills(job.description);
+    const extracted_skills = await this.extractSkills();
 
     return {
       ...job,
@@ -110,7 +110,7 @@ export class JobProcessingPipeline {
     };
   }
 
-  private async geocodeLocation(_location: string): Promise<{ lat: number; lng: number }> {
+  private async geocodeLocation(): Promise<{ lat: number; lng: number }> {
     // Placeholder for geocoding
     // In a real implementation, this would use a geocoding service
     return { lat: 0, lng: 0 };
@@ -122,7 +122,7 @@ export class JobProcessingPipeline {
     return { id: 'placeholder', name: companyName };
   }
 
-  private async extractSkills(_description: string): Promise<string[]> {
+  private async extractSkills(): Promise<string[]> {
     // Placeholder for skill extraction
     // In a real implementation, this would use NLP to extract skills
     return [];
@@ -147,16 +147,14 @@ export class JobProcessingPipeline {
     return job.quality_score;
   }
 
-  private async saveJob(job: ProcessedJob): Promise<{ id: string }> {
+  private async saveJob(): Promise<{ id: string }> {
     // Placeholder for saving to database
     // In a real implementation, this would save the job to the database
-    console.log('Saving job:', job);
     return { id: 'placeholder-job-id' };
   }
 
-  private async triggerNotifications(job: { id: string }): Promise<void> {
+  private async triggerNotifications(): Promise<void> {
     // Placeholder for triggering notifications
     // In a real implementation, this would send notifications to relevant users
-    console.log('Triggering notifications for job:', job.id);
   }
 }

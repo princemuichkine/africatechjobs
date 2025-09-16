@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { JobForm } from "@/components/forms/job";
 import { AuthModal } from "@/components/custom/auth-modal";
 import { createClient } from "@/lib/supabase/client";
+import Spinner from '@/components/custom/spinner';
 
 export default function Page() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,8 +55,7 @@ export default function Page() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
+          <Spinner />
         </div>
       </div>
     );

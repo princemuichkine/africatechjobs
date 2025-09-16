@@ -24,12 +24,8 @@ export const actionClient = createSafeActionClient({
     });
   },
   // Define logging middleware.
-}).use(async ({ next, clientInput, metadata }) => {
+}).use(async ({ next }) => {
   const result = await next();
-
-  console.log("Result ->", result);
-  console.log("Client input ->", clientInput);
-  console.log("Metadata ->", metadata);
 
   return result;
 });

@@ -1,0 +1,19 @@
+{
+  "tracking_cookie": {
+    "message": "Usamos cookies de seguimiento para entender cómo usas nuestro producto y ayudarnos a mejorarlo.",
+    "accept": "Aceptar",
+    "decline": "Rechazar"
+  },
+  "footer": {
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "copyright_start": "© {year} afritechjobs.com por ",
+    "copyright_link": "lomi.",
+    "copyright_end": " — Todos los derechos reservados.",
+    "follow_x": "Síguenos en X",
+    "follow_github": "Síguenos en Github",
+    "toggle_theme": "Cambiar a modo {mode}",
+    "turn_sound_off": "Apagar sonido",
+    "turn_sound_on": "Encender sonido"
+  }
+}

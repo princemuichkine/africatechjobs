@@ -13,11 +13,11 @@ export default function NotFound() {
     try {
       const audio = new Audio(soundFile)
       audio.volume = 0.4
-      audio.play().catch((error) => {
-        console.log('Could not play sound:', error)
+      audio.play().catch(() => {
+        // Silently handle audio play errors
       })
-    } catch (error) {
-      console.log('Error loading sound:', error)
+    } catch {
+      // Silently handle audio loading errors
     }
   }
 

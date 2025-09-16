@@ -1,25 +1,8 @@
-import { Banner } from "@/components/custom/banner";
+import React from "react";
 import "./globals.css";
-import { Footer } from "@/components/custom/footer";
-import { Header } from "@/components/custom/header";
-import { GlobalModals } from "@/components/modals/global-modals";
-import { Button } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/sonner";
-import SoundGateInit from "@/components/ui/sound-gate-init";
-import { UserIdentifier } from "@/components/analytics/user-identifier";
-import { CustomScrollbar } from "@/components/ui/custom-scrollbar";
-import { cn } from "@/lib/actions/utils";
-import { OpenPanelComponent } from "@openpanel/nextjs";
-import { PlusIcon } from "lucide-react";
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
+import ClientLayout from "@/components/layout/client-layout";
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 export const metadata: Metadata = {
   title: "afritechjobs.com",
@@ -77,64 +60,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn(
-        "whitespace-pre-line antialiased bg-background text-foreground",
-        geist.variable,
-      )}
-    >
-      <body className="overflow-x-hidden max-w-full">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NuqsAdapter>
-            <CustomScrollbar className="h-screen">
-              <Header />
-              {children}
-
-              <a
-                href="https://github.com/princemuichkine/afritechjobs"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Button
-                  className="hidden size-[48px] bg-[#F5F5F3]/30 text-black border border-black rounded-sm font-medium fixed bottom-4 left-6 z-10 backdrop-blur-lg dark:bg-[#F5F5F3]/30 dark:text-white dark:border-white"
-                  variant="outline"
-                  size="icon"
-                >
-                  <PlusIcon className="w-4 h-4" />
-                </Button>
-              </a>
-
-              <Banner />
-              <Footer />
-            </CustomScrollbar>
-            <Toaster />
-            <GlobalModals />
-            <UserIdentifier />
-            <SoundGateInit />
-            <OpenPanelComponent
-              clientId="2691c01c-2e94-4121-bf46-41864549fd12"
-              apiUrl="/api/op"
-              trackScreenViews={true}
-              trackOutgoingLinks={true}
-              trackAttributes={true}
-              disabled={process.env.NODE_ENV === "development"}
-              globalProperties={{
-                platform: "web",
-                app_version: "0.1.0",
-                environment: process.env.NODE_ENV || "production"
-              }}
-            />
-          </NuqsAdapter>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+  return <ClientLayout>{children}</ClientLayout>;
 }
