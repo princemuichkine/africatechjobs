@@ -1,7 +1,7 @@
 export function ProfileSponsored() {
   return (
     <a
-      href="https://coderabbit.link/GFltQZV"
+      href="https://lomi.africa"
       target="_blank"
       rel="noopener noreferrer"
       className="absolute bottom-0 right-4 bg-[#0D0D0D] p-2 flex flex-col gap-2"

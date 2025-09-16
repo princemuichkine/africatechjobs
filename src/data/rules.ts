@@ -11,6 +11,6 @@ export const rules: Rule[] = [
   {
     title: "Job Posting Guidelines",
     slug: "job-posting-guidelines",
-    description: "Guidelines for posting jobs on Africa Tech Jobs",
+    description: "Guidelines for posting jobs on afritechjobs.com",
   },
 ];

@@ -15,7 +15,7 @@ interface TranslationContextType {
 
 const TranslationContext = createContext<TranslationContextType>({
   currentLanguage: 'en',
-  setLanguage: () => {},
+  setLanguage: () => { },
 })
 
 // Main provider component
@@ -28,7 +28,7 @@ export function TranslationProvider({
 
   useEffect(() => {
     // Try to get language from localStorage
-    const savedLanguage = getLocalStorageItem('suparaise.language')
+    const savedLanguage = getLocalStorageItem('afritechjobs.language')
 
     if (
       savedLanguage &&
@@ -49,7 +49,7 @@ export function TranslationProvider({
 
   const setLanguage = (lang: Language) => {
     setCurrentLanguage(lang)
-    setLocalStorageItem('suparaise.language', lang)
+    setLocalStorageItem('afritechjobs.language', lang)
   }
 
   return (

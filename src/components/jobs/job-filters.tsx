@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   JobFilters,
   JOB_TYPES,
   EXPERIENCE_LEVELS,
   AFRICAN_COUNTRIES,
 } from "@/lib/types/job";
+import { useAnalytics } from "@/lib/hooks/use-analytics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,15 +35,47 @@ export function JobFiltersComponent({
   onReset,
 }: JobFiltersProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const { trackSearch, trackUserAction } = useAnalytics();
+  const searchTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+
+  // Track search with debouncing
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Only track if there's a search query
+    if (filters.search && filters.search.trim().length > 0) {
+      searchTimeoutRef.current = setTimeout(() => {
+        trackSearch(filters.search!, filters);
+      }, 1000); // Debounce for 1 second
+    }
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [filters, trackSearch]);
 
   const updateFilter = (
     key: keyof JobFilters,
     value: string | boolean | number | undefined,
   ) => {
-    onFiltersChange({
+    const newFilters = {
       ...filters,
       [key]: value === "ALL" ? undefined : value,
-    });
+    };
+
+    onFiltersChange(newFilters);
+
+    // Track filter usage (except for search which is tracked separately)
+    if (key !== 'search' && value && value !== "ALL") {
+      trackUserAction('job_filter_applied', {
+        filter_type: key,
+        filter_value: value,
+      });
+    }
   };
 
   const clearFilter = (key: keyof JobFilters) => {

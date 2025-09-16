@@ -13,7 +13,7 @@ export const getServerStripe = () => {
     _stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
       apiVersion: '2025-08-27.basil',
       appInfo: {
-        name: 'Suparaise',
+        name: 'afritechjobs',
         version: '1.0.0',
       },
     })
@@ -34,47 +34,46 @@ export const getStripe = () => {
 
 // Price IDs - these will be configured in Stripe dashboard
 export const STRIPE_PRICE_IDS = {
-  pro_monthly: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!,
-  max_monthly: process.env.NEXT_PUBLIC_STRIPE_MAX_PRICE_ID!,
+
 }
 
-// Usage billing configuration
-export const USAGE_BILLING_CONFIG = {
-  pricePerSubmission: 2.49, // $2.49 per additional application (psychological pricing with healthy margin)
-  baseCost: 1.8, // Base cost portion ($1.80)
-  processingCost: 0.69, // Processing cost portion ($0.69)
-  meterId: process.env.NEXT_PUBLIC_STRIPE_USAGE_BILLING_METER_ID!, // Stripe billing meter ID
-  priceId: process.env.NEXT_PUBLIC_STRIPE_USAGE_BILLING_PRICE_ID!, // Stripe price ID for usage billing
-  defaultSpendLimit: 50.0, // Default monthly spend limit
-  minSpendLimit: 10.0, // Minimum spend limit
-  maxSpendLimit: 1000.0, // Maximum spend limit
-  presetLimits: [10, 20, 50, 100, 150], // Preset spend limit options
-}
+// // Usage billing configuration
+// export const USAGE_BILLING_CONFIG = {
+//   pricePerSubmission: 2.49, // $2.49 per additional application (psychological pricing with healthy margin)
+//   baseCost: 1.8, // Base cost portion ($1.80)
+//   processingCost: 0.69, // Processing cost portion ($0.69)
+//   meterId: process.env.NEXT_PUBLIC_STRIPE_USAGE_BILLING_METER_ID!, // Stripe billing meter ID
+//   priceId: process.env.NEXT_PUBLIC_STRIPE_USAGE_BILLING_PRICE_ID!, // Stripe price ID for usage billing
+//   defaultSpendLimit: 50.0, // Default monthly spend limit
+//   minSpendLimit: 10.0, // Minimum spend limit
+//   maxSpendLimit: 1000.0, // Maximum spend limit
+//   presetLimits: [10, 20, 50, 100, 150], // Preset spend limit options
+// }
 
-// Subscription plans configuration
-export const SUBSCRIPTION_PLANS = {
-  starter: {
-    name: 'Core',
-    description: 'Get started with agentic fundraising',
-    price: 0,
-    interval: 'month' as const,
-    tier: 'starter' as const,
-  },
-  pro_monthly: {
-    name: 'Pro',
-    description: 'For startups actively raising their first round',
-    price: 29,
-    interval: 'month' as const,
-    tier: 'pro' as const,
-  },
-  max_monthly: {
-    name: 'Max',
-    description: 'For startups that need meetings now',
-    price: 79,
-    interval: 'month' as const,
-    tier: 'max' as const,
-  },
-}
+// // Subscription plans configuration
+// export const SUBSCRIPTION_PLANS = {
+//   starter: {
+//     name: 'Core',
+//     description: 'Get started with afritechjobs.com',
+//     price: 0,
+//     interval: 'month' as const,
+//     tier: 'starter' as const,
+//   },
+//   pro_monthly: {
+//     name: 'Pro',
+//     description: 'For startups actively looking for tech jobs',
+//     price: 29,
+//     interval: 'month' as const,
+//     tier: 'pro' as const,
+//   },
+//   max_monthly: {
+//     name: 'Max',
+//     description: 'For operators actively looking for tech jobs',
+//     price: 79,
+//     interval: 'month' as const,
+//     tier: 'max' as const,
+//   },
+// }
 
 // Helper function to record usage meter event in Stripe
 export const recordUsageEvent = async (

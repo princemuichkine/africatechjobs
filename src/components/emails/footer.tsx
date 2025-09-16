@@ -11,7 +11,7 @@ export function Footer() {
       />
 
       <Text className="text-xs leading-6 mb-4 text-left font-mono">
-        Africa Tech Jobs - the home for everything Cursor
+        afritechjobs.com - the home for everything Cursor
       </Text>
 
       <Row className="mt-8" align="left" width="auto">
@@ -45,8 +45,8 @@ export function Footer() {
       </Row>
       <Section className="mt-8 flex gap-3">
         <Text className="text-xs leading-6 mb-4 text-left font-mono text-[#B8B8B8]">
-          © {new Date().getFullYear()} Africa Tech Jobs. All rights reserved.
-          This email was sent to you because you signed up for Africa Tech Jobs.
+          © {new Date().getFullYear()} afritechjobs.com. All rights reserved.
+          This email was sent to you because you signed up for afritechjobs.com.
         </Text>
       </Section>
     </Section>

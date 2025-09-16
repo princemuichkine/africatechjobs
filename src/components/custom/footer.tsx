@@ -4,9 +4,9 @@ import React from 'react'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
 import { XIcon } from '@/components/icons/XIcon'
-import { PHIcon } from '@/components/icons/PHIcon'
 import { GitHubIcon } from '@/components/icons/GitHubIcon'
 import { LottieIcon } from '@/components/design/lottie-icon'
+import { BackgroundText } from '@/components/design/background-text'
 import { animateThemeSweep } from '@/lib/utils/theme-transition'
 import { animations } from '@/lib/utils/lottie-animations'
 import { getSoundEnabled, setSoundEnabled } from '@/lib/utils/sound'
@@ -60,15 +60,6 @@ export const Footer = () => {
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 sm:items-center">
                         <Link
-                            href="/about"
-                            prefetch={true}
-                            onClick={playClickSound}
-                            className="text-sm text-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent dark:hover:bg-sidebar-accent px-2 py-1.5 rounded-sm transition-colors"
-                        >
-                            About
-                        </Link>
-                        <span className="hidden sm:inline text-foreground/80">|</span>
-                        <Link
                             href="/privacy"
                             prefetch={true}
                             onClick={playClickSound}
@@ -76,6 +67,7 @@ export const Footer = () => {
                         >
                             Privacy
                         </Link>
+                        <span className="hidden sm:inline text-foreground/80">|</span>
                         <Link
                             href="/terms"
                             prefetch={true}
@@ -88,7 +80,7 @@ export const Footer = () => {
 
                     <div className="flex items-center gap-4">
                         <Link
-                            href="https://twitter.com/suparaise"
+                            href="https://twitter.com/bm_diop"
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={playClickSound}
@@ -107,22 +99,12 @@ export const Footer = () => {
                         >
                             <GitHubIcon className="h-5 w-5" />
                         </Link>
-                        <Link
-                            href="https://www.producthunt.com/posts/suparaise"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={playClickSound}
-                            className="text-black dark:text-white hover:text-[#DA552F] dark:hover:text-[#DA552F] transition-colors"
-                            aria-label="Check us out on Product Hunt"
-                        >
-                            <PHIcon className="h-6.5 w-6.5 translate-y-0.25" />
-                        </Link>
                     </div>
                 </div>
 
                 <div className="mt-4 pt-4 border-t flex justify-between items-center">
                     <p className="text-xs text-foreground/80">
-                        © {new Date().getFullYear()} suparaise.com — All rights reserved.
+                        © {new Date().getFullYear()} afritechjobs.com — All rights reserved.
                     </p>
                     <div className="flex items-center gap-2">
                         <button
@@ -167,6 +149,7 @@ export const Footer = () => {
                         </button>
                     </div>
                 </div>
+                <BackgroundText />
             </div>
         </footer>
     )

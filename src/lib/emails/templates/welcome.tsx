@@ -29,7 +29,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
         />
       </Head>
       <Preview>
-        Welcome to Africa Tech Jobs – Find your dream tech job in Africa!
+        Welcome to afritechjobs.com – Find your dream tech job in Africa!
       </Preview>
       <Tailwind>
         <Body className="bg-white font-mono">
@@ -39,7 +39,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs leading-7 mb-6 font-mono">Hi {name},</Text>
 
             <Text className="text-xs leading-7 pb-2 font-mono">
-              Welcome to Africa Tech Jobs – your gateway to the best tech
+              Welcome to afritechjobs.com – your gateway to the best tech
               opportunities across Africa!
             </Text>
 
@@ -51,13 +51,13 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             </Text>
 
             <Text className="text-xs leading-7 pb-2 font-mono">
-              Here&apos;s what you can do in Africa Tech Jobs:
+              Here&apos;s what you can do in afritechjobs.com:
             </Text>
 
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://africatechjobs.com/jobs"
+                href="https://afritechjobs.com/jobs"
                 className="underline text-black font-mono"
               >
                 Browse Jobs
@@ -68,7 +68,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://africatechjobs.com/companies"
+                href="https://afritechjobs.com/companies"
                 className="underline text-black font-mono"
               >
                 Explore Companies
@@ -79,7 +79,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://africatechjobs.com/advertise"
+                href="https://afritechjobs.com/advertise"
                 className="underline text-black font-mono"
               >
                 Post a Job
@@ -90,7 +90,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://africatechjobs.com/about"
+                href="https://afritechjobs.com/about"
                 className="underline text-black font-mono"
               >
                 About Us
@@ -99,7 +99,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             </Text>
 
             <Text className="text-xs leading-7 mt-4 font-mono">
-              Africa Tech Jobs is more than just a platform – it&apos;s a
+              afritechjobs.com is more than just a platform – it&apos;s a
               community. Connect with like-minded developers, share your
               knowledge, and be part of the movement.
             </Text>
@@ -108,10 +108,10 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
               <Text className="text-xs leading-7 mb-6 font-mono">
                 Ready to get started?{" "}
                 <Link
-                  href="https://africatechjobs.com"
+                  href="https://afritechjobs.com"
                   className="underline text-black font-mono"
                 >
-                  africatechjobs.com
+                  afritechjobs.com
                 </Link>
               </Text>
             </Section>
@@ -123,7 +123,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs leading-7 mt-2 font-mono">
               Best regards,
               <br />
-              The Africa Tech Jobs Team
+              The afritechjobs.com Team
             </Text>
 
             <Footer />

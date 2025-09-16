@@ -9,6 +9,7 @@ import {
   truncateText,
   getInitials,
 } from "@/lib/actions/utils";
+import { useAnalytics } from "@/lib/hooks/use-analytics";
 import {
   MapPin,
   Clock,
@@ -31,10 +32,22 @@ interface JobCardProps {
 }
 
 export function JobCard({ job, onViewDetails }: JobCardProps) {
+  const { trackJobView, trackUserAction } = useAnalytics();
+
   const handleViewDetails = () => {
+    // Track job view
+    trackJobView(job.id);
+
     if (onViewDetails) {
       onViewDetails(job);
     } else {
+      // Track external link click
+      trackUserAction('job_external_link_click', {
+        job_id: job.id,
+        job_title: job.title,
+        company_name: job.companyName,
+        job_source: job.source,
+      });
       window.open(job.url, "_blank");
     }
   };

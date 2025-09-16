@@ -5,9 +5,9 @@ import { getSession } from "@/lib/supabase/auth";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Create a new job listing | Africa Tech Jobs",
+  title: "Create a new listing",
   description:
-    "Create a new job listing on Africa Tech Jobs and reach 300k+ developers today.",
+    "Create a new job listing on afritechjobs.com and reach 200,000+ tech professionals today.",
 };
 
 export default async function Page() {
@@ -19,7 +19,7 @@ export default async function Page() {
         <div className="max-w-md w-full text-center -mt-32">
           <p className="text-md mt-4">
             Sign in to post a job listing <br />
-            and reach 300k+ developers today.
+            and reach 200,000+ tech professionals today.
           </p>
 
           <div className="mt-10 flex flex-col gap-4">

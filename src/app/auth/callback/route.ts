@@ -28,9 +28,9 @@ export async function GET(request: Request) {
       ) {
         waitUntil(
           resend.emails.send({
-            from: "Africa Tech Jobs <hello@transactional.africatechjobs.com>",
+            from: "afritechjobs.com <hello@transactional.afritechjobs.com>",
             to: data.session.user.email!,
-            subject: "Welcome to Africa Tech Jobs",
+            subject: "Welcome to afritechjobs.com",
             react: WelcomeEmail({
               name: data.session.user.user_metadata.full_name,
             }),

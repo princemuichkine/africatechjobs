@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { t } from '@/lib/i18n/translations'
 
 // Use a more specific key that's unlikely to be cleared
-const COOKIE_CONSENT_KEY = 'suparaise-cookie-consent-status'
+const COOKIE_CONSENT_KEY = 'afritechjobs-cookie-consent-status'
 
 // Try multiple storage options
 function getCookieConsentStatus() {

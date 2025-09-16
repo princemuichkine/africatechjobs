@@ -4,13 +4,13 @@
 
 declare global {
   interface Window {
-    __suparaiseSoundEnabled?: boolean
-    __suparaiseSoundGateInitialized?: boolean
-    __suparaiseOriginalMediaPlay?: HTMLMediaElement['play']
+    __africatechjobsSoundEnabled?: boolean
+    __africatechjobsSoundGateInitialized?: boolean
+    __africatechjobsOriginalMediaPlay?: HTMLMediaElement['play']
   }
 }
 
-export const SOUND_STORAGE_KEY = 'suparaise-sound-enabled'
+export const SOUND_STORAGE_KEY = 'afritechjobs-sound-enabled'
 
 /**
  * Returns whether sound is currently enabled (defaults to true when unset).
@@ -36,10 +36,10 @@ export const setSoundEnabled = (enabled: boolean): void => {
   } catch {
     // ignore storage failures
   }
-  window.__suparaiseSoundEnabled = enabled
+  window.__africatechjobsSoundEnabled = enabled
   try {
     window.dispatchEvent(
-      new CustomEvent('suparaise:sound-changed', { detail: { enabled } }),
+      new CustomEvent('afritechjobs:sound-changed', { detail: { enabled } }),
     )
   } catch {
     // ignore
@@ -52,21 +52,21 @@ export const setSoundEnabled = (enabled: boolean): void => {
 export const initSoundGate = (): void => {
   if (typeof window === 'undefined') return
   const w = window
-  if (w.__suparaiseSoundGateInitialized) return
-  w.__suparaiseSoundGateInitialized = true
+  if (w.__africatechjobsSoundGateInitialized) return
+  w.__africatechjobsSoundGateInitialized = true
 
   // Initialize flag from storage once
-  w.__suparaiseSoundEnabled = getSoundEnabled()
+  w.__africatechjobsSoundEnabled = getSoundEnabled()
 
   const originalPlay: HTMLMediaElement['play'] = HTMLMediaElement.prototype.play
-  w.__suparaiseOriginalMediaPlay = originalPlay
+  w.__africatechjobsOriginalMediaPlay = originalPlay
 
   // Patch play to no-op when muted
   HTMLMediaElement.prototype.play = function patchedPlay(
     this: HTMLMediaElement,
     ...args: Parameters<HTMLMediaElement['play']>
   ): ReturnType<HTMLMediaElement['play']> {
-    const enabled = w.__suparaiseSoundEnabled ?? true
+    const enabled = w.__africatechjobsSoundEnabled ?? true
     if (!enabled) {
       // Return a resolved promise to satisfy callers awaiting play()
       return Promise.resolve() as ReturnType<HTMLMediaElement['play']>
@@ -81,14 +81,14 @@ export const initSoundGate = (): void => {
   // Keep runtime flag in sync across tabs and local changes
   window.addEventListener('storage', (e: StorageEvent) => {
     if (e.key === SOUND_STORAGE_KEY) {
-      w.__suparaiseSoundEnabled = e.newValue !== 'false'
+      w.__africatechjobsSoundEnabled = e.newValue !== 'false'
     }
   })
 
-  window.addEventListener('suparaise:sound-changed', (e: Event) => {
+  window.addEventListener('afritechjobs:sound-changed', (e: Event) => {
     try {
       const detail = (e as CustomEvent).detail
-      w.__suparaiseSoundEnabled = !!detail?.enabled
+      w.__africatechjobsSoundEnabled = !!detail?.enabled
     } catch {
       // ignore
     }

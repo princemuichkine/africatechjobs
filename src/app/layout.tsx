@@ -5,6 +5,8 @@ import { Header } from "@/components/custom/header";
 import { GlobalModals } from "@/components/modals/global-modals";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
+import SoundGateInit from "@/components/ui/sound-gate-init";
+import { UserIdentifier } from "@/components/analytics/user-identifier";
 import { cn } from "@/lib/actions/utils";
 import { OpenPanelComponent } from "@openpanel/nextjs";
 import { PlusIcon } from "lucide-react";
@@ -19,10 +21,10 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Africa Tech Jobs",
+  title: "afritechjobs.com",
   description:
     "Find your dream tech job in Africa. Connect with top companies and build your career in the growing African tech ecosystem.",
-  metadataBase: new URL("https://africatechjobs.com"),
+  metadataBase: new URL("https://afritechjobs.com"),
   icons: [
     {
       rel: "icon",
@@ -30,10 +32,10 @@ export const metadata: Metadata = {
     },
   ],
   openGraph: {
-    title: "Africa Tech Jobs",
+    title: "afritechjobs.com",
     description:
       "Find your dream tech job in Africa. Connect with top companies and build your career in the growing African tech ecosystem.",
-    url: "https://africatechjobs.com",
+    url: "https://afritechjobs.com",
     locale: "en_US",
     type: "website",
     images: [
@@ -45,7 +47,7 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    title: "Africa Tech Jobs",
+    title: "afritechjobs.com",
     description:
       "Find your dream tech job in Africa. Connect with top companies and build your career in the growing African tech ecosystem.",
     images: [
@@ -95,7 +97,7 @@ export default function RootLayout({
             {children}
 
             <a
-              href="https://github.com/yourusername/africatechjobs"
+              href="https://github.com/princemuichkine/afritechjobs"
               target="_blank"
               rel="noreferrer"
             >
@@ -112,10 +114,20 @@ export default function RootLayout({
             <Footer />
             <Toaster />
             <GlobalModals />
+            <UserIdentifier />
+            <SoundGateInit />
             <OpenPanelComponent
-              clientId={process.env.NEXT_PUBLIC_OPENPANEL_CLIENT_ID!}
-              trackScreenViews
+              clientId="2691c01c-2e94-4121-bf46-41864549fd12"
+              apiUrl="/api/op"
+              trackScreenViews={true}
+              trackOutgoingLinks={true}
+              trackAttributes={true}
               disabled={process.env.NODE_ENV === "development"}
+              globalProperties={{
+                platform: "web",
+                app_version: "0.1.0",
+                environment: process.env.NODE_ENV || "production"
+              }}
             />
           </NuqsAdapter>
         </ThemeProvider>

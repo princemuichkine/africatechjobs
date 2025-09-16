@@ -76,7 +76,7 @@ export const AuthModal = ({
 
                 setIsEmailLoading(false);
                 setIsSuccessful(true);
-                toast({ type: 'success', description: 'Account created! Welcome to Africa Tech Jobs!' });
+                toast({ type: 'success', description: 'Account created! Welcome to afritechjobs.com!' });
                 // Clear inputs on successful auth
                 setEmail('');
                 setPassword('');
@@ -198,7 +198,7 @@ export const AuthModal = ({
                             : forgotPasswordMode === 'reset'
                                 ? 'Check your email for a password reset link.'
                                 : mode === 'signup'
-                                    ? 'Get started with Africa Tech Jobs in seconds.'
+                                    ? 'Get started with afritechjobs.com in seconds.'
                                     : 'Sign in to continue to your account.'}
                     </DialogDescription>
                 </DialogHeader>
