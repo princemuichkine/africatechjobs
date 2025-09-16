@@ -3,12 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { X } from 'lucide-react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { LottieIcon } from '@/components/design/lottie-icon';
 import { animations } from '@/lib/utils/lottie-animations';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { JobFilters } from '@/data/queries';
 import { JobFiltersModal } from './job-filters';
 import { getLocalStorageItem, setLocalStorageItem } from '@/lib/utils/localStorage';
@@ -273,7 +273,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                                 {AFRICAN_COUNTRIES.map(country => (
                                     <div
                                         key={country.value}
-                                        className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedCountries.includes(country.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                                        className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent/60 dark:hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedCountries.includes(country.value) ? 'bg-accent/80 dark:bg-accent text-accent-foreground' : ''}`}
                                         onClick={(e) => {
                                             e.preventDefault();
                                             e.stopPropagation();
@@ -309,8 +309,8 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     )}
 
                     <div className="flex space-x-2">
-                        <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                            <SheetTrigger asChild>
+                        <Dialog.Root modal={false} open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                            <Dialog.Trigger asChild>
                                 <Button variant="outline" className="w-[120px] h-12 relative">
                                     <LottieIcon
                                         animationData={animations.filter}
@@ -322,19 +322,21 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                                     />
                                     Filters
                                 </Button>
-                            </SheetTrigger>
-                            <SheetContent className="sm:max-w-md w-full p-0 h-full rounded-sm border-0 sm:m-4 sm:h-[calc(100%-2rem)] sm:rounded-sm sm:border shadow-lg bg-background overflow-hidden flex flex-col">
-                                <SheetHeader className="sticky top-0 z-10 bg-background border-b px-4 py-3 flex-shrink-0">
-                                    <SheetTitle className="text-base font-normal text-left">Filters</SheetTitle>
-                                    <p className="text-sm text-muted-foreground text-left">Refine your search with these filters</p>
-                                </SheetHeader>
-                                <JobFiltersModal
-                                    filters={filters}
-                                    onFiltersChange={handleFiltersChange}
-                                    isClient={isClient}
-                                />
-                            </SheetContent>
-                        </Sheet>
+                            </Dialog.Trigger>
+                            <Dialog.Portal>
+                                <Dialog.Content className="fixed z-50 right-0 inset-y-0 sm:max-w-md w-full p-0 h-full sm:m-4 sm:h-[calc(100%-2rem)] rounded-sm border bg-background shadow-lg flex flex-col data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right overflow-y-auto">
+                                    <div className="sticky top-0 z-10 bg-background border-b px-4 py-3 flex-shrink-0">
+                                        <Dialog.Title className="text-base font-normal text-left">Filters</Dialog.Title>
+                                        <Dialog.Description className="text-sm text-muted-foreground text-left">Refine your search with these filters</Dialog.Description>
+                                    </div>
+                                    <JobFiltersModal
+                                        filters={filters}
+                                        onFiltersChange={handleFiltersChange}
+                                        isClient={isClient}
+                                    />
+                                </Dialog.Content>
+                            </Dialog.Portal>
+                        </Dialog.Root>
 
                         {hasActiveFilters && (
                             <Button
@@ -395,7 +397,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                             {selectedCountries.map(country => (
                                 <Badge
                                     key={country}
-                                    className="flex items-center gap-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/40 hover:text-blue-900 dark:hover:text-blue-200"
+                                    className="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 hover:text-blue-800 dark:hover:text-blue-200"
                                 >
                                     {AFRICAN_COUNTRIES.find(c => c.value === country)?.label}
                                     <X
@@ -414,7 +416,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     {filters.job_category && filters.job_category.split(',').map(category => (
                         <Badge
                             key={`category-${category}`}
-                            className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/40 hover:text-orange-900 dark:hover:text-orange-200"
+                            className="flex items-center gap-1 bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/40 hover:text-orange-800 dark:hover:text-orange-200"
                         >
                             {JOB_CATEGORIES.find(c => c.value === category)?.label || category}
                             <X
@@ -433,7 +435,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     {filters.type && filters.type.split(',').map(type => (
                         <Badge
                             key={`type-${type}`}
-                            className="flex items-center gap-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-900/40 hover:text-purple-900 dark:hover:text-purple-200"
+                            className="flex items-center gap-1 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-800 dark:hover:text-purple-200"
                         >
                             {JOB_TYPES.find(t => t.value === type)?.label || type}
                             <X
@@ -452,7 +454,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     {filters.experience_level && filters.experience_level.split(',').map(experience => (
                         <Badge
                             key={`experience-${experience}`}
-                            className="flex items-center gap-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-900/40 hover:text-cyan-900 dark:hover:text-cyan-200"
+                            className="flex items-center gap-1 bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200"
                         >
                             {EXPERIENCE_LEVELS.find(e => e.value === experience)?.label || experience}
                             <X
@@ -471,7 +473,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     {filters.company_size && filters.company_size.split(',').map(size => (
                         <Badge
                             key={`size-${size}`}
-                            className="flex items-center gap-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 hover:bg-yellow-200 dark:hover:bg-yellow-900/40 hover:text-yellow-900 dark:hover:text-yellow-200"
+                            className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 hover:text-yellow-800 dark:hover:text-yellow-200"
                         >
                             {COMPANY_SIZES.find(s => s.value === size)?.label || size}
                             <X

@@ -92,7 +92,7 @@ export default function AdvertiseClient() {
                             <br />• Custom partnership opportunities
                             <br />
                             <br />
-                            Contact Babacar on X at{" "}
+                            Contact Babacar at{" "}
                             <a
                                 href="https://twitter.com/bm_diop"
                                 className="text-primary border-border border-dashed border-b-[1px] hover:text-primary/80 transition-colors font-semibold"

@@ -44,6 +44,20 @@ export const AuthModal = ({
         'request' | 'reset' | null
     >(null);
 
+    const playClickSound = () => {
+        if (typeof window !== 'undefined') {
+            try {
+                const audio = new Audio('/sounds/light.mp3');
+                audio.volume = 0.4;
+                void audio.play().catch(() => {
+                    // Silently handle audio play errors (autoplay policies, etc.)
+                });
+            } catch {
+                // Ignore audio creation errors
+            }
+        }
+    };
+
     // Only reset forgot password state on successful completion or explicit back navigation
     const handleModalOpenChange = (newOpen: boolean) => {
         onOpenChange(newOpen);
@@ -180,7 +194,7 @@ export const AuthModal = ({
     return (
         <Dialog open={open} onOpenChange={handleModalOpenChange}>
             <DialogContent
-                className="sm:max-w-sm bg-background border-border"
+                className="sm:max-w-sm bg-white border-border [&>button]:hidden"
                 data-auth-modal
             >
                 <DialogHeader>
@@ -226,6 +240,7 @@ export const AuthModal = ({
                                     type="submit"
                                     className="w-full h-9 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/40 hover:text-green-900 dark:hover:text-green-200 border border-green-300 dark:border-green-800"
                                     disabled={isEmailLoading}
+                                    onClick={playClickSound}
                                 >
                                     {isEmailLoading ? (
                                         <span className="flex items-center gap-2">
@@ -248,6 +263,7 @@ export const AuthModal = ({
                                 <button
                                     type="button"
                                     onClick={() => {
+                                        playClickSound();
                                         setForgotPasswordMode(null);
                                     }}
                                     className="font-medium text-muted-foreground hover:text-primary"
@@ -274,7 +290,10 @@ export const AuthModal = ({
                                 Didn&apos;t receive the email?{' '}
                                 <button
                                     type="button"
-                                    onClick={() => setForgotPasswordMode('request')}
+                                    onClick={() => {
+                                        playClickSound();
+                                        setForgotPasswordMode('request');
+                                    }}
                                     className="font-medium text-muted-foreground hover:text-primary"
                                 >
                                     Send again
@@ -283,6 +302,7 @@ export const AuthModal = ({
                                 <button
                                     type="button"
                                     onClick={() => {
+                                        playClickSound();
                                         setForgotPasswordMode(null);
                                     }}
                                     className="font-medium text-muted-foreground hover:text-primary"
@@ -327,7 +347,10 @@ export const AuthModal = ({
                                         {mode === 'login' && (
                                             <button
                                                 type="button"
-                                                onClick={() => setForgotPasswordMode('request')}
+                                                onClick={() => {
+                                                    playClickSound();
+                                                    setForgotPasswordMode('request');
+                                                }}
                                                 className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-primary hover:underline-offset-2"
                                             >
                                                 Forgot password?
@@ -341,6 +364,7 @@ export const AuthModal = ({
                                     disabled={
                                         isEmailLoading || isSocialLoading !== null || isSuccessful
                                     }
+                                    onClick={playClickSound}
                                 >
                                     {isSuccessful ? (
                                         <>✓ Success</>
@@ -368,7 +392,7 @@ export const AuthModal = ({
                                     <Separator className="w-full" />
                                 </div>
                                 <div className="relative flex justify-center text-xs uppercase">
-                                    <span className="bg-background px-2 text-muted-foreground">
+                                    <span className="bg-white dark:bg-background px-2 text-muted-foreground">
                                         OR CONTINUE WITH
                                     </span>
                                 </div>
@@ -379,7 +403,10 @@ export const AuthModal = ({
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={() => handleSocialLogin('google')}
+                                    onClick={() => {
+                                        playClickSound();
+                                        handleSocialLogin('google');
+                                    }}
                                     disabled={isSocialLoading !== null || isEmailLoading}
                                     className="h-9"
                                 >
@@ -416,7 +443,10 @@ export const AuthModal = ({
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={() => handleSocialLogin('github')}
+                                    onClick={() => {
+                                        playClickSound();
+                                        handleSocialLogin('github');
+                                    }}
                                     disabled={isSocialLoading !== null || isEmailLoading}
                                     className="h-9"
                                 >
@@ -443,7 +473,10 @@ export const AuthModal = ({
                                         Already have an account?{' '}
                                         <button
                                             type="button"
-                                            onClick={toggleMode}
+                                            onClick={() => {
+                                                playClickSound();
+                                                toggleMode();
+                                            }}
                                             className="font-medium text-muted-foreground hover:text-primary"
                                         >
                                             Sign in
@@ -454,7 +487,10 @@ export const AuthModal = ({
                                         Don&apos;t have an account?{' '}
                                         <button
                                             type="button"
-                                            onClick={toggleMode}
+                                            onClick={() => {
+                                                playClickSound();
+                                                toggleMode();
+                                            }}
                                             className="font-medium text-muted-foreground hover:text-primary"
                                         >
                                             Create one

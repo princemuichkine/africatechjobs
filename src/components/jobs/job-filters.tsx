@@ -154,7 +154,7 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
               {JOB_CATEGORIES.map(category => (
                 <div
                   key={category.value}
-                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedCategories.includes(category.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent/60 dark:hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedCategories.includes(category.value) ? 'bg-accent/80 dark:bg-accent text-accent-foreground' : ''}`}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -192,7 +192,7 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
               {JOB_TYPES.map(type => (
                 <div
                   key={type.value}
-                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedTypes.includes(type.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent/60 dark:hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedTypes.includes(type.value) ? 'bg-accent/80 dark:bg-accent text-accent-foreground' : ''}`}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -230,7 +230,7 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
               {EXPERIENCE_LEVELS.map(level => (
                 <div
                   key={level.value}
-                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedExperiences.includes(level.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent/60 dark:hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedExperiences.includes(level.value) ? 'bg-accent/80 dark:bg-accent text-accent-foreground' : ''}`}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -268,7 +268,7 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
               {COMPANY_SIZES.map(size => (
                 <div
                   key={size.value}
-                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedCompanySizes.includes(size.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent/60 dark:hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedCompanySizes.includes(size.value) ? 'bg-accent/80 dark:bg-accent text-accent-foreground' : ''}`}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -297,7 +297,7 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
 
       {/* Clear Filters */}
       {activeFilterCount > 0 && (
-        <Button onClick={clearFilters} className="w-full h-9 bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-300 hover:bg-pink-200 dark:hover:bg-pink-900/40 hover:text-pink-900 dark:hover:text-pink-200 border border-pink-300 dark:border-pink-800">
+        <Button onClick={clearFilters} className="w-full h-9 bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 hover:bg-pink-100 dark:hover:bg-pink-900/40 hover:text-pink-800 dark:hover:text-pink-200 border border-pink-200 dark:border-pink-800">
           Clear all filters
         </Button>
       )}

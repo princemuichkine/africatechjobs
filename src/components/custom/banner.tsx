@@ -33,10 +33,10 @@ export function Banner() {
           alt="lomi logo"
           width={32}
           height={28}
-          className="absolute left-4 top-7"
+          className="absolute left-4 top-6"
         />
       ) : (
-        <div className="absolute left-4 top-7 w-8 h-7 bg-muted animate-pulse rounded-sm" />
+        <div className="absolute left-4 top-6 w-8 h-7 bg-muted animate-pulse rounded-sm" />
       ),
       title: "lomi.",
       description:

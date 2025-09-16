@@ -17,6 +17,20 @@ export function Header() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
+  const playClickSound = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        const audio = new Audio('/sounds/light.mp3');
+        audio.volume = 0.4;
+        void audio.play().catch(() => {
+          // Silently handle audio play errors (autoplay policies, etc.)
+        });
+      } catch {
+        // Ignore audio creation errors
+      }
+    }
+  };
+
   const handleAuthSuccess = () => {
     setAuthModalOpen(false);
   };
@@ -29,6 +43,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
+              onClick={playClickSound}
               className={cn(
                 "flex items-center gap-2 text-sm font-medium",
                 pathname === link.href
@@ -44,7 +59,10 @@ export function Header() {
             variant="outline"
             size="sm"
             className="rounded-sm"
-            onClick={() => setAuthModalOpen(true)}
+            onClick={() => {
+              playClickSound();
+              setAuthModalOpen(true);
+            }}
           >
             Sign in
           </Button>

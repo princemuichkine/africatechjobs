@@ -1,35 +1,85 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { JobForm } from "@/components/forms/job";
-import { GithubSignin } from "@/components/custom/github-signin";
-import { GoogleSignin } from "@/components/custom/google-signin";
-import { getSession } from "@/lib/supabase/auth";
-import type { Metadata } from "next";
+import { AuthModal } from "@/components/custom/auth-modal";
+import { createClient } from "@/lib/supabase/client";
 
-export const metadata: Metadata = {
-  title: "Create a new listing",
-  description:
-    "Create a new job listing on afritechjobs.com and reach 100,000+ tech professionals today.",
-};
+export default function Page() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
+  const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
 
-export default async function Page() {
-  const session = await getSession();
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setIsAuthenticated(true);
+        } else {
+          setShowAuthModal(true);
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        setShowAuthModal(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  if (!session) {
+    checkAuth();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        setIsAuthenticated(true);
+        setShowAuthModal(false);
+      } else if (event === 'SIGNED_OUT') {
+        setIsAuthenticated(false);
+        setShowAuthModal(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]);
+
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+    setShowAuthModal(false);
+  };
+
+  if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 w-full max-w-sm mx-auto">
-        <div className="max-w-md w-full text-center -mt-32">
-          <p className="text-md mt-4">
-            Sign in to post a job listing <br />
-            and reach 100,000+ tech professionals today.
-          </p>
-
-          <div className="mt-10 flex flex-col gap-4">
-            <div className="flex flex-col gap-4">
-              <GithubSignin redirectTo="/jobs/new" />
-              <GoogleSignin redirectTo="/jobs/new" />
-            </div>
-          </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
         </div>
       </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <div className="min-h-screen flex items-center justify-center p-4 w-full max-w-sm mx-auto">
+          <div className="max-w-md w-full text-center -mt-32">
+            <p className="text-md mt-4">
+              Sign in to post a job listing <br />
+              and reach 100,000+ african tech professionals.
+            </p>
+          </div>
+        </div>
+        <AuthModal
+          open={showAuthModal}
+          onOpenChange={setShowAuthModal}
+          mode={authMode}
+          onModeChange={setAuthMode}
+          onAuthSuccess={handleAuthSuccess}
+        />
+      </>
     );
   }
 
