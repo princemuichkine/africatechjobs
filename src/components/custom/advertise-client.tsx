@@ -8,7 +8,7 @@ export default function AdvertiseClient() {
         <>
             <div className="flex flex-col items-center justify-center max-w-screen-md mx-auto px-6 py-12 pb-32">
                 {/* Hero Section */}
-                <div className="relative pt-24 md:pt-32 mb-12 text-center">
+                <div className="relative pt-20 md:pt-20 mb-12 text-center">
                     <motion.h1
                         className="text-4xl sm:text-5xl md:text-7xl tracking-tighter font-regular text-zinc-800 dark:text-white mb-6"
                         initial={{ opacity: 0, y: -20 }}
@@ -103,7 +103,7 @@ export default function AdvertiseClient() {
                         </p>
 
                         <p className="text-primary mt-8 text-sm w-full">
-                            <Button asChild className="w-full h-9 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 hover:text-blue-800 dark:hover:text-blue-200 border border-blue-200 dark:border-blue-800">
+                            <Button asChild className="w-full h-9 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/40 hover:text-blue-900 dark:hover:text-blue-200 border border-blue-300 dark:border-blue-800">
                                 <a href="">
                                     Buy ad slot
                                 </a>

@@ -23,7 +23,7 @@ export function Header() {
 
   return (
     <div className="flex justify-between items-center mt-2 md:mt-0">
-      <div className="md:fixed z-20 flex justify-end items-center top-0 px-6 py-2 w-full bg-background backdrop-filter backdrop-blur-sm bg-opacity-30">
+      <div className="md:fixed z-20 flex justify-end items-center top-0 px-6 py-2 left-0 right-0 bg-background backdrop-filter backdrop-blur-sm bg-opacity-30">
         <div className="flex items-center gap-5">
           {navigationLinks.map((link: { href: string; label: string }) => (
             <Link

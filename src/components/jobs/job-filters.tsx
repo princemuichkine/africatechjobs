@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { JobFilters } from '@/data/queries';
 
 // Dynamically import Select components to avoid hydration mismatch
@@ -121,13 +119,9 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
     onFiltersChange(updatedFilters);
   };
 
-  const handleRemoteChange = (checked: boolean) => {
-    const updatedFilters = { ...filters, remote: checked ? true : undefined };
-    onFiltersChange(updatedFilters);
-  };
 
   const getActiveFilterCount = () => {
-    return selectedCategories.length + selectedTypes.length + selectedExperiences.length + selectedCompanySizes.length + (filters.remote ? 1 : 0) + (filters.is_sponsored ? 1 : 0);
+    return selectedCategories.length + selectedTypes.length + selectedExperiences.length + selectedCompanySizes.length;
   };
 
   const clearFilters = () => {
@@ -137,7 +131,9 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
     setSelectedCompanySizes([]);
     const clearedFilters: JobFilters = {
       search: filters.search,
-      country: filters.country
+      country: filters.country,
+      remote: filters.remote,
+      is_sponsored: filters.is_sponsored
     };
     onFiltersChange(clearedFilters);
   };
@@ -298,37 +294,10 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
         )}
       </div>
 
-      {/* Remote Work */}
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="remote"
-          checked={filters.remote === true}
-          onCheckedChange={(checked) => handleRemoteChange(checked as boolean)}
-        />
-        <label htmlFor="remote" className="text-sm font-medium">
-          Remote only
-        </label>
-      </div>
-
-      {/* Sponsored Jobs */}
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="sponsored"
-          checked={filters.is_sponsored === true}
-          onCheckedChange={(checked) => {
-            const updatedFilters = { ...filters, is_sponsored: checked ? true : undefined };
-            onFiltersChange(updatedFilters);
-          }}
-        />
-        <label htmlFor="sponsored" className="text-sm font-medium">
-          Relocation & visa support
-        </label>
-      </div>
 
       {/* Clear Filters */}
       {activeFilterCount > 0 && (
-        <Button onClick={clearFilters} className="w-full h-9 bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 hover:bg-pink-100 dark:hover:bg-pink-900/40 hover:text-pink-800 dark:hover:text-pink-200">
-          <X className="h-4 w-4 mr-2" />
+        <Button onClick={clearFilters} className="w-full h-9 bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-300 hover:bg-pink-200 dark:hover:bg-pink-900/40 hover:text-pink-900 dark:hover:text-pink-200 border border-pink-300 dark:border-pink-800">
           Clear all filters
         </Button>
       )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { X } from 'lucide-react';
 import { LottieIcon } from '@/components/design/lottie-icon';
@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { JobFilters } from '@/data/queries';
 import { JobFiltersModal } from './job-filters';
+import { getLocalStorageItem, setLocalStorageItem } from '@/lib/utils/localStorage';
 
 // Dynamically import Select components to avoid hydration mismatch
 const Select = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.Select })), { ssr: false });
@@ -82,26 +83,102 @@ const COMPANY_SIZES = [
     { value: '1000_PLUS', label: '1000+ employees' },
 ];
 
+// Constants for localStorage
+const FILTERS_STORAGE_KEY = 'afritechjobs_job_filters';
+
+// Helper functions for filter persistence
+const saveFiltersToStorage = (filters: JobFilters) => {
+    try {
+        const filtersToSave = { ...filters };
+        // Don't save empty search strings to keep localStorage clean
+        if (!filtersToSave.search || filtersToSave.search.trim() === '') {
+            delete filtersToSave.search;
+        }
+        setLocalStorageItem(FILTERS_STORAGE_KEY, JSON.stringify(filtersToSave));
+    } catch (error) {
+        console.error('Error saving filters to localStorage:', error);
+    }
+};
+
+const loadFiltersFromStorage = (): JobFilters => {
+    try {
+        const savedFilters = getLocalStorageItem(FILTERS_STORAGE_KEY);
+        if (savedFilters) {
+            return JSON.parse(savedFilters);
+        }
+    } catch (error) {
+        console.error('Error loading filters from localStorage:', error);
+    }
+    return {};
+};
+
 export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchProps) {
-    const [filters, setFilters] = useState<JobFilters>(initialFilters);
-    const [searchInput, setSearchInput] = useState(initialFilters.search || '');
+    // Merge initialFilters with saved filters, giving priority to initialFilters
+    const [filters, setFilters] = useState<JobFilters>(() => {
+        const savedFilters = loadFiltersFromStorage();
+        return { ...savedFilters, ...initialFilters };
+    });
+
+    const [searchInput, setSearchInput] = useState(() => {
+        const savedFilters = loadFiltersFromStorage();
+        const mergedFilters = { ...savedFilters, ...initialFilters };
+        return mergedFilters.search || '';
+    });
+
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isClient, setIsClient] = useState(false);
-    const [selectedCountries, setSelectedCountries] = useState<string[]>(initialFilters.country ? [initialFilters.country] : []);
+
+    const [selectedCountries, setSelectedCountries] = useState<string[]>(() => {
+        const savedFilters = loadFiltersFromStorage();
+        const mergedFilters = { ...savedFilters, ...initialFilters };
+        return mergedFilters.country ? mergedFilters.country.split(',') : [];
+    });
+
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+
+    const playClickSound = useCallback(() => {
+        try {
+            const audio = new Audio('/sounds/light.mp3');
+            audio.volume = 0.4;
+            void audio.play().catch(() => {
+                // Ignore audio play errors
+            });
+        } catch {
+            // Ignore audio creation errors
+        }
+    }, []);
 
     // Use ref to avoid dependency on filters in useEffect
     const filtersRef = useRef(filters);
+    const onFiltersChangeRef = useRef(onFiltersChange);
 
-    // Update ref when filters change
+    // Update refs when values change
     useEffect(() => {
         filtersRef.current = filters;
     }, [filters]);
+
+    useEffect(() => {
+        onFiltersChangeRef.current = onFiltersChange;
+    }, [onFiltersChange]);
 
     // Set client-side flag
     useEffect(() => {
         setIsClient(true);
     }, []);
+
+    // Notify parent component about loaded filters on mount (only once)
+    useEffect(() => {
+        if (isClient && Object.keys(filtersRef.current).length > 0) {
+            onFiltersChangeRef.current(filtersRef.current);
+        }
+    }, [isClient]); // Only run when isClient becomes true
+
+    // Save filters to localStorage whenever they change
+    useEffect(() => {
+        if (isClient) {
+            saveFiltersToStorage(filters);
+        }
+    }, [filters, isClient]);
 
     // Debounced search - only depend on searchInput and onFiltersChange
     useEffect(() => {
@@ -135,19 +212,28 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
         onFiltersChange(newFilters);
     };
 
+    const onClearFilters = useCallback(() => {
+        playClickSound();
+        setFilters({});
+        setSearchInput('');
+        setSelectedCountries([]);
+        onFiltersChange({});
+    }, [playClickSound, onFiltersChange]);
 
     const getActiveFilterCount = () => {
         const otherFilters = Object.entries(filters).filter(([key, value]) =>
             key !== 'search' && key !== 'country' && value !== undefined && value !== null && value !== ''
         ).length;
         const countryFilters = selectedCountries.length;
-        return otherFilters + countryFilters;
+        const searchFilter = searchInput.trim() !== '' ? 1 : 0;
+        return otherFilters + countryFilters + searchFilter;
     };
 
     const activeFilterCount = getActiveFilterCount();
+    const hasActiveFilters = activeFilterCount > 0;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Main Search Bar */}
             <div className="flex flex-col sm:flex-row gap-3 max-w-4xl mx-auto">
                 <div className="relative w-[500px]">
@@ -167,7 +253,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     />
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
                     {isClient ? (
                         <Select value="" onValueChange={() => { }} open={isCountryDropdownOpen} onOpenChange={setIsCountryDropdownOpen}>
                             <SelectTrigger className="w-[145px] h-12">
@@ -222,33 +308,82 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                         </div>
                     )}
 
-                    <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                        <SheetTrigger asChild>
-                            <Button variant="outline" className="w-[120px] h-12 relative">
-                                <LottieIcon
-                                    animationData={animations.filter}
-                                    size={16}
-                                    loop={false}
-                                    autoplay={false}
-                                    initialFrame={0}
-                                    className="mr-1.5"
+                    <div className="flex space-x-2">
+                        <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                            <SheetTrigger asChild>
+                                <Button variant="outline" className="w-[120px] h-12 relative">
+                                    <LottieIcon
+                                        animationData={animations.filter}
+                                        size={16}
+                                        loop={false}
+                                        autoplay={false}
+                                        initialFrame={0}
+                                        className="mr-1.5"
+                                    />
+                                    Filters
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent className="sm:max-w-md w-full p-0 h-full rounded-sm border-0 sm:m-4 sm:h-[calc(100%-2rem)] sm:rounded-sm sm:border shadow-lg bg-background overflow-hidden flex flex-col">
+                                <SheetHeader className="sticky top-0 z-10 bg-background border-b px-4 py-3 flex-shrink-0">
+                                    <SheetTitle className="text-base font-normal text-left">Filters</SheetTitle>
+                                    <p className="text-sm text-muted-foreground text-left">Refine your search with these filters</p>
+                                </SheetHeader>
+                                <JobFiltersModal
+                                    filters={filters}
+                                    onFiltersChange={handleFiltersChange}
+                                    isClient={isClient}
                                 />
-                                Filters
+                            </SheetContent>
+                        </Sheet>
+
+                        {hasActiveFilters && (
+                            <Button
+                                variant="outline"
+                                onClick={onClearFilters}
+                                className="w-12 h-12 p-0 rounded-sm bg-transparent border-border text-muted-foreground hover:text-card-foreground hover:bg-accent"
+                            >
+                                <span className="group inline-flex items-center justify-center">
+                                    <LottieIcon
+                                        animationData={animations.cross}
+                                        size={16}
+                                        className="opacity-50 group-hover:opacity-100"
+                                    />
+                                </span>
                             </Button>
-                        </SheetTrigger>
-                        <SheetContent className="sm:max-w-md w-full p-0 h-full rounded-sm border-0 sm:m-4 sm:h-[calc(100%-2rem)] sm:rounded-sm sm:border shadow-lg bg-background overflow-hidden flex flex-col">
-                            <SheetHeader className="sticky top-0 z-10 bg-background border-b px-4 py-3 flex-shrink-0">
-                                <SheetTitle className="text-base font-normal text-left">Filters</SheetTitle>
-                                <p className="text-sm text-muted-foreground text-left">Refine your search with these filters</p>
-                            </SheetHeader>
-                            <JobFiltersModal
-                                filters={filters}
-                                onFiltersChange={handleFiltersChange}
-                                isClient={isClient}
-                            />
-                        </SheetContent>
-                    </Sheet>
+                        )}
+                    </div>
                 </div>
+            </div>
+
+            {/* Default Toggle Badges */}
+            <div className="flex flex-wrap gap-2 max-w-4xl mx-auto -mt-2">
+                <Badge
+                    className={`cursor-pointer transition-colors ${filters.remote
+                        ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:text-emerald-900 dark:hover:text-emerald-200'
+                        : 'bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground'
+                        }`}
+                    onClick={() => {
+                        playClickSound();
+                        const updatedFilters = { ...filters, remote: filters.remote ? undefined : true };
+                        handleFiltersChange(updatedFilters);
+                    }}
+                >
+                    Remote
+                </Badge>
+
+                <Badge
+                    className={`cursor-pointer transition-colors ${filters.is_sponsored
+                        ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-900/40 hover:text-indigo-900 dark:hover:text-indigo-200'
+                        : 'bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground'
+                        }`}
+                    onClick={() => {
+                        playClickSound();
+                        const updatedFilters = { ...filters, is_sponsored: filters.is_sponsored ? undefined : true };
+                        handleFiltersChange(updatedFilters);
+                    }}
+                >
+                    Sponsored
+                </Badge>
             </div>
 
             {/* Active Filters Display */}
@@ -260,12 +395,15 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                             {selectedCountries.map(country => (
                                 <Badge
                                     key={country}
-                                    className="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 hover:text-blue-800 dark:hover:text-blue-200"
+                                    className="flex items-center gap-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/40 hover:text-blue-900 dark:hover:text-blue-200"
                                 >
                                     {AFRICAN_COUNTRIES.find(c => c.value === country)?.label}
                                     <X
                                         className="h-3 w-3 cursor-pointer"
-                                        onClick={() => handleCountryToggle(country)}
+                                        onClick={() => {
+                                            playClickSound();
+                                            handleCountryToggle(country);
+                                        }}
                                     />
                                 </Badge>
                             ))}
@@ -276,12 +414,13 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     {filters.job_category && filters.job_category.split(',').map(category => (
                         <Badge
                             key={`category-${category}`}
-                            className="flex items-center gap-1 bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/40 hover:text-orange-800 dark:hover:text-orange-200"
+                            className="flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/40 hover:text-orange-900 dark:hover:text-orange-200"
                         >
                             {JOB_CATEGORIES.find(c => c.value === category)?.label || category}
                             <X
                                 className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
+                                    playClickSound();
                                     const categories = filters.job_category!.split(',').filter(c => c !== category);
                                     const updatedFilters = { ...filters, job_category: categories.length > 0 ? categories.join(',') : undefined };
                                     handleFiltersChange(updatedFilters);
@@ -294,12 +433,13 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     {filters.type && filters.type.split(',').map(type => (
                         <Badge
                             key={`type-${type}`}
-                            className="flex items-center gap-1 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-800 dark:hover:text-purple-200"
+                            className="flex items-center gap-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-900/40 hover:text-purple-900 dark:hover:text-purple-200"
                         >
                             {JOB_TYPES.find(t => t.value === type)?.label || type}
                             <X
                                 className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
+                                    playClickSound();
                                     const types = filters.type!.split(',').filter(t => t !== type);
                                     const updatedFilters = { ...filters, type: types.length > 0 ? types.join(',') : undefined };
                                     handleFiltersChange(updatedFilters);
@@ -312,12 +452,13 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     {filters.experience_level && filters.experience_level.split(',').map(experience => (
                         <Badge
                             key={`experience-${experience}`}
-                            className="flex items-center gap-1 bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200"
+                            className="flex items-center gap-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-900/40 hover:text-cyan-900 dark:hover:text-cyan-200"
                         >
                             {EXPERIENCE_LEVELS.find(e => e.value === experience)?.label || experience}
                             <X
                                 className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
+                                    playClickSound();
                                     const experiences = filters.experience_level!.split(',').filter(e => e !== experience);
                                     const updatedFilters = { ...filters, experience_level: experiences.length > 0 ? experiences.join(',') : undefined };
                                     handleFiltersChange(updatedFilters);
@@ -330,12 +471,13 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     {filters.company_size && filters.company_size.split(',').map(size => (
                         <Badge
                             key={`size-${size}`}
-                            className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 hover:text-yellow-800 dark:hover:text-yellow-200"
+                            className="flex items-center gap-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 hover:bg-yellow-200 dark:hover:bg-yellow-900/40 hover:text-yellow-900 dark:hover:text-yellow-200"
                         >
                             {COMPANY_SIZES.find(s => s.value === size)?.label || size}
                             <X
                                 className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
+                                    playClickSound();
                                     const sizes = filters.company_size!.split(',').filter(s => s !== size);
                                     const updatedFilters = { ...filters, company_size: sizes.length > 0 ? sizes.join(',') : undefined };
                                     handleFiltersChange(updatedFilters);
@@ -344,33 +486,6 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                         </Badge>
                     ))}
 
-                    {/* Remote Badge - Emerald */}
-                    {filters.remote && (
-                        <Badge className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 hover:text-emerald-800 dark:hover:text-emerald-200">
-                            Remote only
-                            <X
-                                className="h-3 w-3 cursor-pointer"
-                                onClick={() => {
-                                    const updatedFilters = { ...filters, remote: undefined };
-                                    handleFiltersChange(updatedFilters);
-                                }}
-                            />
-                        </Badge>
-                    )}
-
-                    {/* Sponsored Badge - Indigo */}
-                    {filters.is_sponsored && (
-                        <Badge className="flex items-center gap-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 hover:text-indigo-800 dark:hover:text-indigo-200">
-                            Relocation & visa support
-                            <X
-                                className="h-3 w-3 cursor-pointer"
-                                onClick={() => {
-                                    const updatedFilters = { ...filters, is_sponsored: undefined };
-                                    handleFiltersChange(updatedFilters);
-                                }}
-                            />
-                        </Badge>
-                    )}
                 </div>
             )}
         </div>

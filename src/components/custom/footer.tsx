@@ -104,7 +104,17 @@ export const Footer = () => {
 
                 <div className="mt-4 pt-4 border-t flex justify-between items-center">
                     <p className="text-xs text-foreground/80">
-                        © {new Date().getFullYear()} afritechjobs.com — All rights reserved.
+                        © {new Date().getFullYear()} afritechjobs.com by{' '}
+                        <Link
+                            href="https://lomi.africa"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={playClickSound}
+                            className="hover:text-white transition-colors"
+                        >
+                            lomi.
+                        </Link>{' '}
+                        — All rights reserved.
                     </p>
                     <div className="flex items-center gap-2">
                         <button

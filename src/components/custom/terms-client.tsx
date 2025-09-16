@@ -7,7 +7,7 @@ export default function TermsClient() {
         <>
             <div className="flex flex-col max-w-screen-md mx-auto px-6 py-12 pb-32">
                 {/* Hero Section */}
-                <div className="relative pt-24 md:pt-32 mb-12 text-center">
+                <div className="relative pt-20 md:pt-20 mb-12 text-center">
                     <motion.h1
                         className="text-4xl sm:text-5xl md:text-7xl tracking-tighter font-regular text-zinc-800 dark:text-white mb-6"
                         initial={{ opacity: 0, y: -20 }}

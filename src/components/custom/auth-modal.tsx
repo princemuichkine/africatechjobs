@@ -224,7 +224,7 @@ export const AuthModal = ({
                                 </div>
                                 <Button
                                     type="submit"
-                                    className="w-full h-9 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/40 hover:text-green-800 dark:hover:text-green-200 border border-green-200 dark:border-green-800"
+                                    className="w-full h-9 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/40 hover:text-green-900 dark:hover:text-green-200 border border-green-300 dark:border-green-800"
                                     disabled={isEmailLoading}
                                 >
                                     {isEmailLoading ? (
@@ -337,7 +337,7 @@ export const AuthModal = ({
                                 </div>
                                 <Button
                                     type="submit"
-                                    className="w-full h-9 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/40 hover:text-green-800 dark:hover:text-green-200 border border-green-200 dark:border-green-800"
+                                    className="w-full h-9 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/40 hover:text-green-900 dark:hover:text-green-200 border border-green-300 dark:border-green-800"
                                     disabled={
                                         isEmailLoading || isSocialLoading !== null || isSuccessful
                                     }

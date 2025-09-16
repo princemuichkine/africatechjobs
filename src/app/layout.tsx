@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import SoundGateInit from "@/components/ui/sound-gate-init";
 import { UserIdentifier } from "@/components/analytics/user-identifier";
+import { CustomScrollbar } from "@/components/ui/custom-scrollbar";
 import { cn } from "@/lib/actions/utils";
 import { OpenPanelComponent } from "@openpanel/nextjs";
 import { PlusIcon } from "lucide-react";
@@ -85,7 +86,7 @@ export default function RootLayout({
         geist.variable,
       )}
     >
-      <body>
+      <body className="overflow-x-hidden max-w-full">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -93,25 +94,27 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NuqsAdapter>
-            <Header />
-            {children}
+            <CustomScrollbar className="h-screen">
+              <Header />
+              {children}
 
-            <a
-              href="https://github.com/princemuichkine/afritechjobs"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Button
-                className="hidden size-[48px] bg-[#F5F5F3]/30 text-black border border-black rounded-sm font-medium fixed bottom-4 left-6 z-10 backdrop-blur-lg dark:bg-[#F5F5F3]/30 dark:text-white dark:border-white"
-                variant="outline"
-                size="icon"
+              <a
+                href="https://github.com/princemuichkine/afritechjobs"
+                target="_blank"
+                rel="noreferrer"
               >
-                <PlusIcon className="w-4 h-4" />
-              </Button>
-            </a>
+                <Button
+                  className="hidden size-[48px] bg-[#F5F5F3]/30 text-black border border-black rounded-sm font-medium fixed bottom-4 left-6 z-10 backdrop-blur-lg dark:bg-[#F5F5F3]/30 dark:text-white dark:border-white"
+                  variant="outline"
+                  size="icon"
+                >
+                  <PlusIcon className="w-4 h-4" />
+                </Button>
+              </a>
 
-            <Banner />
-            <Footer />
+              <Banner />
+              <Footer />
+            </CustomScrollbar>
             <Toaster />
             <GlobalModals />
             <UserIdentifier />

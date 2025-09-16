@@ -107,14 +107,6 @@ export function JobList({
                 Try adjusting your filters or search terms to find more results.
               </p>
             </div>
-            <div className="w-full max-w-sm">
-              <Button
-                onClick={() => onPageChange(1)}
-                className="w-full h-9 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/40 hover:text-green-800 dark:hover:text-green-200 border border-green-200 dark:border-green-800"
-              >
-                Clear filters
-              </Button>
-            </div>
           </div>
         </div>
       </div>

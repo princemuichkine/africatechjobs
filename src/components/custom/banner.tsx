@@ -124,6 +124,16 @@ export function Banner() {
       target="_blank"
       rel="noreferrer"
       onClick={() => {
+        try {
+          // Play click sound
+          const audio = new Audio('/sounds/light.mp3');
+          audio.play().catch(() => {
+            // Ignore audio play failures (user hasn't interacted with page yet, etc.)
+          });
+        } catch {
+          // Ignore audio creation/play failures
+        }
+
         op.track("banner_clicked", {
           banner_id: currentBanner.id,
           banner_url: currentBanner.href,
@@ -132,7 +142,7 @@ export function Banner() {
       }}
     >
       <div
-        className={`fixed overflow-hidden ${slideClass} z-50 bottom-4 md:bottom-4 left-4 md:left-auto right-4 md:right-4 w-[calc(100vw-32px)] md:w-[calc(100vw-16px)] md:max-w-[370px] border border-border p-4 transition-all bg-background h-[88px] rounded-sm group`}
+        className={`fixed overflow-hidden ${slideClass} z-50 bottom-4 md:bottom-4 left-4 md:left-auto right-4 md:right-4 w-[calc(100vw-32px)] md:w-auto md:max-w-[370px] border border-border p-4 transition-all bg-background h-[88px] rounded-sm group`}
       >
         {currentBanner.logo}
 

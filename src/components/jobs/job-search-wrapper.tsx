@@ -8,10 +8,10 @@ import { getJobs, JobFilters } from '@/data/queries';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Job } from '@/lib/types/job';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 // Type for JobsFeatured component (different from main Job type)
 type FeaturedJob = {
@@ -54,6 +54,7 @@ export function JobSearchWrapper({
     initialJobs,
     initialJobCount
 }: JobSearchWrapperProps) {
+    const router = useRouter();
     const [jobs, setJobs] = useState(initialJobs);
     const [featuredJobs] = useState(initialFeaturedJobs.map(transformToFeaturedJob));
     const [loading, setLoading] = useState(false);
@@ -97,6 +98,24 @@ export function JobSearchWrapper({
             setLoading(false);
         }
     };
+
+    // Handle click on "Ready to hire" CTA with sound
+    const handleHireCTAClick = useCallback((e: React.MouseEvent | React.KeyboardEvent) => {
+        e.preventDefault();
+
+        try {
+            // Play click sound
+            const audio = new Audio('/sounds/light.mp3');
+            audio.play().catch(() => {
+                // Ignore audio play failures (user hasn't interacted with page yet, etc.)
+            });
+        } catch {
+            // Ignore audio creation/play failures
+        }
+
+        // Navigate to job posting page
+        router.push('/jobs/new');
+    }, [router]);
 
     const totalPages = Math.ceil(jobCount / jobsPerPage);
     const hasActiveFilters = Object.keys(filters).some(key =>
@@ -188,7 +207,17 @@ export function JobSearchWrapper({
 
                 {/* Call to Action */}
                 <section className="mt-16">
-                    <div className="border rounded-sm p-8 hover:shadow-lg transition-shadow duration-200">
+                    <div
+                        onClick={handleHireCTAClick}
+                        className="block border rounded-sm p-8 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleHireCTAClick(e);
+                            }
+                        }}
+                    >
                         <div className="flex flex-col items-center justify-center text-center space-y-6">
                             <div className="text-muted-foreground">
                                 <Image
@@ -207,16 +236,6 @@ export function JobSearchWrapper({
                                     Post your job and reach over 100,000+ monthly active tech professionals
                                     across Africa&apos;s fastest-growing tech ecosystems.
                                 </p>
-                            </div>
-                            <div className="w-full max-w-sm">
-                                <Button
-                                    asChild
-                                    className="w-full h-9 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/40 hover:text-green-800 dark:hover:text-green-200 border border-green-200 dark:border-green-800"
-                                >
-                                    <Link href="/jobs/new">
-                                        Post a job
-                                    </Link>
-                                </Button>
                             </div>
                         </div>
                     </div>
