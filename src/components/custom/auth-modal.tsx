@@ -194,7 +194,7 @@ export const AuthModal = ({
     return (
         <Dialog open={open} onOpenChange={handleModalOpenChange}>
             <DialogContent
-                className="sm:max-w-sm bg-white border-border [&>button]:hidden"
+                className="sm:max-w-sm bg-white dark:bg-background border-border [&>button]:hidden"
                 data-auth-modal
             >
                 <DialogHeader>

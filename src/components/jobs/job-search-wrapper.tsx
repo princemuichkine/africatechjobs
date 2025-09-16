@@ -5,7 +5,6 @@ import { JobSearch } from './job-search';
 import { JobList } from './job-list';
 import { JobsFeatured } from './jobs-featured';
 import { getJobs, JobFilters } from '@/data/queries';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
@@ -163,16 +162,10 @@ export function JobSearchWrapper({
                                 {hasActiveFilters ? 'Search results' : 'All jobs'}
                             </h2>
                             <div className="text-muted-foreground">
-                                {loading ? (
-                                    <Skeleton className="h-4 w-48" />
-                                ) : (
+                                {jobCount > 0 && (
                                     <>
-                                        {jobCount > 0 && (
-                                            <>
-                                                {jobCount.toLocaleString()} jobs
-                                                {hasActiveFilters && ' matching your criteria'}
-                                            </>
-                                        )}
+                                        {jobCount.toLocaleString()} jobs
+                                        {hasActiveFilters && ' matching your criteria'}
                                     </>
                                 )}
                             </div>

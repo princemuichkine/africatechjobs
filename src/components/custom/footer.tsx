@@ -121,7 +121,7 @@ export const Footer = () => {
                         {t('footer.copyright_end', currentLanguage)}
                     </p>
                     <div className="flex items-center gap-2">
-                        <LanguageSwitcher className="mr-2" />
+                        <LanguageSwitcher className="mr-2 translate-x-6" />
                         <button
                             onClick={toggleTheme}
                             className="h-6 w-6 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors [&_svg]:fill-current"
