@@ -15,7 +15,7 @@ const SelectValue = dynamic(() => import('@/components/ui/select').then(mod => (
 
 const JOB_CATEGORIES = [
   { value: 'ENGINEERING', label: 'Engineering' },
-  { value: 'DATA', label: 'Data Science' },
+  { value: 'DATA', label: 'Data science' },
   { value: 'PRODUCT', label: 'Product' },
   { value: 'DESIGN', label: 'Design' },
   { value: 'MARKETING', label: 'Marketing' },
@@ -29,8 +29,8 @@ const JOB_CATEGORIES = [
 ];
 
 const JOB_TYPES = [
-  { value: 'FULL_TIME', label: 'Full Time' },
-  { value: 'PART_TIME', label: 'Part Time' },
+  { value: 'FULL_TIME', label: 'Full time' },
+  { value: 'PART_TIME', label: 'Part time' },
   { value: 'CONTRACT', label: 'Contract' },
   { value: 'FREELANCE', label: 'Freelance' },
   { value: 'INTERNSHIP', label: 'Internship' },
@@ -38,9 +38,9 @@ const JOB_TYPES = [
 ];
 
 const EXPERIENCE_LEVELS = [
-  { value: 'ENTRY_LEVEL', label: 'Entry Level' },
+  { value: 'ENTRY_LEVEL', label: 'Entry level' },
   { value: 'JUNIOR', label: 'Junior' },
-  { value: 'MID_LEVEL', label: 'Mid Level' },
+  { value: 'MID_LEVEL', label: 'Mid level' },
   { value: 'SENIOR', label: 'Senior' },
   { value: 'EXECUTIVE', label: 'Executive' },
 ];
@@ -127,7 +127,7 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
   };
 
   const getActiveFilterCount = () => {
-    return selectedCategories.length + selectedTypes.length + selectedExperiences.length + selectedCompanySizes.length + (filters.remote ? 1 : 0);
+    return selectedCategories.length + selectedTypes.length + selectedExperiences.length + selectedCompanySizes.length + (filters.remote ? 1 : 0) + (filters.is_sponsored ? 1 : 0);
   };
 
   const clearFilters = () => {
@@ -307,6 +307,21 @@ export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFilte
         />
         <label htmlFor="remote" className="text-sm font-medium">
           Remote only
+        </label>
+      </div>
+
+      {/* Sponsored Jobs */}
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="sponsored"
+          checked={filters.is_sponsored === true}
+          onCheckedChange={(checked) => {
+            const updatedFilters = { ...filters, is_sponsored: checked ? true : undefined };
+            onFiltersChange(updatedFilters);
+          }}
+        />
+        <label htmlFor="sponsored" className="text-sm font-medium">
+          Relocation & visa support
         </label>
       </div>
 

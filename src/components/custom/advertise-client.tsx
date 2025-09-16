@@ -28,7 +28,7 @@ export default function AdvertiseClient() {
                 >
                     <section>
                         <h2 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">
-                            Reach an engaged developer audience
+                            Reach an engaged audience
                         </h2>
                         <p className="text-foreground/90 text-base leading-relaxed tracking-tight">
                             afritechjobs.com attracts over{" "}
@@ -49,7 +49,7 @@ export default function AdvertiseClient() {
                     <section>
                         <h2 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">Why advertise with us?</h2>
                         <p className="text-foreground/90 text-base leading-relaxed tracking-tight">
-                            Our community is highly engaged with the tech ecosystem. If you&apos;re recuiting or offering APIs, cloud services, or any tech product, our
+                            Our community is highly engaged with the tech ecosystem. If you&apos;re recuiting for a new role or offering APIs, cloud services, or any tech product, our
                             platform provides direct access to your ideal audience. Our users
                             are early adopters who can actively influence choices
                             within their current and future organizations.
@@ -59,13 +59,13 @@ export default function AdvertiseClient() {
                     <section>
                         <h2 className="text-xl font-semibold mb-4 text-zinc-900 dark:text-white">Our audience</h2>
                         <p className="text-foreground/90 text-base leading-relaxed tracking-tight">
-                            • Engineers and developers (65%)
-                            <br />• Tech operators (20%)
-                            <br />• Engineering managers (10%)
-                            <br />• Other technical professionals (5%)
+                            • Tech operators (65%)
+                            <br />• Engineers and developers (20%)
+                            <br />• Managers and executives (10%)
+                            <br />• Other professionals (5%)
                             <br />
                             <br />
-                            Our visitors come from leading tech companies, innovative tech
+                            Our visitors come from leading companies, innovative tech
                             startups, and development agencies all around the Continent, all united by their deep interest in the tech ecosystem.
                             <br />
                             <br />
@@ -87,12 +87,12 @@ export default function AdvertiseClient() {
                         <p className="text-foreground/90 text-base leading-relaxed tracking-tight">
                             We offer various advertising opportunities including:
                             <br />• Featured listings in our directory
-                            <br />• Sponsored content and tutorials
+                            <br />• Sponsored content
                             <br />• Newsletter sponsorships
                             <br />• Custom partnership opportunities
                             <br />
                             <br />
-                            Contact Babacar at{" "}
+                            Contact Babacar on X at{" "}
                             <a
                                 href="https://twitter.com/bm_diop"
                                 className="text-primary border-border border-dashed border-b-[1px] hover:text-primary/80 transition-colors font-semibold"

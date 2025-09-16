@@ -56,7 +56,7 @@ export function CompanySelect({ value, onChange }: CompanySelectProps) {
         return (
             <div className="space-y-2">
                 <Label>Company</Label>
-                <div className="h-10 w-full rounded-md border bg-muted animate-pulse" />
+                <div className="h-10 w-full rounded-sm border bg-muted animate-pulse" />
             </div>
         );
     }

@@ -8,7 +8,7 @@ import { animations } from '@/lib/utils/lottie-animations';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { JobFilters } from '@/data/queries';
 import { JobFiltersModal } from './job-filters';
 
@@ -40,6 +40,46 @@ const AFRICAN_COUNTRIES = [
     { value: 'Cameroon', label: 'Cameroon' },
     { value: 'Ivory Coast', label: 'Ivory Coast' },
     { value: 'Angola', label: 'Angola' },
+];
+
+const JOB_CATEGORIES = [
+    { value: 'ENGINEERING', label: 'Engineering' },
+    { value: 'DATA', label: 'Data science' },
+    { value: 'PRODUCT', label: 'Product' },
+    { value: 'DESIGN', label: 'Design' },
+    { value: 'MARKETING', label: 'Marketing' },
+    { value: 'SALES', label: 'Sales' },
+    { value: 'DEVOPS', label: 'DevOps' },
+    { value: 'MOBILE', label: 'Mobile' },
+    { value: 'AI', label: 'AI/ML' },
+    { value: 'BLOCKCHAIN', label: 'Blockchain' },
+    { value: 'CLOUD', label: 'Cloud' },
+    { value: 'OTHER', label: 'Other' },
+];
+
+const JOB_TYPES = [
+    { value: 'FULL_TIME', label: 'Full time' },
+    { value: 'PART_TIME', label: 'Part time' },
+    { value: 'CONTRACT', label: 'Contract' },
+    { value: 'FREELANCE', label: 'Freelance' },
+    { value: 'INTERNSHIP', label: 'Internship' },
+    { value: 'APPRENTICESHIP', label: 'Apprenticeship' },
+];
+
+const EXPERIENCE_LEVELS = [
+    { value: 'ENTRY_LEVEL', label: 'Entry level' },
+    { value: 'JUNIOR', label: 'Junior' },
+    { value: 'MID_LEVEL', label: 'Mid level' },
+    { value: 'SENIOR', label: 'Senior' },
+    { value: 'EXECUTIVE', label: 'Executive' },
+];
+
+const COMPANY_SIZES = [
+    { value: '1_10', label: '1-10 employees' },
+    { value: '11_50', label: '11-50 employees' },
+    { value: '51_200', label: '51-200 employees' },
+    { value: '201_1000', label: '201-1000 employees' },
+    { value: '1000_PLUS', label: '1000+ employees' },
 ];
 
 export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchProps) {
@@ -120,7 +160,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                         className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                     />
                     <Input
-                        placeholder="Search jobs, companies, or skills..."
+                        placeholder="Search jobs, companies, or cities..."
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
                         className="pl-10 h-12 text-base"
@@ -130,7 +170,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                 <div className="flex gap-2">
                     {isClient ? (
                         <Select value="" onValueChange={() => { }} open={isCountryDropdownOpen} onOpenChange={setIsCountryDropdownOpen}>
-                            <SelectTrigger className="w-[160px] h-12">
+                            <SelectTrigger className="w-[145px] h-12">
                                 <div className="flex items-center pl-2">
                                     <LottieIcon
                                         animationData={animations.globe}
@@ -143,7 +183,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                                     <SelectValue placeholder={selectedCountries.length > 0 ? `${selectedCountries.length} selected` : "Africa"} />
                                 </div>
                             </SelectTrigger>
-                            <SelectContent className="w-[160px] max-w-[160px] min-w-[160px] max-h-[240px] overflow-y-auto">
+                            <SelectContent className="w-[145px] max-w-[145px] min-w-[145px] max-h-[240px] overflow-y-auto">
                                 {AFRICAN_COUNTRIES.map(country => (
                                     <div
                                         key={country.value}
@@ -167,7 +207,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                             </SelectContent>
                         </Select>
                     ) : (
-                        <div className="w-[160px] h-12 border rounded-sm border-input bg-background flex items-center px-3">
+                        <div className="w-[145px] h-12 border rounded-sm border-input bg-background flex items-center px-3">
                             <div className="flex items-center pl-1">
                                 <LottieIcon
                                     animationData={animations.globe}
@@ -197,19 +237,15 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                             </Button>
                         </SheetTrigger>
                         <SheetContent className="sm:max-w-md w-full p-0 h-full rounded-sm border-0 sm:m-4 sm:h-[calc(100%-2rem)] sm:rounded-sm sm:border shadow-lg bg-background overflow-hidden flex flex-col">
-                            <div className="border-0 shadow-none rounded-sm sm:rounded-sm h-full flex flex-col">
-                                <div className="sticky top-0 z-10 bg-background border-b px-4 py-3 flex flex-row items-center justify-between flex-shrink-0">
-                                    <div className="flex-1">
-                                        <h2 className="text-base font-normal pt-2">Filters</h2>
-                                        <p className="text-sm text-muted-foreground">Refine your search with these filters</p>
-                                    </div>
-                                </div>
-                                <JobFiltersModal
-                                    filters={filters}
-                                    onFiltersChange={handleFiltersChange}
-                                    isClient={isClient}
-                                />
-                            </div>
+                            <SheetHeader className="sticky top-0 z-10 bg-background border-b px-4 py-3 flex-shrink-0">
+                                <SheetTitle className="text-base font-normal text-left">Filters</SheetTitle>
+                                <p className="text-sm text-muted-foreground text-left">Refine your search with these filters</p>
+                            </SheetHeader>
+                            <JobFiltersModal
+                                filters={filters}
+                                onFiltersChange={handleFiltersChange}
+                                isClient={isClient}
+                            />
                         </SheetContent>
                     </Sheet>
                 </div>
@@ -242,7 +278,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                             key={`category-${category}`}
                             className="flex items-center gap-1 bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/40 hover:text-orange-800 dark:hover:text-orange-200"
                         >
-                            {category}
+                            {JOB_CATEGORIES.find(c => c.value === category)?.label || category}
                             <X
                                 className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
@@ -260,7 +296,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                             key={`type-${type}`}
                             className="flex items-center gap-1 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-800 dark:hover:text-purple-200"
                         >
-                            {type}
+                            {JOB_TYPES.find(t => t.value === type)?.label || type}
                             <X
                                 className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
@@ -278,7 +314,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                             key={`experience-${experience}`}
                             className="flex items-center gap-1 bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200"
                         >
-                            {experience}
+                            {EXPERIENCE_LEVELS.find(e => e.value === experience)?.label || experience}
                             <X
                                 className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
@@ -296,7 +332,7 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                             key={`size-${size}`}
                             className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 hover:text-yellow-800 dark:hover:text-yellow-200"
                         >
-                            {size}
+                            {COMPANY_SIZES.find(s => s.value === size)?.label || size}
                             <X
                                 className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
@@ -311,11 +347,25 @@ export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchPro
                     {/* Remote Badge - Emerald */}
                     {filters.remote && (
                         <Badge className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 hover:text-emerald-800 dark:hover:text-emerald-200">
-                            Remote Only
+                            Remote only
                             <X
                                 className="h-3 w-3 cursor-pointer"
                                 onClick={() => {
                                     const updatedFilters = { ...filters, remote: undefined };
+                                    handleFiltersChange(updatedFilters);
+                                }}
+                            />
+                        </Badge>
+                    )}
+
+                    {/* Sponsored Badge - Indigo */}
+                    {filters.is_sponsored && (
+                        <Badge className="flex items-center gap-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 hover:text-indigo-800 dark:hover:text-indigo-200">
+                            Relocation & visa support
+                            <X
+                                className="h-3 w-3 cursor-pointer"
+                                onClick={() => {
+                                    const updatedFilters = { ...filters, is_sponsored: undefined };
                                     handleFiltersChange(updatedFilters);
                                 }}
                             />

@@ -26,7 +26,7 @@ export default function HomeClient({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                 >
-                    Find your next role today
+                    Find your next role today.
                 </motion.h1>
                 <motion.p
                     className="text-xl sm:text-2xl text-zinc-600 dark:text-zinc-300 max-w-4xl mx-auto leading-relaxed"
@@ -34,7 +34,7 @@ export default function HomeClient({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                    Discover opportunities from Cape Town to Cairo, Abidjan to Nairobi on the premier tech job board with thousands of active positions.
+                    Discover opportunities from Cape Town to Cairo, Abidjan to Nairobi on the n°1 tech job board with thousands of active positions updated every day.
                 </motion.p>
             </div>
 

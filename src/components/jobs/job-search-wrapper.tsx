@@ -201,10 +201,10 @@ export function JobSearchWrapper({
                             </div>
                             <div className="space-y-3 max-w-2xl">
                                 <h3 className="text-2xl font-semibold text-zinc-900 dark:text-white">
-                                    Ready to hire top African talent?
+                                    Ready to hire top African talent ?
                                 </h3>
                                 <p className="text-base text-foreground/90 leading-relaxed">
-                                    Post your job and reach over 200,000+ monthly active tech professionals
+                                    Post your job and reach over 100,000+ monthly active tech professionals
                                     across Africa&apos;s fastest-growing tech ecosystems.
                                 </p>
                             </div>

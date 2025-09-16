@@ -10,6 +10,7 @@ export interface JobFilters {
   experience_level?: string;
   remote?: boolean;
   company_size?: string;
+  is_sponsored?: boolean;
 }
 
 export async function getJobById(id: string) {

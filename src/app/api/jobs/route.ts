@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search");
     const job_category = searchParams.get("job_category");
     const company_size = searchParams.get("company_size");
+    const is_sponsored = searchParams.get("is_sponsored");
 
     let query = supabase
       .from("jobs")
@@ -79,6 +80,10 @@ export async function GET(request: NextRequest) {
     if (company_size) {
       query = query.not("company_id", "is", null);
       // We'll filter by company size in the application layer
+    }
+
+    if (is_sponsored === "true") {
+      query = query.eq("is_sponsored", true);
     }
 
     const { data: jobs, error, count } = await query;
