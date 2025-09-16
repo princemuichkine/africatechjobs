@@ -1,7 +1,7 @@
 "use client";
 
 import { useOpenPanel } from "@openpanel/nextjs";
-import { XIcon } from "lucide-react";
+import { X } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -132,7 +132,7 @@ export function Banner() {
       }}
     >
       <div
-        className={`fixed overflow-hidden ${slideClass} z-50 bottom-4 md:bottom-4 left-4 md:left-auto right-4 md:right-4 w-[calc(100vw-32px)] md:w-[calc(100vw-16px)] md:max-w-[370px] border border-border p-4 transition-all bg-background h-[88px] group`}
+        className={`fixed overflow-hidden ${slideClass} z-50 bottom-4 md:bottom-4 left-4 md:left-auto right-4 md:right-4 w-[calc(100vw-32px)] md:w-[calc(100vw-16px)] md:max-w-[370px] border border-border p-4 transition-all bg-background h-[88px] rounded-sm group`}
       >
         {currentBanner.logo}
 
@@ -151,7 +151,7 @@ export function Banner() {
             className="absolute right-1.5 top-1.5 text-[#878787] hidden group-hover:block"
             onClick={handleClose}
           >
-            <XIcon className="w-4 h-4" />
+            <X className="w-4 h-4" />
           </button>
         </div>
       </div>

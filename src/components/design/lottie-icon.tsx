@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useRef, useEffect, memo } from 'react'
 import Lottie from 'lottie-react'
 import { useTheme } from 'next-themes'
@@ -162,9 +164,8 @@ const LottieIconComponent = ({
 
   return (
     <div
-      className={`inline-flex items-center justify-center transition-all duration-200 ease-out ${
-        isHovered ? 'scale-110' : ''
-      } ${className}`}
+      className={`inline-flex items-center justify-center transition-all duration-200 ease-out ${isHovered ? 'scale-110' : ''
+        } ${className}`}
       style={{ width: size, height: size }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

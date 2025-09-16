@@ -2,7 +2,8 @@
 
 import { voteAction } from "@/lib/actions/vote-action";
 import { cn } from "@/lib/actions/utils";
-import { Check, Copy } from "lucide-react";
+import { LottieIcon } from '@/components/design/lottie-icon';
+import { animations } from '@/lib/utils/lottie-animations';
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "@/components/ui/toast";
@@ -40,9 +41,21 @@ export function CopyButton({
       type="button"
     >
       {copied ? (
-        <Check className={small ? "w-3 h-3" : "w-4 h-4"} />
+        <LottieIcon
+          animationData={animations.checkmark}
+          size={small ? 12 : 16}
+          loop={false}
+          autoplay={false}
+          initialFrame={0}
+        />
       ) : (
-        <Copy className={small ? "w-3 h-3" : "w-4 h-4"} />
+        <LottieIcon
+          animationData={animations.edit}
+          size={small ? 12 : 16}
+          loop={false}
+          autoplay={false}
+          initialFrame={0}
+        />
       )}
     </button>
   );

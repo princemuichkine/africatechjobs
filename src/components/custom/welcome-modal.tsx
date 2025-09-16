@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { CardHeader, Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { GripVertical } from 'lucide-react';
+import { LottieIcon } from '@/components/design/lottie-icon';
+import { animations } from '@/lib/utils/lottie-animations';
 import { motion, useInView } from 'framer-motion';
 import { Switch } from '@/components/ui/switch';
 import { Crimson_Text } from 'next/font/google';
@@ -468,8 +469,12 @@ const FeaturesSection = () => {
                 </p>
                 <div className="demo-suggestion-overlay-animated border border-border">
                   <div className="demo-overlay-header">
-                    <GripVertical
+                    <LottieIcon
+                      animationData={animations.grid}
                       size={14}
+                      loop={false}
+                      autoplay={false}
+                      initialFrame={0}
                       className="text-muted-foreground/70 demo-overlay-drag-handle"
                     />
                     <h3 className="text-xs font-medium">Suggestion</h3>

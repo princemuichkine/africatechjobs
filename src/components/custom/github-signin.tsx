@@ -1,7 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { GithubIcon } from "lucide-react";
+import { GitHubIcon } from "@/components/icons/GitHubIcon";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -24,7 +24,7 @@ export function GithubSignin({ redirectTo }: { redirectTo?: string }) {
       }}
     >
       <span className="flex items-center gap-2">
-        <GithubIcon className="w-4 h-4" />
+        <GitHubIcon className="w-4 h-4" />
         Sign in with GitHub
       </span>
     </Button>

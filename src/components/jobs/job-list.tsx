@@ -3,9 +3,13 @@
 import { JobCard } from "./job-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { LottieIcon } from "@/components/design/lottie-icon";
+import { animations } from "@/lib/utils/lottie-animations";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import Image from "next/image";
 import { Job } from "@/lib/types/job";
+
 
 interface JobListProps {
   jobs: Job[];
@@ -55,11 +59,24 @@ export function JobList({
   if (error) {
     return (
       <Alert className="mb-6">
-        <AlertCircle className="h-4 w-4" />
+        <Image
+          src="/placeholder/empty_timeline.webp"
+          alt="Error"
+          className="w-32 h-24 mx-auto"
+          width={80}
+          height={80}
+        />
         <AlertDescription className="flex items-center justify-between">
           <span>{error}</span>
           <Button onClick={() => onPageChange(1)} variant="outline" size="sm">
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <LottieIcon
+              animationData={animations.refresh}
+              size={16}
+              loop={false}
+              autoplay={false}
+              initialFrame={0}
+              className="mr-2"
+            />
             Retry
           </Button>
         </AlertDescription>
@@ -70,16 +87,36 @@ export function JobList({
   // Empty state
   if (jobs.length === 0 && !loading) {
     return (
-      <div className="text-center py-12">
-        <div className="text-muted-foreground mb-4">
-          <AlertCircle className="h-12 w-12 mx-auto" />
+      <div className="space-y-6">
+        <div className="border rounded-sm p-8 hover:shadow-lg transition-shadow duration-200">
+          <div className="flex flex-col items-center justify-center text-center space-y-6">
+            <div className="text-muted-foreground">
+              <Image
+                src="/placeholder/empty_timeline.webp"
+                alt="No jobs found"
+                className="w-32 h-24 mx-auto"
+                width={80}
+                height={80}
+              />
+            </div>
+            <div className="space-y-3 max-w-md">
+              <h3 className="text-2xl font-semibold text-zinc-900 dark:text-white">
+                No jobs found
+              </h3>
+              <p className="text-base text-foreground/90 leading-relaxed">
+                Try adjusting your filters or search terms to find more results.
+              </p>
+            </div>
+            <div className="w-full max-w-sm">
+              <Button
+                onClick={() => onPageChange(1)}
+                className="w-full h-9 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/40 hover:text-green-800 dark:hover:text-green-200 border border-green-200 dark:border-green-800"
+              >
+                Clear filters
+              </Button>
+            </div>
+          </div>
         </div>
-        <h3 className="text-lg font-medium mb-2">
-          No jobs found
-        </h3>
-        <p className="text-muted-foreground">
-          Try adjusting your filters or search terms to find more results.
-        </p>
       </div>
     );
   }
@@ -204,7 +241,13 @@ export function JobList({
         Page {currentPage} of {totalPages}
         {loading && (
           <span className="ml-2 inline-flex items-center">
-            <RefreshCw className="h-3 w-3 animate-spin mr-1" />
+            <LottieIcon
+              animationData={animations.autorenew}
+              size={12}
+              loop={true}
+              autoplay={true}
+              className="mr-1"
+            />
             Loading...
           </span>
         )}

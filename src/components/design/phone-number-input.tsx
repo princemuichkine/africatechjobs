@@ -1,6 +1,7 @@
 'use client'
 
-import { ChevronDown, Phone } from 'lucide-react'
+import { LottieIcon } from '@/components/design/lottie-icon';
+import { animations } from '@/lib/utils/lottie-animations';
 import React, { useEffect, useState } from 'react'
 import * as RPNInput from 'react-phone-number-input'
 import flags from 'react-phone-number-input/flags'
@@ -105,7 +106,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, InputProps>(
           'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-background',
           'flex h-9 w-full min-w-0 bg-transparent px-3 py-1 text-base outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium',
           'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
-          'border-0 shadow-none rounded-l-none rounded-r-sm',
+          'border-0 shadow-none rounded-l-sm rounded-r-sm',
           className,
         )}
         {...props}
@@ -140,7 +141,7 @@ const CountrySelect = ({
     <div
       className={cn(
         'PhoneInputCountry relative inline-flex items-center self-stretch bg-transparent text-foreground outline-none',
-        'flex h-9 min-w-0 px-3 py-1 border-0 shadow-none rounded-l-sm rounded-r-none',
+        'flex h-9 min-w-0 px-3 py-1 border-0 shadow-none rounded-l-sm rounded-l-sm',
         'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-background',
         disabled && 'pointer-events-none cursor-not-allowed opacity-50',
       )}
@@ -148,7 +149,14 @@ const CountrySelect = ({
       <div className="inline-flex items-center gap-1.5" aria-hidden="true">
         <FlagComponent country={value} countryName={value} aria-hidden="true" />
         <span className="text-muted-foreground/80">
-          <ChevronDown size={14} strokeWidth={2} aria-hidden="true" />
+          <LottieIcon
+            animationData={animations.arrowDown}
+            size={14}
+            loop={false}
+            autoplay={false}
+            initialFrame={0}
+            aria-hidden="true"
+          />
         </span>
       </div>
       <select
@@ -184,7 +192,14 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
       {Flag ? (
         <Flag title={countryName} />
       ) : (
-        <Phone size={16} aria-hidden="true" role="presentation" />
+        <LottieIcon
+          animationData={animations.phone}
+          size={16}
+          loop={false}
+          autoplay={false}
+          initialFrame={0}
+          aria-hidden="true"
+        />
       )}
     </span>
   )

@@ -1,4 +1,6 @@
-import { LinkIcon, XIcon } from "lucide-react";
+import { LottieIcon } from '@/components/design/lottie-icon';
+import { animations } from '@/lib/utils/lottie-animations';
+import { XIcon } from "@/components/icons/XIcon";
 
 export function ProfileContent({
   bio,
@@ -35,7 +37,14 @@ export function ProfileContent({
 
           {website && (
             <div className="flex items-center gap-2 ">
-              <LinkIcon className="size-3.5 mt-2" />
+              <LottieIcon
+                animationData={animations.link}
+                size={14}
+                loop={false}
+                autoplay={false}
+                initialFrame={0}
+                className="mt-2"
+              />
               <p className="text-sm font-mono text-[#878787] mt-2">
                 <a
                   href={`${website}?utm_source=cursor.directory`}

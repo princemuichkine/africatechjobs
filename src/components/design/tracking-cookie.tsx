@@ -220,14 +220,14 @@ export default function CookieConsent() {
       {isVisible && ( // Only render the motion.div if isVisible is true
         <motion.div
           key="cookie-consent-banner" // Add key for AnimatePresence
-          className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 z-50"
+          className="fixed bottom-4 left-4 right-4 md:left-4 md:right-auto z-50"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
         >
           <motion.div
-            className="w-[calc(100vw-60px)] max-w-[370px] overflow-hidden flex justify-end"
+            className="w-[calc(100vw-60px)] max-w-[370px] overflow-hidden flex justify-start"
             animate={{
               opacity: showAnimation && animationType === 'decline' ? 0 : 1,
               y: showAnimation && animationType === 'accept' ? 100 : 0,

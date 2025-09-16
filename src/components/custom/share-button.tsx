@@ -1,7 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/actions/utils";
-import { Check, Share } from "lucide-react";
+import { LottieIcon } from '@/components/design/lottie-icon';
+import { animations } from '@/lib/utils/lottie-animations';
 import { useState } from "react";
 import { toast } from "@/components/ui/toast";
 
@@ -34,9 +35,21 @@ export function ShareButton({
       type="button"
     >
       {copied ? (
-        <Check className={small ? "w-3 h-3" : "w-4 h-4"} />
+        <LottieIcon
+          animationData={animations.checkmark}
+          size={small ? 12 : 16}
+          loop={false}
+          autoplay={false}
+          initialFrame={0}
+        />
       ) : (
-        <Share className={small ? "w-3 h-3" : "w-4 h-4"} />
+        <LottieIcon
+          animationData={animations.link}
+          size={small ? 12 : 16}
+          loop={false}
+          autoplay={false}
+          initialFrame={0}
+        />
       )}
     </button>
   );

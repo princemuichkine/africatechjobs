@@ -1,297 +1,323 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
-import {
-  JobFilters,
-  JOB_TYPES,
-  EXPERIENCE_LEVELS,
-  AFRICAN_COUNTRIES,
-} from "@/lib/types/job";
-import { useAnalytics } from "@/lib/hooks/use-analytics";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, Filter, X } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import { X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { JobFilters } from '@/data/queries';
 
-interface JobFiltersProps {
+// Dynamically import Select components to avoid hydration mismatch
+const Select = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.Select })), { ssr: false });
+const SelectContent = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectContent })), { ssr: false });
+const SelectTrigger = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectTrigger })), { ssr: false });
+const SelectValue = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectValue })), { ssr: false });
+
+const JOB_CATEGORIES = [
+  { value: 'ENGINEERING', label: 'Engineering' },
+  { value: 'DATA', label: 'Data Science' },
+  { value: 'PRODUCT', label: 'Product' },
+  { value: 'DESIGN', label: 'Design' },
+  { value: 'MARKETING', label: 'Marketing' },
+  { value: 'SALES', label: 'Sales' },
+  { value: 'DEVOPS', label: 'DevOps' },
+  { value: 'MOBILE', label: 'Mobile' },
+  { value: 'AI', label: 'AI/ML' },
+  { value: 'BLOCKCHAIN', label: 'Blockchain' },
+  { value: 'CLOUD', label: 'Cloud' },
+  { value: 'OTHER', label: 'Other' },
+];
+
+const JOB_TYPES = [
+  { value: 'FULL_TIME', label: 'Full Time' },
+  { value: 'PART_TIME', label: 'Part Time' },
+  { value: 'CONTRACT', label: 'Contract' },
+  { value: 'FREELANCE', label: 'Freelance' },
+  { value: 'INTERNSHIP', label: 'Internship' },
+  { value: 'APPRENTICESHIP', label: 'Apprenticeship' },
+];
+
+const EXPERIENCE_LEVELS = [
+  { value: 'ENTRY_LEVEL', label: 'Entry Level' },
+  { value: 'JUNIOR', label: 'Junior' },
+  { value: 'MID_LEVEL', label: 'Mid Level' },
+  { value: 'SENIOR', label: 'Senior' },
+  { value: 'EXECUTIVE', label: 'Executive' },
+];
+
+const COMPANY_SIZES = [
+  { value: '1_10', label: '1-10 employees' },
+  { value: '11_50', label: '11-50 employees' },
+  { value: '51_200', label: '51-200 employees' },
+  { value: '201_1000', label: '201-1000 employees' },
+  { value: '1000_PLUS', label: '1000+ employees' },
+];
+
+interface JobFiltersModalProps {
   filters: JobFilters;
   onFiltersChange: (filters: JobFilters) => void;
-  onReset: () => void;
+  isClient: boolean;
 }
 
-export function JobFiltersComponent({
-  filters,
-  onFiltersChange,
-  onReset,
-}: JobFiltersProps) {
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const { trackSearch, trackUserAction } = useAnalytics();
-  const searchTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+export function JobFiltersModal({ filters, onFiltersChange, isClient }: JobFiltersModalProps) {
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    filters.job_category ? filters.job_category.split(',') : []
+  );
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(
+    filters.type ? filters.type.split(',') : []
+  );
+  const [selectedExperiences, setSelectedExperiences] = useState<string[]>(
+    filters.experience_level ? filters.experience_level.split(',') : []
+  );
+  const [selectedCompanySizes, setSelectedCompanySizes] = useState<string[]>(
+    filters.company_size ? filters.company_size.split(',') : []
+  );
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+  const [isExperienceDropdownOpen, setIsExperienceDropdownOpen] = useState(false);
+  const [isCompanySizeDropdownOpen, setIsCompanySizeDropdownOpen] = useState(false);
 
-  // Track search with debouncing
-  useEffect(() => {
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
+  const handleCategoryToggle = (categoryValue: string) => {
+    const newSelected = selectedCategories.includes(categoryValue)
+      ? selectedCategories.filter(c => c !== categoryValue)
+      : [...selectedCategories, categoryValue];
 
-    // Only track if there's a search query
-    if (filters.search && filters.search.trim().length > 0) {
-      searchTimeoutRef.current = setTimeout(() => {
-        trackSearch(filters.search!, filters);
-      }, 1000); // Debounce for 1 second
-    }
-
-    return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
-    };
-  }, [filters, trackSearch]);
-
-  const updateFilter = (
-    key: keyof JobFilters,
-    value: string | boolean | number | undefined,
-  ) => {
-    const newFilters = {
-      ...filters,
-      [key]: value === "ALL" ? undefined : value,
-    };
-
-    onFiltersChange(newFilters);
-
-    // Track filter usage (except for search which is tracked separately)
-    if (key !== 'search' && value && value !== "ALL") {
-      trackUserAction('job_filter_applied', {
-        filter_type: key,
-        filter_value: value,
-      });
-    }
+    setSelectedCategories(newSelected);
+    const categoryFilter = newSelected.length > 0 ? newSelected.join(',') : undefined;
+    const updatedFilters = { ...filters, job_category: categoryFilter };
+    onFiltersChange(updatedFilters);
   };
 
-  const clearFilter = (key: keyof JobFilters) => {
-    const newFilters = { ...filters };
-    delete newFilters[key];
-    onFiltersChange(newFilters);
+  const handleTypeToggle = (typeValue: string) => {
+    const newSelected = selectedTypes.includes(typeValue)
+      ? selectedTypes.filter(t => t !== typeValue)
+      : [...selectedTypes, typeValue];
+
+    setSelectedTypes(newSelected);
+    const typeFilter = newSelected.length > 0 ? newSelected.join(',') : undefined;
+    const updatedFilters = { ...filters, type: typeFilter };
+    onFiltersChange(updatedFilters);
   };
 
-  const activeFiltersCount = Object.values(filters).filter(
-    (value) => value !== undefined && value !== "" && value !== null,
-  ).length;
+  const handleExperienceToggle = (experienceValue: string) => {
+    const newSelected = selectedExperiences.includes(experienceValue)
+      ? selectedExperiences.filter(e => e !== experienceValue)
+      : [...selectedExperiences, experienceValue];
+
+    setSelectedExperiences(newSelected);
+    const experienceFilter = newSelected.length > 0 ? newSelected.join(',') : undefined;
+    const updatedFilters = { ...filters, experience_level: experienceFilter };
+    onFiltersChange(updatedFilters);
+  };
+
+  const handleCompanySizeToggle = (sizeValue: string) => {
+    const newSelected = selectedCompanySizes.includes(sizeValue)
+      ? selectedCompanySizes.filter(s => s !== sizeValue)
+      : [...selectedCompanySizes, sizeValue];
+
+    setSelectedCompanySizes(newSelected);
+    const sizeFilter = newSelected.length > 0 ? newSelected.join(',') : undefined;
+    const updatedFilters = { ...filters, company_size: sizeFilter };
+    onFiltersChange(updatedFilters);
+  };
+
+  const handleRemoteChange = (checked: boolean) => {
+    const updatedFilters = { ...filters, remote: checked ? true : undefined };
+    onFiltersChange(updatedFilters);
+  };
+
+  const getActiveFilterCount = () => {
+    return selectedCategories.length + selectedTypes.length + selectedExperiences.length + selectedCompanySizes.length + (filters.remote ? 1 : 0);
+  };
+
+  const clearFilters = () => {
+    setSelectedCategories([]);
+    setSelectedTypes([]);
+    setSelectedExperiences([]);
+    setSelectedCompanySizes([]);
+    const clearedFilters: JobFilters = {
+      search: filters.search,
+      country: filters.country
+    };
+    onFiltersChange(clearedFilters);
+  };
+
+  const activeFilterCount = getActiveFilterCount();
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filters
-            {activeFiltersCount > 0 && (
-              <Badge variant="secondary" className="ml-2">
-                {activeFiltersCount}
-              </Badge>
-            )}
-          </div>
-          {activeFiltersCount > 0 && (
-            <Button onClick={onReset} variant="ghost" size="sm">
-              <X className="h-4 w-4 mr-2" />
-              Clear All
-            </Button>
-          )}
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        {/* Search */}
-        <div className="space-y-2">
-          <Label htmlFor="search">Search Jobs</Label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              id="search"
-              placeholder="Search by title, company, or keywords..."
-              value={filters.search || ""}
-              onChange={(e) => updateFilter("search", e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
-
-        {/* Basic Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Country */}
-          <div className="space-y-2">
-            <Label htmlFor="country">Country</Label>
-            <Select
-              value={filters.country || "ALL"}
-              onValueChange={(value) => updateFilter("country", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select country" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">All Countries</SelectItem>
-                {AFRICAN_COUNTRIES.map((country) => (
-                  <SelectItem key={country} value={country.toUpperCase()}>
-                    {country}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Job Type */}
-          <div className="space-y-2">
-            <Label htmlFor="type">Job Type</Label>
-            <Select
-              value={filters.type || "ALL"}
-              onValueChange={(value) => updateFilter("type", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select job type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ALL">All Types</SelectItem>
-                {JOB_TYPES.map((type, index) => (
-                  <SelectItem key={index} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Remote Work */}
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="remote"
-            checked={filters.remote || false}
-            onCheckedChange={(checked) => updateFilter("remote", checked)}
-          />
-          <Label htmlFor="remote">Remote work only</Label>
-        </div>
-
-        {/* Advanced Filters Toggle */}
-        <Button
-          onClick={() => setShowAdvanced(!showAdvanced)}
-          variant="outline"
-          className="w-full"
-        >
-          {showAdvanced ? "Hide" : "Show"} Advanced Filters
-        </Button>
-
-        {/* Advanced Filters */}
-        {showAdvanced && (
-          <div className="space-y-4 pt-4 border-t">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Location */}
-              <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  placeholder="e.g., Lagos, Nairobi..."
-                  value={filters.location || ""}
-                  onChange={(e) => updateFilter("location", e.target.value)}
-                />
-              </div>
-
-              {/* Experience Level */}
-              <div className="space-y-2">
-                <Label htmlFor="experience">Experience Level</Label>
-                <Select
-                  value={filters.experience || "ALL"}
-                  onValueChange={(value) => updateFilter("experience", value)}
+    <div className="p-4 space-y-6 overflow-auto flex-1">
+      {/* Job Category */}
+      <div>
+        <label className="text-sm font-medium mb-3 block">Category</label>
+        {isClient ? (
+          <Select value="" onValueChange={() => { }} open={isCategoryDropdownOpen} onOpenChange={setIsCategoryDropdownOpen}>
+            <SelectTrigger>
+              <SelectValue placeholder={selectedCategories.length > 0 ? `${selectedCategories.length} selected` : "All categories"} />
+            </SelectTrigger>
+            <SelectContent className="max-h-[240px] overflow-y-auto">
+              {JOB_CATEGORIES.map(category => (
+                <div
+                  key={category.value}
+                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedCategories.includes(category.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleCategoryToggle(category.value);
+                  }}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select experience level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ALL">All Levels</SelectItem>
-                    {EXPERIENCE_LEVELS.map((level, index) => (
-                      <SelectItem key={index} value={level}>
-                        {level}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+                  <span className="absolute left-4 flex h-3.5 w-3.5 items-center justify-center">
+                    {selectedCategories.includes(category.value) && (
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20,6 9,17 4,12" />
+                      </svg>
+                    )}
+                  </span>
+                  <span>{category.label}</span>
+                </div>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className="h-10 border rounded-sm border-input bg-background flex items-center px-3">
+            <span className="text-sm text-muted-foreground">All categories</span>
           </div>
         )}
+      </div>
 
-        {/* Active Filters */}
-        {activeFiltersCount > 0 && (
-          <div className="pt-4 border-t">
-            <Label className="text-sm font-medium">Active Filters:</Label>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {filters.search && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Search: {filters.search}
-                  <X
-                    className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter("search")}
-                  />
-                </Badge>
-              )}
-              {filters.country && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Country: {filters.country}
-                  <X
-                    className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter("country")}
-                  />
-                </Badge>
-              )}
-              {filters.location && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Location: {filters.location}
-                  <X
-                    className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter("location")}
-                  />
-                </Badge>
-              )}
-              {filters.type && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Type: {filters.type}
-                  <X
-                    className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter("type")}
-                  />
-                </Badge>
-              )}
-              {filters.experience && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Experience: {filters.experience}
-                  <X
-                    className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter("experience")}
-                  />
-                </Badge>
-              )}
-              {filters.remote && (
-                <Badge variant="secondary" className="flex items-center gap-1">
-                  Remote Only
-                  <X
-                    className="h-3 w-3 cursor-pointer"
-                    onClick={() => clearFilter("remote")}
-                  />
-                </Badge>
-              )}
-            </div>
+      {/* Job Type */}
+      <div>
+        <label className="text-sm font-medium mb-3 block">Type</label>
+        {isClient ? (
+          <Select value="" onValueChange={() => { }} open={isTypeDropdownOpen} onOpenChange={setIsTypeDropdownOpen}>
+            <SelectTrigger>
+              <SelectValue placeholder={selectedTypes.length > 0 ? `${selectedTypes.length} selected` : "All types"} />
+            </SelectTrigger>
+            <SelectContent className="max-h-[240px] overflow-y-auto">
+              {JOB_TYPES.map(type => (
+                <div
+                  key={type.value}
+                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedTypes.includes(type.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleTypeToggle(type.value);
+                  }}
+                >
+                  <span className="absolute left-4 flex h-3.5 w-3.5 items-center justify-center">
+                    {selectedTypes.includes(type.value) && (
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20,6 9,17 4,12" />
+                      </svg>
+                    )}
+                  </span>
+                  <span>{type.label}</span>
+                </div>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className="h-10 border rounded-sm border-input bg-background flex items-center px-3">
+            <span className="text-sm text-muted-foreground">All types</span>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* Experience Level */}
+      <div>
+        <label className="text-sm font-medium mb-3 block">Experience</label>
+        {isClient ? (
+          <Select value="" onValueChange={() => { }} open={isExperienceDropdownOpen} onOpenChange={setIsExperienceDropdownOpen}>
+            <SelectTrigger>
+              <SelectValue placeholder={selectedExperiences.length > 0 ? `${selectedExperiences.length} selected` : "All levels"} />
+            </SelectTrigger>
+            <SelectContent className="max-h-[240px] overflow-y-auto">
+              {EXPERIENCE_LEVELS.map(level => (
+                <div
+                  key={level.value}
+                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedExperiences.includes(level.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleExperienceToggle(level.value);
+                  }}
+                >
+                  <span className="absolute left-4 flex h-3.5 w-3.5 items-center justify-center">
+                    {selectedExperiences.includes(level.value) && (
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20,6 9,17 4,12" />
+                      </svg>
+                    )}
+                  </span>
+                  <span>{level.label}</span>
+                </div>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className="h-10 border rounded-sm border-input bg-background flex items-center px-3">
+            <span className="text-sm text-muted-foreground">All levels</span>
+          </div>
+        )}
+      </div>
+
+      {/* Company Size */}
+      <div>
+        <label className="text-sm font-medium mb-3 block">Company size</label>
+        {isClient ? (
+          <Select value="" onValueChange={() => { }} open={isCompanySizeDropdownOpen} onOpenChange={setIsCompanySizeDropdownOpen}>
+            <SelectTrigger>
+              <SelectValue placeholder={selectedCompanySizes.length > 0 ? `${selectedCompanySizes.length} selected` : "All sizes"} />
+            </SelectTrigger>
+            <SelectContent className="max-h-[240px] overflow-y-auto">
+              {COMPANY_SIZES.map(size => (
+                <div
+                  key={size.value}
+                  className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedCompanySizes.includes(size.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleCompanySizeToggle(size.value);
+                  }}
+                >
+                  <span className="absolute left-4 flex h-3.5 w-3.5 items-center justify-center">
+                    {selectedCompanySizes.includes(size.value) && (
+                      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20,6 9,17 4,12" />
+                      </svg>
+                    )}
+                  </span>
+                  <span>{size.label}</span>
+                </div>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className="h-10 border rounded-sm border-input bg-background flex items-center px-3">
+            <span className="text-sm text-muted-foreground">All sizes</span>
+          </div>
+        )}
+      </div>
+
+      {/* Remote Work */}
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="remote"
+          checked={filters.remote === true}
+          onCheckedChange={(checked) => handleRemoteChange(checked as boolean)}
+        />
+        <label htmlFor="remote" className="text-sm font-medium">
+          Remote only
+        </label>
+      </div>
+
+      {/* Clear Filters */}
+      {activeFilterCount > 0 && (
+        <Button onClick={clearFilters} className="w-full h-9 bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 hover:bg-pink-100 dark:hover:bg-pink-900/40 hover:text-pink-800 dark:hover:text-pink-200">
+          <X className="h-4 w-4 mr-2" />
+          Clear all filters
+        </Button>
+      )}
+
+    </div>
   );
 }

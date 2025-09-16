@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { AuthModal } from "@/components/custom/auth-modal";
 
 const navigationLinks = [
-  { href: "/jobs", label: "Jobs" },
+  { href: "/", label: "Jobs" },
   { href: "/advertise", label: "Advertise" },
 ] as const;
 
@@ -46,7 +46,7 @@ export function Header() {
             className="rounded-sm"
             onClick={() => setAuthModalOpen(true)}
           >
-            Sign In
+            Sign in
           </Button>
         </div>
       </div>

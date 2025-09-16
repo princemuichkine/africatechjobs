@@ -1,60 +1,28 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Search, MapPin, Filter, X } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+import { X } from 'lucide-react';
+import { LottieIcon } from '@/components/design/lottie-icon';
+import { animations } from '@/lib/utils/lottie-animations';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { JobFilters } from '@/data/queries';
+import { JobFiltersModal } from './job-filters';
+
+// Dynamically import Select components to avoid hydration mismatch
+const Select = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.Select })), { ssr: false });
+const SelectContent = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectContent })), { ssr: false });
+const SelectTrigger = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectTrigger })), { ssr: false });
+const SelectValue = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectValue })), { ssr: false });
 
 interface JobSearchProps {
     onFiltersChange: (filters: JobFilters) => void;
     initialFilters?: JobFilters;
-    jobCount?: number;
 }
 
-const JOB_CATEGORIES = [
-    { value: 'ENGINEERING', label: 'Engineering' },
-    { value: 'DATA', label: 'Data Science' },
-    { value: 'PRODUCT', label: 'Product' },
-    { value: 'DESIGN', label: 'Design' },
-    { value: 'MARKETING', label: 'Marketing' },
-    { value: 'SALES', label: 'Sales' },
-    { value: 'DEVOPS', label: 'DevOps' },
-    { value: 'MOBILE', label: 'Mobile' },
-    { value: 'AI', label: 'AI/ML' },
-    { value: 'BLOCKCHAIN', label: 'Blockchain' },
-    { value: 'CLOUD', label: 'Cloud' },
-    { value: 'OTHER', label: 'Other' },
-];
-
-const JOB_TYPES = [
-    { value: 'FULL_TIME', label: 'Full Time' },
-    { value: 'PART_TIME', label: 'Part Time' },
-    { value: 'CONTRACT', label: 'Contract' },
-    { value: 'FREELANCE', label: 'Freelance' },
-    { value: 'INTERNSHIP', label: 'Internship' },
-    { value: 'APPRENTICESHIP', label: 'Apprenticeship' },
-];
-
-const EXPERIENCE_LEVELS = [
-    { value: 'ENTRY_LEVEL', label: 'Entry Level' },
-    { value: 'JUNIOR', label: 'Junior' },
-    { value: 'MID_LEVEL', label: 'Mid Level' },
-    { value: 'SENIOR', label: 'Senior' },
-    { value: 'EXECUTIVE', label: 'Executive' },
-];
-
-const COMPANY_SIZES = [
-    { value: '1_10', label: '1-10 employees' },
-    { value: '11_50', label: '11-50 employees' },
-    { value: '51_200', label: '51-200 employees' },
-    { value: '201_1000', label: '201-1000 employees' },
-    { value: '1000_PLUS', label: '1000+ employees' },
-];
 
 const AFRICAN_COUNTRIES = [
     { value: 'Nigeria', label: 'Nigeria' },
@@ -74,59 +42,83 @@ const AFRICAN_COUNTRIES = [
     { value: 'Angola', label: 'Angola' },
 ];
 
-export function JobSearch({ onFiltersChange, initialFilters = {}, jobCount }: JobSearchProps) {
+export function JobSearch({ onFiltersChange, initialFilters = {} }: JobSearchProps) {
     const [filters, setFilters] = useState<JobFilters>(initialFilters);
     const [searchInput, setSearchInput] = useState(initialFilters.search || '');
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+    const [selectedCountries, setSelectedCountries] = useState<string[]>(initialFilters.country ? [initialFilters.country] : []);
+    const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
-    // Debounced search
+    // Use ref to avoid dependency on filters in useEffect
+    const filtersRef = useRef(filters);
+
+    // Update ref when filters change
+    useEffect(() => {
+        filtersRef.current = filters;
+    }, [filters]);
+
+    // Set client-side flag
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    // Debounced search - only depend on searchInput and onFiltersChange
     useEffect(() => {
         const timer = setTimeout(() => {
-            const updatedFilters = { ...filters, search: searchInput };
+            const updatedFilters = { ...filtersRef.current, search: searchInput };
             setFilters(updatedFilters);
             onFiltersChange(updatedFilters);
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [searchInput, filters, onFiltersChange]);
+    }, [searchInput, onFiltersChange]);
 
-    const handleFilterChange = (key: keyof JobFilters, value: string | boolean | undefined) => {
-        const updatedFilters = { ...filters, [key]: value };
+    const handleCountryToggle = (countryValue: string) => {
+        const newSelectedCountries = selectedCountries.includes(countryValue)
+            ? selectedCountries.filter(c => c !== countryValue)
+            : [...selectedCountries, countryValue];
+
+        setSelectedCountries(newSelectedCountries);
+
+        // Update filters with comma-separated countries or undefined if none selected
+        const countryFilter = newSelectedCountries.length > 0 ? newSelectedCountries.join(',') : undefined;
+        const updatedFilters = { ...filters, country: countryFilter };
         setFilters(updatedFilters);
         onFiltersChange(updatedFilters);
+
+        // Do not auto-open filters sheet - let user control it manually
     };
 
-    const clearFilters = () => {
-        const clearedFilters: JobFilters = { search: searchInput };
-        setFilters(clearedFilters);
-        onFiltersChange(clearedFilters);
+    const handleFiltersChange = (newFilters: JobFilters) => {
+        setFilters(newFilters);
+        onFiltersChange(newFilters);
     };
+
 
     const getActiveFilterCount = () => {
-        return Object.entries(filters).filter(([key, value]) =>
-            key !== 'search' && value !== undefined && value !== null && value !== ''
+        const otherFilters = Object.entries(filters).filter(([key, value]) =>
+            key !== 'search' && key !== 'country' && value !== undefined && value !== null && value !== ''
         ).length;
+        const countryFilters = selectedCountries.length;
+        return otherFilters + countryFilters;
     };
 
     const activeFilterCount = getActiveFilterCount();
 
     return (
         <div className="space-y-6">
-            {/* Hero Search Section */}
-            <div className="text-center space-y-4">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-                    Find Your Next Tech Job in <span className="text-primary">Africa</span>
-                </h1>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                    Discover opportunities from Lagos to Cairo, Cape Town to Nairobi.
-                    Africa&apos;s premier tech job board with {jobCount ? `${jobCount.toLocaleString()}+` : 'thousands of'} active positions.
-                </p>
-            </div>
-
             {/* Main Search Bar */}
             <div className="flex flex-col sm:flex-row gap-3 max-w-4xl mx-auto">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <div className="relative w-[500px]">
+                    <LottieIcon
+                        animationData={animations.search}
+                        size={16}
+                        loop={false}
+                        autoplay={false}
+                        initialFrame={0}
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                    />
                     <Input
                         placeholder="Search jobs, companies, or skills..."
                         value={searchInput}
@@ -136,133 +128,87 @@ export function JobSearch({ onFiltersChange, initialFilters = {}, jobCount }: Jo
                 </div>
 
                 <div className="flex gap-2">
-                    <Select value={filters.country || ''} onValueChange={(value) => handleFilterChange('country', value || undefined)}>
-                        <SelectTrigger className="w-[180px] h-12">
-                            <MapPin className="h-4 w-4 mr-2" />
-                            <SelectValue placeholder="All Countries" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="">All Countries</SelectItem>
-                            {AFRICAN_COUNTRIES.map(country => (
-                                <SelectItem key={country.value} value={country.value}>
-                                    {country.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    {isClient ? (
+                        <Select value="" onValueChange={() => { }} open={isCountryDropdownOpen} onOpenChange={setIsCountryDropdownOpen}>
+                            <SelectTrigger className="w-[160px] h-12">
+                                <div className="flex items-center pl-2">
+                                    <LottieIcon
+                                        animationData={animations.globe}
+                                        size={16}
+                                        loop={false}
+                                        autoplay={false}
+                                        initialFrame={0}
+                                        className="mr-2"
+                                    />
+                                    <SelectValue placeholder={selectedCountries.length > 0 ? `${selectedCountries.length} selected` : "Africa"} />
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent className="w-[160px] max-w-[160px] min-w-[160px] max-h-[240px] overflow-y-auto">
+                                {AFRICAN_COUNTRIES.map(country => (
+                                    <div
+                                        key={country.value}
+                                        className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedCountries.includes(country.value) ? 'bg-accent text-accent-foreground' : ''}`}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            handleCountryToggle(country.value);
+                                        }}
+                                    >
+                                        <span className="absolute left-4 flex h-3.5 w-3.5 items-center justify-center">
+                                            {selectedCountries.includes(country.value) && (
+                                                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <polyline points="20,6 9,17 4,12" />
+                                                </svg>
+                                            )}
+                                        </span>
+                                        <span>{country.label}</span>
+                                    </div>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    ) : (
+                        <div className="w-[160px] h-12 border rounded-sm border-input bg-background flex items-center px-3">
+                            <div className="flex items-center pl-1">
+                                <LottieIcon
+                                    animationData={animations.globe}
+                                    size={16}
+                                    loop={false}
+                                    autoplay={false}
+                                    initialFrame={0}
+                                    className="-mr-1 text-muted-foreground"
+                                />
+                                <span className="text-sm text-muted-foreground">Africa</span>
+                            </div>
+                        </div>
+                    )}
 
                     <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                         <SheetTrigger asChild>
-                            <Button variant="outline" className="h-12 relative">
-                                <Filter className="h-4 w-4 mr-2" />
+                            <Button variant="outline" className="w-[120px] h-12 relative">
+                                <LottieIcon
+                                    animationData={animations.filter}
+                                    size={16}
+                                    loop={false}
+                                    autoplay={false}
+                                    initialFrame={0}
+                                    className="mr-1.5"
+                                />
                                 Filters
-                                {activeFilterCount > 0 && (
-                                    <Badge variant="secondary" className="ml-2 h-5 w-5 p-0 text-xs">
-                                        {activeFilterCount}
-                                    </Badge>
-                                )}
                             </Button>
                         </SheetTrigger>
-                        <SheetContent className="w-[400px] sm:w-[540px]">
-                            <SheetHeader>
-                                <SheetTitle>Filter Jobs</SheetTitle>
-                                <SheetDescription>
-                                    Refine your job search with these filters
-                                </SheetDescription>
-                            </SheetHeader>
-
-                            <div className="space-y-6 mt-6">
-                                {/* Job Category */}
-                                <div>
-                                    <label className="text-sm font-medium mb-3 block">Job Category</label>
-                                    <Select value={filters.job_category || ''} onValueChange={(value) => handleFilterChange('job_category', value || undefined)}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="All Categories" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="">All Categories</SelectItem>
-                                            {JOB_CATEGORIES.map(category => (
-                                                <SelectItem key={category.value} value={category.value}>
-                                                    {category.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                        <SheetContent className="sm:max-w-md w-full p-0 h-full rounded-sm border-0 sm:m-4 sm:h-[calc(100%-2rem)] sm:rounded-sm sm:border shadow-lg bg-background overflow-hidden flex flex-col">
+                            <div className="border-0 shadow-none rounded-sm sm:rounded-sm h-full flex flex-col">
+                                <div className="sticky top-0 z-10 bg-background border-b px-4 py-3 flex flex-row items-center justify-between flex-shrink-0">
+                                    <div className="flex-1">
+                                        <h2 className="text-base font-normal pt-2">Filters</h2>
+                                        <p className="text-sm text-muted-foreground">Refine your search with these filters</p>
+                                    </div>
                                 </div>
-
-                                {/* Job Type */}
-                                <div>
-                                    <label className="text-sm font-medium mb-3 block">Job Type</label>
-                                    <Select value={filters.type || ''} onValueChange={(value) => handleFilterChange('type', value || undefined)}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="All Types" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="">All Types</SelectItem>
-                                            {JOB_TYPES.map(type => (
-                                                <SelectItem key={type.value} value={type.value}>
-                                                    {type.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Experience Level */}
-                                <div>
-                                    <label className="text-sm font-medium mb-3 block">Experience Level</label>
-                                    <Select value={filters.experience_level || ''} onValueChange={(value) => handleFilterChange('experience_level', value || undefined)}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="All Levels" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="">All Levels</SelectItem>
-                                            {EXPERIENCE_LEVELS.map(level => (
-                                                <SelectItem key={level.value} value={level.value}>
-                                                    {level.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Company Size */}
-                                <div>
-                                    <label className="text-sm font-medium mb-3 block">Company Size</label>
-                                    <Select value={filters.company_size || ''} onValueChange={(value) => handleFilterChange('company_size', value || undefined)}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="All Sizes" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="">All Sizes</SelectItem>
-                                            {COMPANY_SIZES.map(size => (
-                                                <SelectItem key={size.value} value={size.value}>
-                                                    {size.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {/* Remote Work */}
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="remote"
-                                        checked={filters.remote === true}
-                                        onCheckedChange={(checked) => handleFilterChange('remote', checked ? true : undefined)}
-                                    />
-                                    <label htmlFor="remote" className="text-sm font-medium">
-                                        Remote work only
-                                    </label>
-                                </div>
-
-                                {/* Clear Filters */}
-                                {activeFilterCount > 0 && (
-                                    <Button variant="outline" onClick={clearFilters} className="w-full">
-                                        <X className="h-4 w-4 mr-2" />
-                                        Clear All Filters
-                                    </Button>
-                                )}
+                                <JobFiltersModal
+                                    filters={filters}
+                                    onFiltersChange={handleFiltersChange}
+                                    isClient={isClient}
+                                />
                             </div>
                         </SheetContent>
                     </Sheet>
@@ -272,57 +218,106 @@ export function JobSearch({ onFiltersChange, initialFilters = {}, jobCount }: Jo
             {/* Active Filters Display */}
             {activeFilterCount > 0 && (
                 <div className="flex flex-wrap gap-2 max-w-4xl mx-auto">
-                    {filters.country && (
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                            {filters.country}
+                    {/* Country Badges - Blue */}
+                    {selectedCountries.length > 0 && (
+                        <>
+                            {selectedCountries.map(country => (
+                                <Badge
+                                    key={country}
+                                    className="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 hover:text-blue-800 dark:hover:text-blue-200"
+                                >
+                                    {AFRICAN_COUNTRIES.find(c => c.value === country)?.label}
+                                    <X
+                                        className="h-3 w-3 cursor-pointer"
+                                        onClick={() => handleCountryToggle(country)}
+                                    />
+                                </Badge>
+                            ))}
+                        </>
+                    )}
+
+                    {/* Category Badges - Orange */}
+                    {filters.job_category && filters.job_category.split(',').map(category => (
+                        <Badge
+                            key={`category-${category}`}
+                            className="flex items-center gap-1 bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/40 hover:text-orange-800 dark:hover:text-orange-200"
+                        >
+                            {category}
                             <X
                                 className="h-3 w-3 cursor-pointer"
-                                onClick={() => handleFilterChange('country', undefined)}
+                                onClick={() => {
+                                    const categories = filters.job_category!.split(',').filter(c => c !== category);
+                                    const updatedFilters = { ...filters, job_category: categories.length > 0 ? categories.join(',') : undefined };
+                                    handleFiltersChange(updatedFilters);
+                                }}
                             />
                         </Badge>
-                    )}
-                    {filters.job_category && (
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                            {JOB_CATEGORIES.find(c => c.value === filters.job_category)?.label}
+                    ))}
+
+                    {/* Type Badges - Purple */}
+                    {filters.type && filters.type.split(',').map(type => (
+                        <Badge
+                            key={`type-${type}`}
+                            className="flex items-center gap-1 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-800 dark:hover:text-purple-200"
+                        >
+                            {type}
                             <X
                                 className="h-3 w-3 cursor-pointer"
-                                onClick={() => handleFilterChange('job_category', undefined)}
+                                onClick={() => {
+                                    const types = filters.type!.split(',').filter(t => t !== type);
+                                    const updatedFilters = { ...filters, type: types.length > 0 ? types.join(',') : undefined };
+                                    handleFiltersChange(updatedFilters);
+                                }}
                             />
                         </Badge>
-                    )}
-                    {filters.type && (
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                            {JOB_TYPES.find(t => t.value === filters.type)?.label}
+                    ))}
+
+                    {/* Experience Badges - Cyan */}
+                    {filters.experience_level && filters.experience_level.split(',').map(experience => (
+                        <Badge
+                            key={`experience-${experience}`}
+                            className="flex items-center gap-1 bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200"
+                        >
+                            {experience}
                             <X
                                 className="h-3 w-3 cursor-pointer"
-                                onClick={() => handleFilterChange('type', undefined)}
+                                onClick={() => {
+                                    const experiences = filters.experience_level!.split(',').filter(e => e !== experience);
+                                    const updatedFilters = { ...filters, experience_level: experiences.length > 0 ? experiences.join(',') : undefined };
+                                    handleFiltersChange(updatedFilters);
+                                }}
                             />
                         </Badge>
-                    )}
-                    {filters.experience_level && (
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                            {EXPERIENCE_LEVELS.find(e => e.value === filters.experience_level)?.label}
+                    ))}
+
+                    {/* Company Size Badges - Yellow */}
+                    {filters.company_size && filters.company_size.split(',').map(size => (
+                        <Badge
+                            key={`size-${size}`}
+                            className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 hover:text-yellow-800 dark:hover:text-yellow-200"
+                        >
+                            {size}
                             <X
                                 className="h-3 w-3 cursor-pointer"
-                                onClick={() => handleFilterChange('experience_level', undefined)}
+                                onClick={() => {
+                                    const sizes = filters.company_size!.split(',').filter(s => s !== size);
+                                    const updatedFilters = { ...filters, company_size: sizes.length > 0 ? sizes.join(',') : undefined };
+                                    handleFiltersChange(updatedFilters);
+                                }}
                             />
                         </Badge>
-                    )}
-                    {filters.company_size && (
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                            {COMPANY_SIZES.find(s => s.value === filters.company_size)?.label}
-                            <X
-                                className="h-3 w-3 cursor-pointer"
-                                onClick={() => handleFilterChange('company_size', undefined)}
-                            />
-                        </Badge>
-                    )}
+                    ))}
+
+                    {/* Remote Badge - Emerald */}
                     {filters.remote && (
-                        <Badge variant="secondary" className="flex items-center gap-1">
+                        <Badge className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 hover:text-emerald-800 dark:hover:text-emerald-200">
                             Remote Only
                             <X
                                 className="h-3 w-3 cursor-pointer"
-                                onClick={() => handleFilterChange('remote', undefined)}
+                                onClick={() => {
+                                    const updatedFilters = { ...filters, remote: undefined };
+                                    handleFiltersChange(updatedFilters);
+                                }}
                             />
                         </Badge>
                     )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { JobSearch } from './job-search';
 import { JobList } from './job-list';
 import { JobsFeatured } from './jobs-featured';
@@ -8,8 +8,10 @@ import { getJobs, JobFilters } from '@/data/queries';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Job } from '@/lib/types/job';
+import Image from 'next/image';
 
 // Type for JobsFeatured component (different from main Job type)
 type FeaturedJob = {
@@ -60,8 +62,8 @@ export function JobSearchWrapper({
     const [currentPage, setCurrentPage] = useState(1);
     const jobsPerPage = 20;
 
-    // Handle filter changes
-    const handleFiltersChange = async (newFilters: JobFilters) => {
+    // Handle filter changes - memoized to prevent infinite re-renders
+    const handleFiltersChange = useCallback(async (newFilters: JobFilters) => {
         setFilters(newFilters);
         setCurrentPage(1);
         setLoading(true);
@@ -75,7 +77,7 @@ export function JobSearchWrapper({
         } finally {
             setLoading(false);
         }
-    };
+    }, []); // Empty dependency array since we don't depend on any props or state
 
     // Handle pagination
     const handlePageChange = async (page: number) => {
@@ -104,12 +106,11 @@ export function JobSearchWrapper({
     return (
         <>
             {/* Hero Section with Search */}
-            <section className="bg-gradient-to-b from-background to-muted/50 py-16 px-6">
-                <div className="max-w-7xl mx-auto">
+            <section className="pt-4 pb-8 px-6">
+                <div className="flex flex-col items-center justify-center max-w-screen-md mx-auto">
                     <JobSearch
                         onFiltersChange={handleFiltersChange}
                         initialFilters={filters}
-                        jobCount={jobCount}
                     />
                 </div>
             </section>
@@ -140,18 +141,22 @@ export function JobSearchWrapper({
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h2 className="text-2xl font-semibold mb-2">
-                                {hasActiveFilters ? 'Search Results' : 'All Jobs'}
+                                {hasActiveFilters ? 'Search results' : 'All jobs'}
                             </h2>
-                            <p className="text-muted-foreground">
+                            <div className="text-muted-foreground">
                                 {loading ? (
                                     <Skeleton className="h-4 w-48" />
                                 ) : (
                                     <>
-                                        {jobCount.toLocaleString()} jobs found
-                                        {hasActiveFilters && ' matching your criteria'}
+                                        {jobCount > 0 && (
+                                            <>
+                                                {jobCount.toLocaleString()} jobs
+                                                {hasActiveFilters && ' matching your criteria'}
+                                            </>
+                                        )}
                                     </>
                                 )}
-                            </p>
+                            </div>
                         </div>
                         <div className="hidden sm:flex items-center gap-4">
                             <Link
@@ -182,20 +187,39 @@ export function JobSearchWrapper({
                 </section>
 
                 {/* Call to Action */}
-                <section className="mt-16 text-center py-12 bg-muted/50 rounded-lg">
-                    <h3 className="text-2xl font-semibold mb-4">
-                        Ready to hire top African talent?
-                    </h3>
-                    <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                        Post your job and reach over 200,000+ monthly active tech professionals
-                        across Africa&apos;s fastest-growing tech ecosystems.
-                    </p>
-                    <Link
-                        href="/jobs/new"
-                        className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-                    >
-                        Post a Job
-                    </Link>
+                <section className="mt-16">
+                    <div className="border rounded-sm p-8 hover:shadow-lg transition-shadow duration-200">
+                        <div className="flex flex-col items-center justify-center text-center space-y-6">
+                            <div className="text-muted-foreground">
+                                <Image
+                                    src="/placeholder/loading_accounts.webp"
+                                    alt="Ready to hire"
+                                    className="w-32 h-24 mx-auto"
+                                    width={80}
+                                    height={80}
+                                />
+                            </div>
+                            <div className="space-y-3 max-w-2xl">
+                                <h3 className="text-2xl font-semibold text-zinc-900 dark:text-white">
+                                    Ready to hire top African talent?
+                                </h3>
+                                <p className="text-base text-foreground/90 leading-relaxed">
+                                    Post your job and reach over 200,000+ monthly active tech professionals
+                                    across Africa&apos;s fastest-growing tech ecosystems.
+                                </p>
+                            </div>
+                            <div className="w-full max-w-sm">
+                                <Button
+                                    asChild
+                                    className="w-full h-9 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/40 hover:text-green-800 dark:hover:text-green-200 border border-green-200 dark:border-green-800"
+                                >
+                                    <Link href="/jobs/new">
+                                        Post a job
+                                    </Link>
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             </main>
         </>

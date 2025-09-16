@@ -14,7 +14,9 @@ export interface JobFilters {
 
 export async function getJobById(id: string) {
   try {
-    const response = await fetch(`/api/jobs/${id}`);
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/api/jobs/${id}`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch job');
     }
@@ -43,7 +45,9 @@ export async function getJobs(
       }
     });
 
-    const response = await fetch(`/api/jobs?${params.toString()}`);
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/api/jobs?${params.toString()}`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch jobs');
     }
@@ -57,7 +61,9 @@ export async function getJobs(
 
 export async function getFeaturedJobs(limit: number = 10) {
   try {
-    const response = await fetch(`/api/jobs/featured?limit=${limit}`);
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/api/jobs/featured?limit=${limit}`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch featured jobs');
     }
@@ -71,7 +77,9 @@ export async function getFeaturedJobs(limit: number = 10) {
 
 export async function getJobsByCompany(companyId: string) {
   try {
-    const response = await fetch(`/api/jobs/company/${companyId}`);
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/api/jobs/company/${companyId}`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch jobs by company');
     }
@@ -85,7 +93,9 @@ export async function getJobsByCompany(companyId: string) {
 
 export async function getCompanyProfile(id: string) {
   try {
-    const response = await fetch(`/api/companies/${id}`);
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/api/companies/${id}`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch company profile');
     }
@@ -99,9 +109,10 @@ export async function getCompanyProfile(id: string) {
 
 export async function getUserProfile(slug: string, currentUserId?: string) {
   try {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
     const url = currentUserId
-      ? `/api/profiles/${slug}?currentUserId=${currentUserId}`
-      : `/api/profiles/${slug}`;
+      ? `${baseUrl}/api/profiles/${slug}?currentUserId=${currentUserId}`
+      : `${baseUrl}/api/profiles/${slug}`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -118,7 +129,9 @@ export async function getUserProfile(slug: string, currentUserId?: string) {
 // Get all countries for filters
 export async function getCountries() {
   try {
-    const response = await fetch('/api/countries');
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/api/countries`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch countries');
     }
@@ -133,7 +146,9 @@ export async function getCountries() {
 // Get cities for a specific country
 export async function getCitiesByCountry(countryCode: string) {
   try {
-    const response = await fetch(`/api/countries/${countryCode}/cities`);
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/api/countries/${countryCode}/cities`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch cities');
     }
@@ -148,7 +163,9 @@ export async function getCitiesByCountry(countryCode: string) {
 // Get job statistics for dashboard
 export async function getJobStats() {
   try {
-    const response = await fetch('/api/stats');
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/api/stats`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch job stats');
     }
@@ -163,7 +180,9 @@ export async function getJobStats() {
 // Search suggestions based on partial input
 export async function getSearchSuggestions(query: string, limit: number = 5) {
   try {
-    const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}&limit=${limit}`);
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/api/search/suggestions?q=${encodeURIComponent(query)}&limit=${limit}`;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch search suggestions');
     }

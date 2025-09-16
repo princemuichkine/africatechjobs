@@ -82,7 +82,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
                 href="https://afritechjobs.com/advertise"
                 className="underline text-black font-mono"
               >
-                Post a Job
+                Post a job
               </Link>{" "}
               – Employers can post job openings to reach top talent
             </Text>

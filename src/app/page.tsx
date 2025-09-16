@@ -1,7 +1,4 @@
-import { JobSearchWrapper } from '@/components/jobs/job-search-wrapper';
-import { BackgroundText } from '@/components/design/background-text';
-import CookieConsent from '@/components/design/tracking-cookie';
-import { Footer } from '@/components/custom/footer';
+import HomeClient from '@/components/custom/home-client';
 import { getJobs, getFeaturedJobs } from '@/data/queries';
 
 export const metadata = {
@@ -20,15 +17,10 @@ export default async function Page() {
   ]);
 
   return (
-    <div className="min-h-screen">
-      <JobSearchWrapper
-        initialFeaturedJobs={featuredJobs || []}
-        initialJobs={allJobs || []}
-        initialJobCount={totalJobs}
-      />
-      <BackgroundText />
-      <CookieConsent />
-      <Footer />
-    </div>
+    <HomeClient
+      initialFeaturedJobs={featuredJobs || []}
+      initialJobs={allJobs || []}
+      initialJobCount={totalJobs}
+    />
   );
 }

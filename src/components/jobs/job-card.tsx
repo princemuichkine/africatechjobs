@@ -10,13 +10,8 @@ import {
   getInitials,
 } from "@/lib/actions/utils";
 import { useAnalytics } from "@/lib/hooks/use-analytics";
-import {
-  MapPin,
-  Clock,
-  DollarSign,
-  ExternalLink,
-  Building2,
-} from "lucide-react";
+import { LottieIcon } from '@/components/design/lottie-icon';
+import { animations } from '@/lib/utils/lottie-animations';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,7 +56,13 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
               {job.title}
             </h3>
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Building2 className="h-4 w-4" />
+              <LottieIcon
+                animationData={animations.store}
+                size={16}
+                loop={false}
+                autoplay={false}
+                initialFrame={0}
+              />
               <span className="font-medium">
                 {job.companyName || "Unknown Company"}
               </span>
@@ -81,7 +82,13 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
         <div className="space-y-3">
           {/* Location and Remote */}
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <MapPin className="h-4 w-4" />
+            <LottieIcon
+              animationData={animations.globe}
+              size={16}
+              loop={false}
+              autoplay={false}
+              initialFrame={0}
+            />
             <span>
               {job.location}, {job.country}
             </span>
@@ -108,7 +115,13 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
           {/* Salary */}
           {(job.salary || job.salaryMin || job.salaryMax) && (
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <DollarSign className="h-4 w-4" />
+              <LottieIcon
+                animationData={animations.coin}
+                size={16}
+                loop={false}
+                autoplay={false}
+                initialFrame={0}
+              />
               <span>
                 {formatSalary(
                   job.salaryMin ?? undefined,
@@ -122,7 +135,13 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
           {/* Posted Date */}
           {job.postedAt && (
             <div className="flex items-center gap-2 text-sm text-gray-500">
-              <Clock className="h-4 w-4" />
+              <LottieIcon
+                animationData={animations.hourglass}
+                size={16}
+                loop={false}
+                autoplay={false}
+                initialFrame={0}
+              />
               <span>Posted {formatDate(job.postedAt)}</span>
             </div>
           )}
@@ -156,7 +175,14 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
           className="w-full"
           variant="default"
         >
-          <ExternalLink className="h-4 w-4 mr-2" />
+          <LottieIcon
+            animationData={animations.link}
+            size={16}
+            loop={false}
+            autoplay={false}
+            initialFrame={0}
+            className="mr-2"
+          />
           View Job
         </Button>
       </CardFooter>

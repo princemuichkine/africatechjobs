@@ -40,7 +40,13 @@ export async function GET(request: NextRequest) {
 
     // Apply filters
     if (country) {
-      query = query.eq("country", country);
+      // Handle multiple countries (comma-separated)
+      const countries = country.split(',').map(c => c.trim());
+      if (countries.length > 1) {
+        query = query.in("country", countries);
+      } else {
+        query = query.eq("country", country);
+      }
     }
 
     if (location) {
