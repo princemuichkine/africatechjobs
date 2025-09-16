@@ -7,6 +7,8 @@ export type Job = Database["public"]["Tables"]["jobs"]["Row"] & {
     name: string;
     logo?: string;
     website?: string;
+    slug?: string;
+    image?: string;
   };
   tags?: string[];
   skills?: string[];
@@ -16,6 +18,8 @@ export type Job = Database["public"]["Tables"]["jobs"]["Row"] & {
   salaryMin?: number | null;
   salaryMax?: number | null;
   postedAt?: string;
+  workplace?: string;
+  link?: string;
 };
 
 // Job filters type

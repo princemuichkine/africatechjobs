@@ -6,30 +6,41 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { searchParams } = new URL(request.url);
 
-    // Pagination
-    const page = parseInt(searchParams.get("page") || "1");
+    // Pagination - updated to match queries.ts
     const limit = parseInt(searchParams.get("limit") || "20");
-    const offset = (page - 1) * limit;
+    const offset = parseInt(searchParams.get("offset") || "0");
 
-    // Filters
+    // Filters - updated to match queries.ts
     const country = searchParams.get("country");
     const location = searchParams.get("location");
     const type = searchParams.get("type");
     const experienceLevel = searchParams.get("experience_level");
     const remote = searchParams.get("remote");
     const search = searchParams.get("search");
-    const category = searchParams.get("category");
+    const job_category = searchParams.get("job_category");
+    const company_size = searchParams.get("company_size");
 
     let query = supabase
       .from("jobs")
-      .select("*", { count: "exact" })
+      .select(`
+        *,
+        companies (
+          id,
+          name,
+          logo,
+          website,
+          size,
+          industry
+        )
+      `, { count: "exact" })
       .eq("is_active", true)
+      .order("is_sponsored", { ascending: false })
       .order("posted_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
     // Apply filters
     if (country) {
-      query = query.ilike("country", `%${country}%`);
+      query = query.eq("country", country);
     }
 
     if (location) {
@@ -44,18 +55,24 @@ export async function GET(request: NextRequest) {
       query = query.eq("experience_level", experienceLevel);
     }
 
-    if (remote !== null) {
+    if (remote !== null && remote !== undefined) {
       query = query.eq("remote", remote === "true");
     }
 
-    if (category) {
-      query = query.ilike("category", `%${category}%`);
+    if (job_category) {
+      query = query.eq("job_category", job_category);
     }
 
     if (search) {
       query = query.or(
-        `title.ilike.%${search}%,description.ilike.%${search}%,company_name.ilike.%${search}%`,
+        `title.ilike.%${search}%,description.ilike.%${search}%,company_name.ilike.%${search}%,skills.cs.{${search}}`,
       );
+    }
+
+    // Handle company_size filter
+    if (company_size) {
+      query = query.not("company_id", "is", null);
+      // We'll filter by company size in the application layer
     }
 
     const { data: jobs, error, count } = await query;
@@ -68,19 +85,23 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Filter by company size in application layer if needed
+    let filteredJobs = jobs;
+    if (company_size && jobs) {
+      filteredJobs = jobs.filter(job =>
+        job.companies && job.companies.size === company_size
+      );
+    }
+
     return NextResponse.json({
-      jobs: jobs || [],
-      pagination: {
-        page,
-        limit,
-        total: count || 0,
-        pages: Math.ceil((count || 0) / limit),
-      },
+      data: filteredJobs || [],
+      count: count || 0,
+      error: null,
     });
   } catch (error) {
     console.error("Error in jobs API:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { data: null, error: "Internal server error", count: 0 },
       { status: 500 },
     );
   }

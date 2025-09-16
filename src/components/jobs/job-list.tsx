@@ -1,78 +1,35 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Job, JobFilters } from "@/lib/types/job";
 import { JobCard } from "./job-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, RefreshCw } from "lucide-react";
+import { AlertCircle, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Job } from "@/lib/types/job";
 
 interface JobListProps {
-  filters?: JobFilters;
+  jobs: Job[];
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
   onJobClick?: (job: Job) => void;
+  loading?: boolean;
+  error?: string | null;
+  totalJobs?: number;
 }
 
-export function JobList({ filters = {}, onJobClick }: JobListProps) {
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 20,
-    total: 0,
-    pages: 0,
-  });
+export function JobList({
+  jobs,
+  currentPage,
+  totalPages,
+  onPageChange,
+  onJobClick,
+  loading = false,
+  error = null,
+  totalJobs = 0
+}: JobListProps) {
 
-  const fetchJobs = useCallback(
-    async (page: number = 1) => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const params = new URLSearchParams({
-          page: page.toString(),
-          limit: pagination.limit.toString(),
-          ...Object.fromEntries(
-            Object.entries(filters).filter(
-              ([, value]) => value !== undefined && value !== "",
-            ),
-          ),
-        });
-
-        const response = await fetch(`/api/jobs?${params}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch jobs");
-        }
-
-        setJobs(data.jobs);
-        setPagination(data.pagination);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-        console.error("Error fetching jobs:", err);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [filters, pagination.limit],
-  );
-
-  useEffect(() => {
-    fetchJobs(1);
-  }, [fetchJobs]);
-
-  const handleLoadMore = () => {
-    if (pagination.page < pagination.pages) {
-      fetchJobs(pagination.page + 1);
-    }
-  };
-
-  const handleRetry = () => {
-    fetchJobs(1);
-  };
-
+  // Loading state - show beautiful skeleton cards
   if (loading && jobs.length === 0) {
     return (
       <div className="space-y-4">
@@ -94,13 +51,14 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
     );
   }
 
+  // Error state with retry functionality
   if (error) {
     return (
       <Alert className="mb-6">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription className="flex items-center justify-between">
           <span>{error}</span>
-          <Button onClick={handleRetry} variant="outline" size="sm">
+          <Button onClick={() => onPageChange(1)} variant="outline" size="sm">
             <RefreshCw className="h-4 w-4 mr-2" />
             Retry
           </Button>
@@ -109,58 +67,69 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
     );
   }
 
-  if (jobs.length === 0) {
+  // Empty state
+  if (jobs.length === 0 && !loading) {
     return (
       <div className="text-center py-12">
-        <div className="text-gray-400 mb-4">
+        <div className="text-muted-foreground mb-4">
           <AlertCircle className="h-12 w-12 mx-auto" />
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <h3 className="text-lg font-medium mb-2">
           No jobs found
         </h3>
-        <p className="text-gray-500">
+        <p className="text-muted-foreground">
           Try adjusting your filters or search terms to find more results.
         </p>
       </div>
     );
   }
 
+  // Generate pagination numbers (same logic as before but cleaner)
+  const getPaginationNumbers = () => {
+    const delta = 2;
+    const range = [];
+    const rangeWithDots = [];
+
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
+      range.push(i);
+    }
+
+    if (currentPage - delta > 2) {
+      rangeWithDots.push(1, '...');
+    } else {
+      rangeWithDots.push(1);
+    }
+
+    rangeWithDots.push(...range);
+
+    if (currentPage + delta < totalPages - 1) {
+      rangeWithDots.push('...', totalPages);
+    } else if (totalPages > 1) {
+      rangeWithDots.push(totalPages);
+    }
+
+    return rangeWithDots;
+  };
+
   return (
     <div className="space-y-6">
       {/* Results count */}
-      <div className="text-sm text-gray-600">
-        Showing {jobs.length} of {pagination.total} jobs
+      <div className="text-sm text-muted-foreground">
+        Showing {jobs.length} of {totalJobs.toLocaleString()} jobs
       </div>
 
-      {/* Job cards */}
+      {/* Job cards in grid layout (like the original) */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {jobs.map((job) => (
           <JobCard key={job.id} job={job} onViewDetails={onJobClick} />
         ))}
       </div>
 
-      {/* Load more button */}
-      {pagination.page < pagination.pages && (
-        <div className="text-center">
-          <Button
-            onClick={handleLoadMore}
-            variant="outline"
-            size="lg"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                Loading...
-              </>
-            ) : (
-              "Load More Jobs"
-            )}
-          </Button>
-        </div>
-      )}
-
-      {/* Loading indicator for additional pages */}
+      {/* Loading indicator for additional pages (like original) */}
       {loading && jobs.length > 0 && (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
@@ -179,6 +148,67 @@ export function JobList({ filters = {}, onJobClick }: JobListProps) {
           ))}
         </div>
       )}
+
+      {/* Enhanced pagination */}
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Previous button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1 || loading}
+            className="flex items-center gap-1"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Previous
+          </Button>
+
+          {/* Page numbers */}
+          <div className="flex items-center gap-1">
+            {getPaginationNumbers().map((page, index) => (
+              <div key={index}>
+                {page === '...' ? (
+                  <span className="px-3 py-2 text-muted-foreground">...</span>
+                ) : (
+                  <Button
+                    variant={currentPage === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => onPageChange(page as number)}
+                    disabled={loading}
+                    className="min-w-[40px]"
+                  >
+                    {page}
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Next button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages || loading}
+            className="flex items-center gap-1"
+          >
+            Next
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
+      {/* Page info */}
+      <div className="text-center text-sm text-muted-foreground">
+        Page {currentPage} of {totalPages}
+        {loading && (
+          <span className="ml-2 inline-flex items-center">
+            <RefreshCw className="h-3 w-3 animate-spin mr-1" />
+            Loading...
+          </span>
+        )}
+      </div>
     </div>
   );
 }

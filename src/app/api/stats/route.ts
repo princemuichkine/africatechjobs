@@ -98,11 +98,11 @@ export async function GET() {
         .slice(0, 5),
     };
 
-    return NextResponse.json(stats);
+    return NextResponse.json({ data: stats, error: null });
   } catch (error) {
     console.error("Error in stats API:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { data: null, error: "Internal server error" },
       { status: 500 },
     );
   }

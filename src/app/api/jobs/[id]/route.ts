@@ -10,27 +10,40 @@ export async function GET(
     const supabase = await createClient();
     const { data: job, error } = await supabase
       .from("jobs")
-      .select("*")
+      .select(`
+        *,
+        companies (
+          id,
+          name,
+          logo,
+          website,
+          size,
+          industry
+        )
+      `)
       .eq("id", resolvedParams.id)
       .eq("is_active", true)
       .single();
 
     if (error) {
       if (error.code === "PGRST116") {
-        return NextResponse.json({ error: "Job not found" }, { status: 404 });
+        return NextResponse.json(
+          { data: null, error: "Job not found" },
+          { status: 404 }
+        );
       }
       console.error("Error fetching job:", error);
       return NextResponse.json(
-        { error: "Failed to fetch job" },
+        { data: null, error: "Failed to fetch job" },
         { status: 500 },
       );
     }
 
-    return NextResponse.json(job);
+    return NextResponse.json({ data: job, error: null });
   } catch (error) {
     console.error("Error in job API:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { data: null, error: "Internal server error" },
       { status: 500 },
     );
   }

@@ -1,5 +1,12 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { Database } from "@/lib/types/database";
+
+// Use generated database types as source of truth
+type JobType = Database["public"]["Enums"]["job_type"];
+type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
+type JobCategory = Database["public"]["Enums"]["job_category"];
+type CompanyIndustry = Database["public"]["Enums"]["company_industry"];
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,30 +52,106 @@ export function formatSalary(
   }
 }
 
-export function getJobTypeLabel(type: string): string {
-  const labels: Record<string, string> = {
-    FULL_TIME: "Full Time",
-    PART_TIME: "Part Time",
-    CONTRACT: "Contract",
-    FREELANCE: "Freelance",
-    INTERNSHIP: "Internship",
-    APPRENTICESHIP: "Apprenticeship",
-  };
+// Job type labels using database enum values
+const JOB_TYPE_LABELS: Record<JobType, string> = {
+  FULL_TIME: "Full Time",
+  PART_TIME: "Part Time",
+  CONTRACT: "Contract",
+  FREELANCE: "Freelance",
+  INTERNSHIP: "Internship",
+  APPRENTICESHIP: "Apprenticeship",
+} as const;
 
-  return labels[type] || type;
+// Experience level labels using database enum values
+const EXPERIENCE_LEVEL_LABELS: Record<ExperienceLevel, string> = {
+  ENTRY_LEVEL: "Entry Level",
+  JUNIOR: "Junior",
+  MID_LEVEL: "Mid Level",
+  SENIOR: "Senior",
+  EXECUTIVE: "Executive",
+} as const;
+
+// Job category labels using database enum values
+const JOB_CATEGORY_LABELS: Record<JobCategory, string> = {
+  ENGINEERING: "Engineering",
+  SALES: "Sales",
+  MARKETING: "Marketing",
+  DATA: "Data",
+  DEVOPS: "DevOps",
+  PRODUCT: "Product",
+  DESIGN: "Design",
+  CLOUD: "Cloud",
+  SUPPORT: "Support",
+  MANAGEMENT: "Management",
+  RESEARCH: "Research",
+  LEGAL: "Legal",
+  FINANCE: "Finance",
+  OPERATIONS: "Operations",
+  PR: "PR",
+  HR: "HR",
+  OTHER: "Other",
+} as const;
+
+// Company industry labels using database enum values
+const COMPANY_INDUSTRY_LABELS: Record<CompanyIndustry, string> = {
+  FINANCE: "Finance",
+  HEALTHCARE: "Healthcare",
+  EDUCATION: "Education",
+  AGRITECH: "Agritech",
+  E_COMMERCE: "E-Commerce",
+  LOGISTICS: "Logistics",
+  REAL_ESTATE: "Real Estate",
+  INSURANCE: "Insurance",
+  BANKING: "Banking",
+  PAYMENTS: "Payments",
+  INVESTMENT: "Investment",
+  BLOCKCHAIN: "Blockchain",
+  AI: "AI",
+  DATA: "Data",
+  CYBERSECURITY: "Cybersecurity",
+  CLOUD: "Cloud",
+  SOFTWARE: "Software",
+  CONSUMER: "Consumer",
+  AGENCY: "Agency",
+  MARKETPLACE: "Marketplace",
+  MEDIA: "Media",
+  TELECOM: "Telecom",
+  ENERGY: "Energy",
+  TRANSPORTATION: "Transportation",
+  OTHER: "Other",
+} as const;
+
+export function getJobTypeLabel(type: JobType | string): string {
+  return JOB_TYPE_LABELS[type as JobType] || type;
 }
 
-export function getExperienceLabel(experienceLevel: string): string {
-  const labels: Record<string, string> = {
-    ENTRY_LEVEL: "Entry Level",
-    JUNIOR: "Junior",
-    MID_LEVEL: "Mid Level",
-    SENIOR: "Senior",
-    LEAD: "Lead",
-    EXECUTIVE: "Executive",
-  };
+export function getExperienceLabel(experienceLevel: ExperienceLevel | string): string {
+  return EXPERIENCE_LEVEL_LABELS[experienceLevel as ExperienceLevel] || experienceLevel;
+}
 
-  return labels[experienceLevel] || experienceLevel;
+export function getJobCategoryLabel(category: JobCategory | string): string {
+  return JOB_CATEGORY_LABELS[category as JobCategory] || category;
+}
+
+export function getCompanyIndustryLabel(industry: CompanyIndustry | string): string {
+  return COMPANY_INDUSTRY_LABELS[industry as CompanyIndustry] || industry;
+}
+
+// Utility functions to get all enum values (useful for dropdowns, etc.)
+export function getAllJobTypes(): JobType[] {
+  return Object.keys(JOB_TYPE_LABELS) as JobType[];
+}
+
+export function getAllExperienceLevels(): ExperienceLevel[] {
+  return Object.keys(EXPERIENCE_LEVEL_LABELS) as ExperienceLevel[];
+}
+
+export function getAllJobCategories(): JobCategory[] {
+  return Object.keys(JOB_CATEGORY_LABELS) as JobCategory[];
+}
+
+export function getAllCompanyIndustries(): CompanyIndustry[] {
+  return Object.keys(COMPANY_INDUSTRY_LABELS) as CompanyIndustry[];
 }
 
 export function truncateText(text: string, maxLength: number): string {
