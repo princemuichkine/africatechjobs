@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 export default function TermsClient() {
     return (
         <>
-            <div className="flex flex-col items-center justify-center max-w-screen-md mx-auto px-6 py-12 pb-32">
+            <div className="flex flex-col max-w-screen-md mx-auto px-6 py-12 pb-32">
                 {/* Hero Section */}
                 <div className="relative pt-24 md:pt-32 mb-12 text-center">
                     <motion.h1
@@ -173,8 +173,8 @@ export default function TermsClient() {
                 </motion.div>
 
                 {/* Footer info */}
-                <div className="mt-20 pt-8 border-t border-border text-center">
-                    <p className="text-foreground/80 text-sm">Last updated: September 16, 2025</p>
+                <div className="mt-20 pt-8 border-t border-border flex justify-end">
+                    <p className="text-foreground/80 text-sm">Last updated: September 4, 2025</p>
                 </div>
             </div>
         </>

@@ -80,14 +80,14 @@ export const Footer = () => {
 
                     <div className="flex items-center gap-4">
                         <Link
-                            href="https://twitter.com/bm_diop"
+                            href="https://x.com/bm_diop"
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={playClickSound}
                             className="text-black dark:text-white hover:text-[#000000] dark:hover:text-[#FFFFFF] transition-colors"
                             aria-label="Follow us on X"
                         >
-                            <XIcon className="h-5.5 w-5.5" />
+                            <XIcon className="h-5 w-5" />
                         </Link>
                         <Link
                             href="https://github.com/princemuichkine"

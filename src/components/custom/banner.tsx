@@ -105,7 +105,7 @@ export function Banner() {
 
   const currentBanner = banners[currentBannerIndex];
 
-  if (!isVisible) return null;
+  if (!isVisible || !mounted || !currentBanner) return null;
 
   // Hide banner on /generate page
   if (
