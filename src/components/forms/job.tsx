@@ -1,6 +1,6 @@
 "use client";
 
-import { createJobListingAction } from "@/lib/actions/create-job-listing";
+import { createJobListingAction } from "@/lib/actions/jobs";
 import { CompanySelect } from "@/components/company/company-select";
 import { Button } from "@/components/ui/button";
 import {
@@ -235,8 +235,8 @@ export function JobForm() {
                     <button
                       type="button"
                       className={`p-4 border rounded-sm cursor-pointer text-left ${field.value === "standard"
-                          ? "border-primary"
-                          : "border-border"
+                        ? "border-primary"
+                        : "border-border"
                         }`}
                       onClick={() => field.onChange("standard")}
                     >
@@ -250,8 +250,8 @@ export function JobForm() {
                     <button
                       type="button"
                       className={`p-4 border rounded-sm cursor-pointer text-left ${field.value === "featured"
-                          ? "border-primary"
-                          : "border-border"
+                        ? "border-primary"
+                        : "border-border"
                         }`}
                       onClick={() => field.onChange("featured")}
                     >
@@ -266,8 +266,8 @@ export function JobForm() {
                   <button
                     type="button"
                     className={`p-4 border rounded-sm cursor-pointer text-left ${field.value === "premium"
-                        ? "border-primary"
-                        : "border-border"
+                      ? "border-primary"
+                      : "border-border"
                       }`}
                     onClick={() => field.onChange("premium")}
                   >

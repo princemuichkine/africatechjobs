@@ -140,7 +140,7 @@ export function JobSearchWrapper({
                     <section className="mb-12">
                         <div className="flex items-center justify-between mb-6">
                             <div>
-                                <h2 className="text-2xl font-semibold mb-2">Featured Jobs</h2>
+                                <h2 className="text-2xl font-semibold mb-2">Featured jobs</h2>
                                 <p className="text-muted-foreground">
                                     Premium opportunities from top African companies
                                 </p>
@@ -223,11 +223,11 @@ export function JobSearchWrapper({
                             </div>
                             <div className="space-y-3 max-w-2xl">
                                 <h3 className="text-2xl font-semibold text-zinc-900 dark:text-white">
-                                    Ready to hire top African talent ?
+                                    Ready to hire talents ?
                                 </h3>
                                 <p className="text-base text-foreground/90 leading-relaxed">
                                     Post your job and reach over 100,000+ monthly active tech professionals
-                                    across Africa&apos;s fastest-growing tech ecosystems.
+                                    across Africa&apos;s and the world.
                                 </p>
                             </div>
                         </div>
