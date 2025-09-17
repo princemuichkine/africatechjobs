@@ -171,6 +171,19 @@ CREATE TABLE job_alerts (
 );
 
 -- =============================================
+-- ROLE CATEGORIZATION TABLES
+-- =============================================
+
+-- This table maps keywords found in job titles to a specific job category
+-- It allows for a flexible, data-driven approach to categorizing jobs.
+CREATE TABLE role_category_mappings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    keyword TEXT NOT NULL UNIQUE,
+    category job_category NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
 -- INDEXES FOR PERFORMANCE
 -- =============================================
 
@@ -220,6 +233,11 @@ CREATE INDEX idx_scrape_logs_started_at ON scrape_logs(started_at DESC);
 CREATE INDEX idx_scrape_logs_status ON scrape_logs(status);
 CREATE INDEX idx_scrape_logs_source ON scrape_logs(source);
 
+
+-- Role category mappings indexes
+CREATE INDEX idx_role_category_mappings_keyword ON role_category_mappings(keyword);
+
+
 -- =============================================
 -- TRIGGERS & FUNCTIONS
 -- =============================================
@@ -241,4 +259,7 @@ CREATE TRIGGER update_jobs_updated_at BEFORE UPDATE ON jobs
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_role_category_mappings_updated_at BEFORE UPDATE ON role_category_mappings
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

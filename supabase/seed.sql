@@ -150,3 +150,130 @@ INSERT INTO companies (name, description, logo, website, industry, size, locatio
     ('Swvl', 'Mass transit technology platform that provides bus booking and route optimization', 'https://swvl.com/logo.png', 'https://swvl.com', 'TRANSPORTATION', '201_1000', 'Cairo', 'Egypt'),
     ('Vezeeta', 'Digital healthcare platform connecting patients with healthcare providers', 'https://vezeeta.com/logo.png', 'https://vezeeta.com', 'HEALTHCARE', '51_200', 'Cairo', 'Egypt'),
     ('Expensya', 'Expense management software for businesses', 'https://expensya.com/logo.png', 'https://expensya.com', 'SOFTWARE', '11_50', 'Tunis', 'Tunisia');
+
+-- =============================================
+-- SEED DATA FOR ROLE CATEGORY MAPPINGS
+-- =============================================
+
+INSERT INTO role_category_mappings (keyword, category) VALUES
+    -- Engineering
+    ('Software Engineer', 'ENGINEERING'),
+    ('Game Developer', 'ENGINEERING'),
+    ('Game Designer', 'ENGINEERING'),
+    ('Animator', 'ENGINEERING'),
+    ('Software Developer', 'ENGINEERING'),
+    ('Backend Developer', 'ENGINEERING'),
+    ('Backend Engineer', 'ENGINEERING'),
+    ('Frontend Developer', 'ENGINEERING'),
+    ('Frontend Engineer', 'ENGINEERING'),
+    ('Full Stack Developer', 'ENGINEERING'),
+    ('Full Stack Engineer', 'ENGINEERING'),
+    ('Mobile Developer', 'ENGINEERING'),
+    ('iOS Developer', 'ENGINEERING'),
+    ('Android Developer', 'ENGINEERING'),
+    ('Software Architect', 'ENGINEERING'),
+    ('Hardware Engineer', 'ENGINEERING'),
+    ('Telecom Engineer', 'ENGINEERING'),
+    ('Telecoms Engineer', 'ENGINEERING'),
+    ('Network Engineer', 'ENGINEERING'),
+    ('Network Administrator', 'ENGINEERING'),
+    ('Network Security Engineer', 'ENGINEERING'),
+    ('Network Security Administrator', 'ENGINEERING'),
+    ('Automation Engineer', 'ENGINEERING'),
+    ('Mechanical Engineer', 'ENGINEERING'),
+    ('Embedded Engineer', 'ENGINEERING'),
+    ('Firmware Engineer', 'ENGINEERING'),
+    ('Solutions Architect', 'ENGINEERING'),
+
+    -- DevOps & Cloud
+    ('DevOps Engineer', 'DEVOPS'),
+    ('Site Reliability Engineer', 'DEVOPS'),
+    ('SRE', 'DEVOPS'),
+    ('Cloud Engineer', 'CLOUD'),
+    ('Cloud Architect', 'CLOUD'),
+    ('AWS', 'CLOUD'),
+    ('Azure', 'CLOUD'),
+    ('GCP', 'CLOUD'),
+    ('Infrastructure Engineer', 'DEVOPS'),
+
+    -- Data
+    ('Data Scientist', 'DATA'),
+    ('Data Analyst', 'DATA'),
+    ('Data Engineer', 'DATA'),
+    ('Machine Learning Engineer', 'DATA'),
+    ('ML Engineer', 'DATA'),
+    ('AI Engineer', 'DATA'),
+    ('Business Intelligence', 'DATA'),
+    ('BI Developer', 'DATA'),
+
+    -- Product & Design
+    ('Product Manager', 'PRODUCT'),
+    ('Product Owner', 'PRODUCT'),
+    ('UI/UX Designer', 'DESIGN'),
+    ('Product Designer', 'DESIGN'),
+    ('UX Researcher', 'DESIGN'),
+    ('Graphic Designer', 'DESIGN'),
+    ('Visual Designer', 'DESIGN'),
+
+    -- Sales
+    ('Sales Development Representative', 'SALES'),
+    ('Sales Enablement Manager', 'SALES'),
+    ('SDR', 'SALES'),
+    ('Account Executive', 'SALES'),
+    ('Account Manager', 'SALES'),
+    ('Sales Manager', 'SALES'),
+    ('Business Development', 'SALES'),
+    ('Sales Engineer', 'SALES'),
+    ('Customer Success Manager', 'SALES'),
+
+    -- Marketing
+    ('Digital Marketing', 'MARKETING'),
+    ('Content Marketer', 'MARKETING'),
+    ('Social Media Manager', 'MARKETING'),
+    ('Growth Hacker', 'MARKETING'),
+    ('Marketing Manager', 'MARKETING'),
+    ('SEO Specialist', 'MARKETING'),
+    ('PPC Specialist', 'MARKETING'),
+
+    -- Support
+    ('Customer Support', 'SUPPORT'),
+    ('Customer Success', 'SUPPORT'),
+    ('Technical Support', 'SUPPORT'),
+    ('Help Desk', 'SUPPORT'),
+    ('Customer Service', 'SUPPORT'),
+    ('Implementation Specialist', 'SUPPORT'),
+
+    -- Management
+    ('Project Manager', 'MANAGEMENT'),
+    ('Scrum Master', 'MANAGEMENT'),
+    ('CTO', 'MANAGEMENT'),
+    ('CEO', 'MANAGEMENT'),
+    ('CFO', 'MANAGEMENT'),
+    ('COO', 'MANAGEMENT'),
+    ('CMO', 'MANAGEMENT'),
+    ('CRO', 'MANAGEMENT'),
+    ('VP', 'MANAGEMENT'),
+
+    -- HR & Operations
+    ('HR Manager', 'HR'),
+    ('HR Business Partner', 'HR'),
+    ('Talent Acquisition', 'HR'),
+    ('Recruiter', 'HR'),
+    ('Operations Manager', 'OPERATIONS'),
+    ('Operations Analyst', 'OPERATIONS'),
+    ('Business Analyst', 'OPERATIONS'),
+
+    -- Finance & Legal
+    ('Accountant', 'FINANCE'),
+    ('Financial Analyst', 'FINANCE'),
+    ('Compliance Officer', 'LEGAL'),
+    ('Auditor', 'FINANCE'),
+    ('Legal Counsel', 'LEGAL'),
+
+    -- Other Tech Roles
+    ('QA Engineer', 'SUPPORT'),
+    ('QA Automation Engineer', 'SUPPORT'),
+    ('Cybersecurity', 'DEVOPS'),
+    ('Information Security', 'DEVOPS')
+    
+-- ON CONFLICT (keyword) DO NOTHING;

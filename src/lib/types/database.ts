@@ -401,6 +401,27 @@ export type Database = {
         }
         Relationships: []
       }
+      role_category_mappings: {
+        Row: {
+          category: Database["public"]["Enums"]["job_category"]
+          created_at: string | null
+          id: string
+          keyword: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["job_category"]
+          created_at?: string | null
+          id?: string
+          keyword: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["job_category"]
+          created_at?: string | null
+          id?: string
+          keyword?: string
+        }
+        Relationships: []
+      }
       scrape_logs: {
         Row: {
           completed_at: string | null

@@ -9,7 +9,8 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "types": "/opt/homebrew/bin/supabase gen types typescript --project-id gmqfnzwsqlvsodrpvbfb > src/lib/types/database.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "trigger": "trigger.dev dev"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.30",
@@ -75,6 +76,7 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@trigger.dev/build": "4.0.2",
+    "@trigger.dev/cli": "^3.3.12",
     "@types/node": "^20",
     "@types/random-useragent": "^0.3.3",
     "@types/react": "^19",
