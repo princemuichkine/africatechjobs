@@ -30,7 +30,7 @@ CREATE TYPE company_industry AS ENUM (
 );
 
 -- =============================================
--- CORE TABLES
+-- CORE TABLES WITH CONSTRAINTS AND INDEXES
 -- =============================================
 
 -- Countries table for African countries
@@ -44,6 +44,10 @@ CREATE TABLE countries (
     is_active BOOLEAN DEFAULT TRUE
 );
 
+-- Countries indexes
+CREATE INDEX idx_countries_code ON countries(code);
+CREATE INDEX idx_countries_region ON countries(region);
+
 -- Cities table for major African tech hubs
 CREATE TABLE cities (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -52,6 +56,10 @@ CREATE TABLE cities (
     is_tech_hub BOOLEAN DEFAULT FALSE,
     UNIQUE(name, country_id)
 );
+
+-- Cities indexes
+CREATE INDEX idx_cities_country_id ON cities(country_id);
+CREATE INDEX idx_cities_is_tech_hub ON cities(is_tech_hub);
 
 -- Companies table
 CREATE TABLE companies (
@@ -65,8 +73,22 @@ CREATE TABLE companies (
     location TEXT,
     country TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    -- Generated columns
+    name_search TEXT GENERATED ALWAYS AS (LOWER(TRIM(name))) STORED
 );
+
+-- Companies constraints
+ALTER TABLE companies ADD CONSTRAINT companies_website_format_check
+    CHECK (website IS NULL OR website ~ '^https?://');
+ALTER TABLE companies ADD CONSTRAINT companies_name_length_check
+    CHECK (LENGTH(TRIM(name)) >= 2 AND LENGTH(TRIM(name)) <= 100);
+
+-- Companies indexes
+CREATE INDEX idx_companies_name ON companies(name);
+CREATE INDEX idx_companies_country ON companies(country);
+CREATE INDEX idx_companies_size ON companies(size);
+CREATE INDEX idx_companies_name_search ON companies USING GIN(to_tsvector('english', name));
 
 -- Jobs table
 CREATE TABLE jobs (
@@ -94,8 +116,47 @@ CREATE TABLE jobs (
     is_sponsored BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    -- Generated columns
+    title_search TEXT GENERATED ALWAYS AS (LOWER(TRIM(title))) STORED,
+    days_since_posted INTEGER GENERATED ALWAYS AS (
+        EXTRACT(EPOCH FROM (NOW() - posted_at)) / 86400
+    )::INTEGER STORED
 );
+
+-- Jobs constraints
+ALTER TABLE jobs ADD CONSTRAINT jobs_salary_range_check
+    CHECK (salary_min IS NULL OR salary_max IS NULL OR salary_min <= salary_max);
+ALTER TABLE jobs ADD CONSTRAINT jobs_posted_at_future_check
+    CHECK (posted_at <= NOW() + INTERVAL '1 day'); -- Allow slight future dates for timezone issues
+ALTER TABLE jobs ADD CONSTRAINT jobs_deadline_future_check
+    CHECK (deadline IS NULL OR deadline >= posted_at);
+ALTER TABLE jobs ADD CONSTRAINT jobs_title_length_check
+    CHECK (LENGTH(TRIM(title)) >= 3 AND LENGTH(TRIM(title)) <= 200);
+ALTER TABLE jobs ADD CONSTRAINT jobs_description_length_check
+    CHECK (LENGTH(TRIM(description)) >= 10);
+
+-- Jobs indexes
+CREATE INDEX idx_jobs_is_active ON jobs(is_active);
+CREATE INDEX idx_jobs_posted_at ON jobs(posted_at DESC);
+CREATE INDEX idx_jobs_country ON jobs(country);
+CREATE INDEX idx_jobs_type ON jobs(type);
+CREATE INDEX idx_jobs_experience_level ON jobs(experience_level);
+CREATE INDEX idx_jobs_remote ON jobs(remote);
+CREATE INDEX idx_jobs_category ON jobs(job_category);
+CREATE INDEX idx_jobs_source ON jobs(source);
+CREATE INDEX idx_jobs_company_id ON jobs(company_id);
+CREATE INDEX idx_jobs_url ON jobs(url); -- For duplicate detection
+CREATE INDEX idx_jobs_source_id ON jobs(source, source_id); -- For source tracking
+CREATE INDEX idx_jobs_skills ON jobs USING GIN(skills); -- For skill searches
+CREATE INDEX idx_jobs_is_sponsored ON jobs(is_sponsored);
+CREATE INDEX idx_jobs_active_country_category ON jobs(is_active, country, job_category) WHERE is_active = true;
+CREATE INDEX idx_jobs_active_remote_posted ON jobs(is_active, remote, posted_at DESC) WHERE is_active = true;
+CREATE INDEX idx_jobs_active_type_level ON jobs(is_active, type, experience_level) WHERE is_active = true;
+CREATE INDEX idx_jobs_active_posted_category ON jobs(posted_at DESC, job_category) WHERE is_active = true;
+CREATE INDEX idx_jobs_active_country_posted ON jobs(country, posted_at DESC) WHERE is_active = true;
+CREATE INDEX idx_jobs_title_search ON jobs USING GIN(to_tsvector('english', title));
+CREATE INDEX idx_jobs_description_search ON jobs USING GIN(to_tsvector('english', description));
 
 -- User profiles (extends Supabase auth.users)
 CREATE TABLE profiles (
@@ -120,6 +181,22 @@ CREATE TABLE profiles (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Profiles constraints
+ALTER TABLE profiles ADD CONSTRAINT profiles_website_format_check
+    CHECK (website IS NULL OR website ~ '^https?://');
+ALTER TABLE profiles ADD CONSTRAINT profiles_slug_format_check
+    CHECK (slug IS NULL OR slug ~ '^[a-z0-9-]+$');
+
+-- Profiles indexes
+CREATE INDEX idx_profiles_email ON profiles(email);
+CREATE INDEX idx_profiles_slug ON profiles(slug);
+CREATE INDEX idx_profiles_country ON profiles(country);
+CREATE INDEX idx_profiles_is_public ON profiles(is_public);
+
+-- =============================================
+-- ANALYTICS & TRACKING TABLES
+-- =============================================
+
 -- Job scraping logs
 CREATE TABLE scrape_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -134,9 +211,10 @@ CREATE TABLE scrape_logs (
     completed_at TIMESTAMP WITH TIME ZONE
 );
 
--- =============================================
--- ANALYTICS & TRACKING TABLES
--- =============================================
+-- Scrape logs indexes
+CREATE INDEX idx_scrape_logs_started_at ON scrape_logs(started_at DESC);
+CREATE INDEX idx_scrape_logs_status ON scrape_logs(status);
+CREATE INDEX idx_scrape_logs_source ON scrape_logs(source);
 
 -- Track job views for analytics
 CREATE TABLE job_views (
@@ -149,6 +227,11 @@ CREATE TABLE job_views (
     session_id TEXT
 );
 
+-- Job views indexes
+CREATE INDEX idx_job_views_job_id ON job_views(job_id);
+CREATE INDEX idx_job_views_viewer_id ON job_views(viewer_id);
+CREATE INDEX idx_job_views_viewed_at ON job_views(viewed_at DESC);
+
 -- Company follows for user engagement
 CREATE TABLE company_follows (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -157,6 +240,10 @@ CREATE TABLE company_follows (
     followed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(company_id, follower_id)
 );
+
+-- Company follows indexes
+CREATE INDEX idx_company_follows_company_id ON company_follows(company_id);
+CREATE INDEX idx_company_follows_follower_id ON company_follows(follower_id);
 
 -- Job alerts for users
 CREATE TABLE job_alerts (
@@ -169,6 +256,15 @@ CREATE TABLE job_alerts (
     last_sent TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Job alerts constraints
+ALTER TABLE job_alerts ADD CONSTRAINT job_alerts_frequency_check
+    CHECK (frequency IN ('immediate', 'daily', 'weekly'));
+
+-- Job alerts indexes
+CREATE INDEX idx_job_alerts_user_id ON job_alerts(user_id);
+CREATE INDEX idx_job_alerts_is_active ON job_alerts(is_active);
+CREATE INDEX idx_job_alerts_filters ON job_alerts USING GIN(filters);
 
 -- =============================================
 -- ROLE CATEGORIZATION TABLES
@@ -183,83 +279,5 @@ CREATE TABLE role_category_mappings (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- =============================================
--- INDEXES FOR PERFORMANCE
--- =============================================
-
--- Jobs table indexes
-CREATE INDEX idx_jobs_is_active ON jobs(is_active);
-CREATE INDEX idx_jobs_posted_at ON jobs(posted_at DESC);
-CREATE INDEX idx_jobs_country ON jobs(country);
-CREATE INDEX idx_jobs_type ON jobs(type);
-CREATE INDEX idx_jobs_experience_level ON jobs(experience_level);
-CREATE INDEX idx_jobs_remote ON jobs(remote);
-CREATE INDEX idx_jobs_category ON jobs(job_category);
-CREATE INDEX idx_jobs_source ON jobs(source);
-CREATE INDEX idx_jobs_company_id ON jobs(company_id);
-CREATE INDEX idx_jobs_url ON jobs(url); -- For duplicate detection
-CREATE INDEX idx_jobs_source_id ON jobs(source, source_id); -- For source tracking
-CREATE INDEX idx_jobs_skills ON jobs USING GIN(skills); -- For skill searches
-CREATE INDEX idx_jobs_is_sponsored ON jobs(is_sponsored);
-
--- Companies table indexes
-CREATE INDEX idx_companies_name ON companies(name);
-CREATE INDEX idx_companies_country ON companies(country);
-CREATE INDEX idx_companies_size ON companies(size);
-
--- Countries and cities indexes
-CREATE INDEX idx_countries_code ON countries(code);
-CREATE INDEX idx_countries_region ON countries(region);
-CREATE INDEX idx_cities_country_id ON cities(country_id);
-CREATE INDEX idx_cities_is_tech_hub ON cities(is_tech_hub);
-
--- Profiles table indexes
-CREATE INDEX idx_profiles_email ON profiles(email);
-CREATE INDEX idx_profiles_slug ON profiles(slug);
-CREATE INDEX idx_profiles_country ON profiles(country);
-CREATE INDEX idx_profiles_is_public ON profiles(is_public);
-
--- Analytics table indexes
-CREATE INDEX idx_job_views_job_id ON job_views(job_id);
-CREATE INDEX idx_job_views_viewer_id ON job_views(viewer_id);
-CREATE INDEX idx_job_views_viewed_at ON job_views(viewed_at DESC);
-CREATE INDEX idx_company_follows_company_id ON company_follows(company_id);
-CREATE INDEX idx_company_follows_follower_id ON company_follows(follower_id);
-CREATE INDEX idx_job_alerts_user_id ON job_alerts(user_id);
-CREATE INDEX idx_job_alerts_is_active ON job_alerts(is_active);
-
--- Scrape logs indexes
-CREATE INDEX idx_scrape_logs_started_at ON scrape_logs(started_at DESC);
-CREATE INDEX idx_scrape_logs_status ON scrape_logs(status);
-CREATE INDEX idx_scrape_logs_source ON scrape_logs(source);
-
-
 -- Role category mappings indexes
 CREATE INDEX idx_role_category_mappings_keyword ON role_category_mappings(keyword);
-
-
--- =============================================
--- TRIGGERS & FUNCTIONS
--- =============================================
-
--- Function to automatically update updated_at timestamp
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ language 'plpgsql' SET search_path = public;
-
--- Apply update triggers to relevant tables
-CREATE TRIGGER update_companies_updated_at BEFORE UPDATE ON companies
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_jobs_updated_at BEFORE UPDATE ON jobs
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_role_category_mappings_updated_at BEFORE UPDATE ON role_category_mappings
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
