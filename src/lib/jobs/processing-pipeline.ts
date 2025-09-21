@@ -183,8 +183,8 @@ export class JobProcessingPipeline {
       city: rawJobData.city || "Remote",
       country: knownCountry || "Unknown",
       posted_at: posted_at,
-      type: this.normalizeJobType(undefined),
-      experience_level: this.normalizeExperienceLevel(undefined),
+      type: "FULL_TIME", // AI will override this
+      experience_level: "MID_LEVEL", // AI will override this
       salary: rawJobData.salary,
       url: rawJobData.applyUrl || rawJobData.jobUrl || "", // Use apply URL if available
       source,
@@ -218,44 +218,7 @@ export class JobProcessingPipeline {
     return new Date().toISOString();
   }
 
-  private normalizeJobType(
-    type?: string,
-  ):
-    | "FULL_TIME"
-    | "PART_TIME"
-    | "CONTRACT"
-    | "FREELANCE"
-    | "INTERNSHIP"
-    | "APPRENTICESHIP" {
-    const normalized = type?.toUpperCase().replace("-", "_") || "FULL_TIME";
-    switch (normalized) {
-      case "FULL_TIME":
-      case "PART_TIME":
-      case "CONTRACT":
-      case "FREELANCE":
-      case "INTERNSHIP":
-      case "APPRENTICESHIP":
-        return normalized;
-      default:
-        return "FULL_TIME";
-    }
-  }
-
-  private normalizeExperienceLevel(
-    level?: string,
-  ): "ENTRY_LEVEL" | "JUNIOR" | "MID_LEVEL" | "SENIOR" | "EXECUTIVE" {
-    const normalized = level?.toUpperCase().replace("-", "_") || "MID_LEVEL";
-    switch (normalized) {
-      case "ENTRY_LEVEL":
-      case "JUNIOR":
-      case "MID_LEVEL":
-      case "SENIOR":
-      case "EXECUTIVE":
-        return normalized;
-      default:
-        return "MID_LEVEL";
-    }
-  }
+  // Removed normalization functions - AI now handles job type and experience level classification
 
   private async detectDuplicate(
     job: NormalizedJob,
@@ -285,107 +248,26 @@ export class JobProcessingPipeline {
   }
 
   private async enrichJobData(job: NormalizedJob): Promise<ProcessedJob> {
-    // Use AI for ultra-fast tech validation and sponsored detection
+    // Use AI for comprehensive job analysis - all fields now AI-powered!
     const enrichedData = await this.enrichJobWithAI(job);
 
     return {
       ...job,
+      // Override with AI-determined values
+      city: enrichedData.standardized_city,
+      type: enrichedData.job_type,
+      experience_level: enrichedData.experience_level,
+      salaryMin: enrichedData.salary_min,
+      salaryMax: enrichedData.salary_max,
+      currency: enrichedData.currency,
+      url: enrichedData.extracted_apply_url !== 'LINKEDIN' ? enrichedData.extracted_apply_url : job.url,
+      // Processed job fields
       coordinates: { lat: 0, lng: 0 },
       company: { id: "placeholder", name: job.company_name },
       extracted_skills: [],
       quality_score: enrichedData.quality_score,
-      categories: [], // Category comes from scraper parameters
-      is_tech_job: enrichedData.is_tech_job === 1,
-      is_visa_sponsored: enrichedData.is_visa_sponsored,
-    };
-  }
-
-  private async enrichJobWithAI(job: NormalizedJob): Promise<{
-    is_tech_job: 1 | 0;
-    quality_score: number;
-    is_visa_sponsored: boolean;
-  }> {
-    try {
-      // Use the configurable AI client for tech job validation with description
-      const result = await getAIClient().validateTechJob(
-        job.title,
-        job.company_name,
-        job.city,
-        job.description,
-      );
-
-      return {
-        is_tech_job: result.is_tech_job,
-        quality_score: result.quality_score,
-        is_visa_sponsored: result.is_visa_sponsored === 1,
-      };
-    } catch (error) {
-      console.warn("AI validation failed, defaulting to tech job:", error);
-      return {
-        is_tech_job: 1, // Default to tech for our board
-        quality_score: 0.5,
-        is_visa_sponsored: false,
-      };
-    }
-  }
-
-  private async classifyJob(job: ProcessedJob): Promise<ProcessedJob> {
-    // AI already provided categories in enrichJobData, use those as primary
-    // Fall back to keyword mapping if AI didn't provide categories
-    if (
-      job.categories &&
-      job.categories.length > 0 &&
-      job.categories[0] !== "OTHER"
-    ) {
-      return {
-        ...job,
-        job_category: job.categories[0] as
-          | "ENGINEERING"
-          | "SALES"
-          | "MARKETING"
-          | "DATA"
-          | "DEVOPS"
-          | "PRODUCT"
-          | "DESIGN"
-          | "CLOUD"
-          | "SUPPORT"
-          | "MANAGEMENT"
-          | "RESEARCH"
-          | "LEGAL"
-          | "FINANCE"
-          | "OPERATIONS"
-          | "PR"
-          | "HR"
-          | "OTHER",
-      };
-    }
-
-    // Fallback to keyword mapping if AI didn't categorize properly
-    const supabase = await this.getSupabaseClient();
-    const { data: mappings, error } = await supabase
-      .from("role_category_mappings")
-      .select("keyword, category");
-
-    if (error) {
-      console.error("Error fetching role mappings:", error);
-      return { ...job, categories: ["OTHER"], job_category: "OTHER" };
-    }
-
-    const title = job.title.toLowerCase();
-    let assignedCategory: string | null = null;
-
-    // Find the first matching keyword in the job title
-    for (const mapping of mappings) {
-      if (title.includes(mapping.keyword.toLowerCase())) {
-        assignedCategory = mapping.category;
-        break;
-      }
-    }
-
-    return {
-      ...job,
-      categories: [assignedCategory || "OTHER"],
-      job_category: (assignedCategory || "OTHER") as
+      categories: [enrichedData.job_category], // AI-determined category
+      job_category: enrichedData.job_category as 
         | "ENGINEERING"
         | "SALES"
         | "MARKETING"
@@ -403,7 +285,70 @@ export class JobProcessingPipeline {
         | "PR"
         | "HR"
         | "OTHER",
+      is_tech_job: enrichedData.is_tech_job === 1,
+      is_visa_sponsored: enrichedData.is_visa_sponsored,
     };
+  }
+
+  private async enrichJobWithAI(job: NormalizedJob): Promise<{
+    is_tech_job: 1 | 0;
+    quality_score: number;
+    is_visa_sponsored: boolean;
+    job_category: string;
+    job_type: string;
+    experience_level: string;
+    salary_min?: number;
+    salary_max?: number;
+    currency: string;
+    standardized_city: string;
+    extracted_apply_url: string;
+    company_website: string;
+  }> {
+    try {
+      // Use the configurable AI client for comprehensive job analysis
+      const result = await getAIClient().validateTechJob(
+        job.title,
+        job.company_name,
+        job.city,
+        job.description,
+        job.salary, // Pass salary text for AI to parse
+      );
+
+      return {
+        is_tech_job: result.is_tech_job,
+        quality_score: result.quality_score,
+        is_visa_sponsored: result.is_visa_sponsored === 1,
+        job_category: result.job_category,
+        job_type: result.job_type,
+        experience_level: result.experience_level,
+        salary_min: result.salary_min || undefined,
+        salary_max: result.salary_max || undefined,
+        currency: result.currency,
+        standardized_city: result.standardized_city,
+        extracted_apply_url: result.extracted_apply_url,
+        company_website: result.company_website,
+      };
+    } catch (error) {
+      console.warn("AI validation failed, using defaults:", error);
+      return {
+        is_tech_job: 1, // Default to tech for our board
+        quality_score: 0.5,
+        is_visa_sponsored: false,
+        job_category: 'OTHER',
+        job_type: 'FULL_TIME',
+        experience_level: 'MID_LEVEL',
+        currency: 'USD',
+        standardized_city: job.city || 'Remote',
+        extracted_apply_url: 'LINKEDIN',
+        company_website: 'unknown.com',
+      };
+    }
+  }
+
+  private async classifyJob(job: ProcessedJob): Promise<ProcessedJob> {
+    // AI now handles all job classification - this method is simplified
+    // The job category is already set by AI in enrichJobData
+    return job;
   }
 
   private async calculateQualityScore(job: ProcessedJob): Promise<number> {

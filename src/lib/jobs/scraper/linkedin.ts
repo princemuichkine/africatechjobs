@@ -945,59 +945,19 @@ export async function query(queryObject: QueryOptions): Promise<LinkedInJob[]> {
               }
             }
 
-            // Validate it's a real tech job by checking keywords
-            const techKeywords = [
-              "software",
-              "developer",
-              "engineer",
-              "data",
-              "analyst",
-              "scientist",
-              "frontend",
-              "backend",
-              "full.?stack",
-              "mobile",
-              "ios",
-              "android",
-              "python",
-              "javascript",
-              "java",
-              "react",
-              "node",
-              "cloud",
-              "aws",
-              "devops",
-              "infrastructure",
-              "security",
-              "qa",
-              "testing",
-              "automation",
-              "machine.?learning",
-              "ai",
-              "product.?manager",
-              "designer",
-              "ux.?ui",
-            ];
-
-            const isTechJob = techKeywords.some((keyword) =>
-              cleanPosition.toLowerCase().includes(keyword.toLowerCase()),
-            );
-
-            if (isTechJob) {
-              allJobs.push({
-                position: cleanPosition,
-                company,
-                city: cleanCity,
-                date,
-                salary: salary || "Not specified",
-                jobUrl,
-                companyLogo,
-                agoTime,
-                remote: isRemote,
-              });
-            } else {
-              console.log(`Skipping non-tech job: ${position}`);
-            }
+            // Removed keyword pre-filtering - let AI handle tech job validation
+            // All jobs now go through AI analysis in processing-pipeline.ts
+            allJobs.push({
+              position: cleanPosition,
+              company,
+              city: cleanCity,
+              date,
+              salary: salary || "Not specified",
+              jobUrl,
+              companyLogo,
+              agoTime,
+              remote: isRemote,
+            });
           }
         } catch (error) {
           // Skip malformed job entries

@@ -9,6 +9,15 @@ export interface AIResponse {
   is_tech_job: 1 | 0;
   quality_score: number;
   is_visa_sponsored: 1 | 0;
+  job_category: 'ENGINEERING' | 'SALES' | 'MARKETING' | 'DATA' | 'DEVOPS' | 'PRODUCT' | 'DESIGN' | 'CLOUD' | 'SUPPORT' | 'MANAGEMENT' | 'RESEARCH' | 'LEGAL' | 'FINANCE' | 'OPERATIONS' | 'PR' | 'HR' | 'OTHER';
+  job_type: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'FREELANCE' | 'INTERNSHIP' | 'APPRENTICESHIP';
+  experience_level: 'ENTRY_LEVEL' | 'JUNIOR' | 'MID_LEVEL' | 'SENIOR' | 'EXECUTIVE';
+  salary_min: number | null;
+  salary_max: number | null;
+  currency: string;
+  standardized_city: string;
+  extracted_apply_url: string; // AI-extracted external application URL
+  company_website: string; // AI-extracted company website for logo
 }
 
 // Function to get model configurations with current environment variables
@@ -67,33 +76,60 @@ export class AIClient {
     companyName: string,
     location: string,
     description?: string,
+    salaryText?: string,
   ): Promise<AIResponse> {
-    // Enhanced prompt with description analysis for better accuracy
+    // Enhanced prompt with description and salary analysis
     const descSnippet = description
-      ? `Description: ${description.substring(0, 500)}${description.length > 500 ? "..." : ""}`
+      ? `Description: ${description.substring(0, 800)}${description.length > 800 ? "..." : ""}`
       : "";
-    const prompt = `Analyze this job posting and respond with ONLY three numbers separated by spaces:
+    const salarySnippet = salaryText ? `Salary Info: ${salaryText}` : "";
+    
+    const prompt = `Analyze this job posting and respond with EXACTLY this format:
+TECH_JOB: [1 or 0]
+QUALITY: [0.0 to 1.0]
+VISA: [1 or 0]
+CATEGORY: [one word from list]
+TYPE: [one word from list]
+LEVEL: [one word from list]
+SALARY_MIN: [number or NULL]
+SALARY_MAX: [number or NULL]
+CURRENCY: [3-letter code]
+CITY: [clean city name]
+APPLY_URL: [best application URL]
+WEBSITE: [company main website]
 
 Job Title: "${jobTitle}"
 Company: ${companyName}
 Location: ${location}
+${salarySnippet}
 ${descSnippet}
 
-First number: 1 if this is a REAL tech/software development job, 0 if not (be strict - reject consulting, sales, non-technical roles)
-Second number: Quality score from 0.0 to 1.0 (based on detail, specificity, company reputation)
-Third number: 1 if job offers visa sponsorship/work permits/immigration support/relocation assistance, 0 if not. Look for explicit indicators like:
-- "visa sponsorship", "work visa", "H1B", "employment visa", "sponsor visa"
-- "work permit", "immigration support", "visa support"
-- "relocation assistance", "relocation bonus", "moving expenses", "relocation package"
-- "settling allowance", "relocation support", "immigration assistance"
-- Company mentions supporting international candidates or work authorization
+TECH_JOB: 1 if REAL tech/software job OR tech company role, 0 if not. Include: developers, engineers, data roles, product, design, DevOps, AND sales/marketing/support/operations at tech companies (Google, Meta, Shopify, etc.). Reject: non-tech companies, pure consulting, generic business roles.
+QUALITY: 0.0-1.0 based on detail, specificity, company reputation
+VISA: 1 if mentions visa sponsorship/work permits/relocation assistance, 0 if not
+CATEGORY: ENGINEERING|SALES|MARKETING|DATA|DEVOPS|PRODUCT|DESIGN|CLOUD|SUPPORT|MANAGEMENT|RESEARCH|LEGAL|FINANCE|OPERATIONS|PR|HR|OTHER
+TYPE: FULL_TIME|PART_TIME|CONTRACT|FREELANCE|INTERNSHIP|APPRENTICESHIP
+LEVEL: ENTRY_LEVEL|JUNIOR|MID_LEVEL|SENIOR|EXECUTIVE
+SALARY_MIN: Extract minimum salary as number (in local currency) or NULL
+SALARY_MAX: Extract maximum salary as number (in local currency) or NULL  
+CURRENCY: USD|EUR|GBP|ZAR|NGN|KES|EGP|MAD|TND|etc (local currency)
+CITY: Clean, standardized city name (e.g. "Lagos" not "Greater Lagos Area")
+APPLY_URL: If description mentions external application URL, extract it. Otherwise return "LINKEDIN"
+WEBSITE: Company main website (e.g. "google.com", "shopify.com") for logo fetching
 
-Example responses:
-"1 0.8 1" (good tech job with visa sponsorship mentioned)
-"0 0.2 0" (not a tech job, no visa sponsorship)
-"1 0.95 0" (excellent tech job, no visa/relocation mentions)
-
-Respond with ONLY the three numbers:`;
+Example:
+TECH_JOB: 1
+QUALITY: 0.85
+VISA: 0
+CATEGORY: ENGINEERING
+TYPE: FULL_TIME
+LEVEL: SENIOR
+SALARY_MIN: 80000
+SALARY_MAX: 120000
+CURRENCY: USD
+CITY: Lagos
+APPLY_URL: https://careers.google.com/apply/123
+WEBSITE: google.com`;
 
     try {
       const { text } = await generateText({
@@ -112,6 +148,15 @@ Respond with ONLY the three numbers:`;
         is_tech_job: 1, // Default to tech for our board
         quality_score: 0.5,
         is_visa_sponsored: 0, // Default to no visa sponsorship
+        job_category: 'OTHER',
+        job_type: 'FULL_TIME',
+        experience_level: 'MID_LEVEL',
+        salary_min: null,
+        salary_max: null,
+        currency: 'USD',
+        standardized_city: location || 'Remote',
+        extracted_apply_url: 'LINKEDIN',
+        company_website: 'unknown.com',
       };
     }
   }
@@ -119,82 +164,86 @@ Respond with ONLY the three numbers:`;
   private parseResponse(text: string): AIResponse {
     console.log(`🤖 AI Response: "${text.trim()}"`);
 
-    // Try multiple parsing strategies for robustness
-
-    // Strategy 1: Look for the expected format "X Y Z" where X,Z are 0 or 1, Y is 0.0-1.0
-    const tripleFormatMatch = text.match(
-      /^\s*([01])\s+([0-1]?(?:\.\d+)?)\s+([01])\s*$/,
-    );
-    if (tripleFormatMatch) {
-      const isTech = parseInt(tripleFormatMatch[1]) as 0 | 1;
-      const quality = parseFloat(tripleFormatMatch[2]);
-      const isSponsored = parseInt(tripleFormatMatch[3]) as 0 | 1;
-      return {
-        is_tech_job: isTech,
-        quality_score: Math.max(0, Math.min(1, quality)),
-        is_visa_sponsored: isSponsored,
-      };
-    }
-
-    // Strategy 2: Extract first three valid numbers from anywhere in the response
-    const numberMatches = text.match(/(\d+(?:\.\d+)?)/g);
-    if (numberMatches && numberMatches.length >= 3) {
-      const numbers = numberMatches
-        .map((n) => parseFloat(n))
-        .filter((n) => !isNaN(n));
-      if (numbers.length >= 3) {
-        const isTech = (numbers[0] >= 1 ? 1 : 0) as 0 | 1;
-        const quality = Math.max(0, Math.min(1, numbers[1]));
-        const isSponsored = (numbers[2] >= 1 ? 1 : 0) as 0 | 1;
-        return {
-          is_tech_job: isTech,
-          quality_score: quality,
-          is_visa_sponsored: isSponsored,
-        };
-      }
-    }
-
-    // Strategy 3: Extract two numbers and check for visa keywords
-    if (numberMatches && numberMatches.length >= 2) {
-      const numbers = numberMatches
-        .map((n) => parseFloat(n))
-        .filter((n) => !isNaN(n));
-      if (numbers.length >= 2) {
-        const isTech = (numbers[0] >= 1 ? 1 : 0) as 0 | 1;
-        const quality = Math.max(0, Math.min(1, numbers[1]));
-        // Enhanced keyword detection for visa sponsorship
-        const lowerText = text.toLowerCase();
-        const visaKeywords =
-          /\b(visa.?sponsorship|work.?visa|h1b|employment.?visa|sponsor.?visa|work.?permit|immigration.?support|visa.?support|relocation.?assistance|relocation.?bonus|moving.?expenses|relocation.?package|settling.?allowance|relocation.?support|immigration.?assistance|international.?candidates|work.?authorization|green.?card)\b/;
-        const isSponsored = visaKeywords.test(lowerText) ? 1 : 0;
-        return {
-          is_tech_job: isTech,
-          quality_score: quality,
-          is_visa_sponsored: isSponsored as 0 | 1,
-        };
-      }
-    }
-
-    // Strategy 4: Fallback - check for keywords
-    const lowerText = text.toLowerCase();
-    const isNonTech =
-      /\b(consulting|sales|marketing|hr|recruiter|business|management)\b/.test(
-        lowerText,
-      );
-    const visaKeywords =
-      /\b(visa.?sponsorship|work.?visa|h1b|employment.?visa|sponsor.?visa|work.?permit|immigration.?support|visa.?support|relocation.?assistance|relocation.?bonus|moving.?expenses|relocation.?package|settling.?allowance|relocation.?support|immigration.?assistance|international.?candidates|work.?authorization|green.?card)\b/;
-    const isSponsored = visaKeywords.test(lowerText);
-    const quality = isNonTech ? 0.2 : 0.7;
-
-    console.warn(
-      `⚠️ AI response parsing failed, using fallback. Response: "${text}"`,
-    );
-
-    return {
-      is_tech_job: (isNonTech ? 0 : 1) as 0 | 1,
-      quality_score: quality,
-      is_visa_sponsored: (isSponsored ? 1 : 0) as 0 | 1,
+    // Default fallback values
+    const fallback: AIResponse = {
+      is_tech_job: 1,
+      quality_score: 0.5,
+      is_visa_sponsored: 0,
+      job_category: 'OTHER',
+      job_type: 'FULL_TIME',
+      experience_level: 'MID_LEVEL',
+      salary_min: null,
+      salary_max: null,
+      currency: 'USD',
+      standardized_city: 'Remote',
+      extracted_apply_url: 'LINKEDIN',
+      company_website: 'unknown.com',
     };
+
+    try {
+      // Parse the structured format
+      const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+      const parsed: Partial<AIResponse> = {};
+
+      for (const line of lines) {
+        const [key, value] = line.split(':').map(s => s.trim());
+        
+        switch (key) {
+          case 'TECH_JOB':
+            parsed.is_tech_job = parseInt(value) as 0 | 1;
+            break;
+          case 'QUALITY':
+            parsed.quality_score = Math.max(0, Math.min(1, parseFloat(value)));
+            break;
+          case 'VISA':
+            parsed.is_visa_sponsored = parseInt(value) as 0 | 1;
+            break;
+          case 'CATEGORY':
+            if (['ENGINEERING', 'SALES', 'MARKETING', 'DATA', 'DEVOPS', 'PRODUCT', 'DESIGN', 'CLOUD', 'SUPPORT', 'MANAGEMENT', 'RESEARCH', 'LEGAL', 'FINANCE', 'OPERATIONS', 'PR', 'HR', 'OTHER'].includes(value)) {
+              parsed.job_category = value as AIResponse['job_category'];
+            }
+            break;
+          case 'TYPE':
+            if (['FULL_TIME', 'PART_TIME', 'CONTRACT', 'FREELANCE', 'INTERNSHIP', 'APPRENTICESHIP'].includes(value)) {
+              parsed.job_type = value as AIResponse['job_type'];
+            }
+            break;
+          case 'LEVEL':
+            if (['ENTRY_LEVEL', 'JUNIOR', 'MID_LEVEL', 'SENIOR', 'EXECUTIVE'].includes(value)) {
+              parsed.experience_level = value as AIResponse['experience_level'];
+            }
+            break;
+          case 'SALARY_MIN':
+            parsed.salary_min = value === 'NULL' ? null : parseInt(value);
+            break;
+          case 'SALARY_MAX':
+            parsed.salary_max = value === 'NULL' ? null : parseInt(value);
+            break;
+          case 'CURRENCY':
+            parsed.currency = value;
+            break;
+          case 'CITY':
+            parsed.standardized_city = value;
+            break;
+          case 'APPLY_URL':
+            parsed.extracted_apply_url = value;
+            break;
+          case 'WEBSITE':
+            parsed.company_website = value;
+            break;
+        }
+      }
+
+      // Merge parsed values with fallback
+      return {
+        ...fallback,
+        ...parsed,
+      };
+
+    } catch (error) {
+      console.warn(`⚠️ AI response parsing failed, using fallback. Response: "${text}"`, error);
+      return fallback;
+    }
   }
 }
 
@@ -243,6 +292,7 @@ export async function testAIModels(
   companyName: string,
   location: string,
   description?: string,
+  salary?: string,
 ) {
   const models = getAIModels();
   const modelKeys = Object.keys(models) as (keyof typeof models)[];
@@ -250,6 +300,8 @@ export async function testAIModels(
   console.log(`🧪 Testing AI models for: "${jobTitle}" at ${companyName}`);
   if (description)
     console.log(`Description: ${description.substring(0, 100)}...`);
+  if (salary)
+    console.log(`Salary: ${salary}`);
   console.log("");
 
   for (const model of modelKeys) {
@@ -265,11 +317,12 @@ export async function testAIModels(
         companyName,
         location,
         description,
+        salary,
       );
       const duration = Date.now() - startTime;
 
       console.log(
-        `${model.toUpperCase()}: ✅ Connected - ${result.is_tech_job ? "TECH" : "NOT TECH"} (${result.quality_score.toFixed(2)}) - ${duration}ms`,
+        `${model.toUpperCase()}: ✅ Connected - ${result.is_tech_job ? "TECH" : "NOT TECH"} | ${result.job_category} | ${result.job_type} | ${result.experience_level} | ${result.standardized_city} | (${result.quality_score.toFixed(2)}) - ${duration}ms`,
       );
     } catch (error) {
       console.log(
@@ -287,9 +340,10 @@ export async function testAIModels(
       companyName,
       location,
       description,
+      salary,
     );
     console.log(
-      `FALLBACK: ✅ Working - ${result.is_tech_job ? "TECH" : "NOT TECH"} (${result.quality_score.toFixed(2)})`,
+      `FALLBACK: ✅ Working - ${result.is_tech_job ? "TECH" : "NOT TECH"} | ${result.job_category} | ${result.job_type} | ${result.experience_level} | ${result.standardized_city} | (${result.quality_score.toFixed(2)})`,
     );
   } catch (error) {
     console.log(
