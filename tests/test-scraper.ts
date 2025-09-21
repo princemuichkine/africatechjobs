@@ -44,7 +44,7 @@ async function testLinkedInScraper() {
       console.log(`Job ${index + 1}:`);
       console.log(`  Title: ${job.position}`);
       console.log(`  Company: ${job.company}`);
-      console.log(`  Location: ${job.location}`);
+      console.log(`  Location: ${job.city}`);
       console.log(`  LinkedIn URL: ${job.jobUrl}`);
 
       // Check if Puppeteer fields are populated
