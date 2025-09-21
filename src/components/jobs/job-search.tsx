@@ -264,7 +264,7 @@ export function JobSearch({
                   />
                 </div>
               </SelectTrigger>
-              <SelectContent className="w-[158px] sm:w-[158px] sm:max-w-[158px] max-h-[220px] overflow-y-auto">
+              <SelectContent className="w-[180px] sm:w-[158px] sm:max-w-[158px] max-h-[220px] overflow-y-auto">
                 {AFRICAN_COUNTRIES.map((country) => (
                   <div
                     key={country.value}
@@ -379,7 +379,7 @@ export function JobSearch({
               </Button>
             </div>
           ) : (
-            <div className="w-0 sm:w-12 h-12" />
+            <div className="hidden sm:block w-12 h-12" />
           )}
         </div>
       </div>
