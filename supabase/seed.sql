@@ -139,7 +139,7 @@ INSERT INTO cities (name, country_id, is_tech_hub) VALUES
 -- =============================================
 
 -- Insert some sample African tech companies
-INSERT INTO companies (name, description, logo, website, industry, size, location, country) VALUES
+INSERT INTO companies (name, description, logo, website, industry, size, city, country) VALUES
     ('Flutterwave', 'Financial technology company providing payment infrastructure for global merchants and payment service providers', 'https://flutterwave.com/logo.png', 'https://flutterwave.com', 'FINANCE', '201_1000', 'Lagos', 'Nigeria'),
     ('Paystack', 'Online payment platform that helps businesses in Africa get paid by anyone, anywhere in the world', 'https://paystack.com/logo.png', 'https://paystack.com', 'FINANCE', '51_200', 'Lagos', 'Nigeria'),
     ('Andela', 'Global talent network that connects companies with vetted, remote engineers from Africa', 'https://andela.com/logo.png', 'https://andela.com', 'SOFTWARE', '1000_PLUS', 'Lagos', 'Nigeria'),

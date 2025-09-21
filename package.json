@@ -13,10 +13,11 @@
     "trigger": "npx trigger.dev@latest dev"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^2.0.17",
+    "@ai-sdk/google": "^2.0.14",
     "@ai-sdk/openai": "^2.0.30",
     "@anthropic-ai/sdk": "^0.63.0",
     "@browserbasehq/stagehand": "^2.5.0",
-    "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.2.1",
     "@openpanel/nextjs": "^1.0.8",
     "@radix-ui/react-avatar": "^1.1.10",

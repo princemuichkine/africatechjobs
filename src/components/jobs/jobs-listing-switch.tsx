@@ -18,9 +18,15 @@ export function JobListingSwitch({
     startTransition(async () => {
       try {
         await toggleJobListingAction({ id, active: !active });
-        toast({ type: 'success', description: `Job listing ${!active ? "activated" : "deactivated"} successfully` });
+        toast({
+          type: "success",
+          description: `Job listing ${!active ? "activated" : "deactivated"} successfully`,
+        });
       } catch (error) {
-        toast({ type: 'error', description: 'Failed to update job listing status' });
+        toast({
+          type: "error",
+          description: "Failed to update job listing status",
+        });
         console.error("Error toggling job listing:", error);
       }
     });

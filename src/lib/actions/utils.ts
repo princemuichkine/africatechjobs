@@ -125,15 +125,22 @@ export function getJobTypeLabel(type: JobType | string): string {
   return JOB_TYPE_LABELS[type as JobType] || type;
 }
 
-export function getExperienceLabel(experienceLevel: ExperienceLevel | string): string {
-  return EXPERIENCE_LEVEL_LABELS[experienceLevel as ExperienceLevel] || experienceLevel;
+export function getExperienceLabel(
+  experienceLevel: ExperienceLevel | string,
+): string {
+  return (
+    EXPERIENCE_LEVEL_LABELS[experienceLevel as ExperienceLevel] ||
+    experienceLevel
+  );
 }
 
 export function getJobCategoryLabel(category: JobCategory | string): string {
   return JOB_CATEGORY_LABELS[category as JobCategory] || category;
 }
 
-export function getCompanyIndustryLabel(industry: CompanyIndustry | string): string {
+export function getCompanyIndustryLabel(
+  industry: CompanyIndustry | string,
+): string {
   return COMPANY_INDUSTRY_LABELS[industry as CompanyIndustry] || industry;
 }
 

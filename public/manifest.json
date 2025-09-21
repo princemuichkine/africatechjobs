@@ -7,9 +7,7 @@
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "orientation": "portrait-primary",
-  "categories": [
-    "business"
-  ],
+  "categories": ["business"],
   "lang": "en",
   "dir": "ltr",
   "scope": "/",

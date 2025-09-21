@@ -2,8 +2,8 @@
 
 import { voteAction } from "@/lib/actions/vote-action";
 import { cn } from "@/lib/actions/utils";
-import { LottieIcon } from '@/components/design/lottie-icon';
-import { animations } from '@/lib/utils/lottie-animations';
+import { LottieIcon } from "@/components/design/lottie-icon";
+import { animations } from "@/lib/utils/lottie-animations";
 import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
 import { toast } from "@/components/ui/toast";
@@ -24,7 +24,11 @@ export function CopyButton({
     execute({ slug });
     navigator.clipboard.writeText(content);
     setCopied(true);
-    toast({ type: 'default', description: 'Copied to clipboard. Add a .cursorrules file to your project and paste the rule.' });
+    toast({
+      type: "default",
+      description:
+        "Copied to clipboard. Add a .cursorrules file to your project and paste the rule.",
+    });
 
     setTimeout(() => {
       setCopied(false);

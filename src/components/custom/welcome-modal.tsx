@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { CardHeader, Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { LottieIcon } from '@/components/design/lottie-icon';
-import { animations } from '@/lib/utils/lottie-animations';
-import { motion, useInView } from 'framer-motion';
-import { Switch } from '@/components/ui/switch';
-import { Crimson_Text } from 'next/font/google';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import React, { useState } from "react";
+import { CardHeader, Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { LottieIcon } from "@/components/design/lottie-icon";
+import { animations } from "@/lib/utils/lottie-animations";
+import { motion, useInView } from "framer-motion";
+import { Switch } from "@/components/ui/switch";
+import { Crimson_Text } from "next/font/google";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 const crimson = Crimson_Text({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  display: 'swap',
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const StyleToggleDemo = () => {
@@ -54,8 +54,8 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
         <style jsx global>{`
           :root {
             --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-            --ease-out-quart: cubic-bezier(0.165, 0.840, 0.440, 1.000);
+            --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+            --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
           }
           .demo-prose-mirror-style {
             line-height: 1.6;
@@ -81,7 +81,9 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
           }
 
           @keyframes streamInSuggestion {
-            to { width: 100%; } /* Animate to full width of the content */
+            to {
+              width: 100%;
+            } /* Animate to full width of the content */
           }
 
           /* Selection Overlay Animation & Enhanced Styling */
@@ -93,9 +95,18 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             display: inline; /* Or inline-block if needed for specific highlight styles */
           }
           @keyframes highlightText {
-            0% { background-color: transparent; box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-            30% { background-color: rgba(59, 130, 246, 0.2); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);}
-            100% { background-color: rgba(59, 130, 246, 0.2); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);}
+            0% {
+              background-color: transparent;
+              box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+            30% {
+              background-color: rgba(59, 130, 246, 0.2);
+              box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            }
+            100% {
+              background-color: rgba(59, 130, 246, 0.2);
+              box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
           }
           .demo-suggestion-overlay-animated {
             position: absolute;
@@ -105,10 +116,13 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             background-color: hsl(var(--card));
             border-radius: 4px;
             padding: 0.625rem; /* Increased from 0.5rem */
-            box-shadow: 0 6px 16px -2px rgba(0,0,0,0.1), 0 3px 8px -2px rgba(0,0,0,0.06);
+            box-shadow:
+              0 6px 16px -2px rgba(0, 0, 0, 0.1),
+              0 3px 8px -2px rgba(0, 0, 0, 0.06);
             opacity: 0;
             transform: translateY(calc(100% + 1rem)) scale(0.98);
-            animation: slideInOverlayEnhanced 0.6s 1.5s forwards var(--ease-out-quart); /* Delay to 1.5s */
+            animation: slideInOverlayEnhanced 0.6s 1.5s forwards
+              var(--ease-out-quart); /* Delay to 1.5s */
             font-size: 0.875rem;
             display: flex;
             flex-direction: column;
@@ -128,17 +142,21 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             font-size: 0.75rem;
             color: hsl(var(--muted-foreground));
             background-color: transparent;
-            min-height: calc(0.75rem * 1.5 + 0.375rem * 2); /* Approx line height + padding */
+            min-height: calc(
+              0.75rem * 1.5 + 0.375rem * 2
+            ); /* Approx line height + padding */
             position: relative; /* For caret */
           }
-          .demo-overlay-input-placeholder::before { /* Animated text */
+          .demo-overlay-input-placeholder::before {
+            /* Animated text */
             content: "";
             display: inline-block;
             animation: demoInputTyping 2s steps(22, end) 2.2s forwards; /* 22 steps for "Make it more punchy." */
             opacity: 0;
           }
-          .demo-overlay-input-placeholder::after { /* Blinking caret */
-            content: '|';
+          .demo-overlay-input-placeholder::after {
+            /* Blinking caret */
+            content: "|";
             display: inline-block;
             color: var(--foreground);
             animation: demoCaretAnimation 2s linear 2.2s forwards;
@@ -147,23 +165,112 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
           }
 
           @keyframes demoInputTyping {
-            0% { content: ""; opacity: 0;}
-            1% { opacity: 1;}
-            4.5% { content: "M"; }  9% { content: "Ma"; } 13.5% { content: "Mak"; } 18% { content: "Make"; }
-            22.5% { content: "Make "; } 27% { content: "Make i"; } 31.5% { content: "Make it"; } 36% { content: "Make it "; }
-            40.5% { content: "Make it m"; } 45% { content: "Make it mo"; } 49.5% { content: "Make it mor"; } 54% { content: "Make it more"; }
-            58.5% { content: "Make it more "; } 63% { content: "Make it more p"; } 67.5% { content: "Make it more pu"; } 72% { content: "Make it more pun"; }
-            76.5% { content: "Make it more punc"; } 81% { content: "Make it more punch"; } 85.5% { content: "Make it more punchy"; }
-            90% { content: "Make it more punchy."; }
-            100% { content: "Make it more punchy."; opacity: 1; }
+            0% {
+              content: "";
+              opacity: 0;
+            }
+            1% {
+              opacity: 1;
+            }
+            4.5% {
+              content: "M";
+            }
+            9% {
+              content: "Ma";
+            }
+            13.5% {
+              content: "Mak";
+            }
+            18% {
+              content: "Make";
+            }
+            22.5% {
+              content: "Make ";
+            }
+            27% {
+              content: "Make i";
+            }
+            31.5% {
+              content: "Make it";
+            }
+            36% {
+              content: "Make it ";
+            }
+            40.5% {
+              content: "Make it m";
+            }
+            45% {
+              content: "Make it mo";
+            }
+            49.5% {
+              content: "Make it mor";
+            }
+            54% {
+              content: "Make it more";
+            }
+            58.5% {
+              content: "Make it more ";
+            }
+            63% {
+              content: "Make it more p";
+            }
+            67.5% {
+              content: "Make it more pu";
+            }
+            72% {
+              content: "Make it more pun";
+            }
+            76.5% {
+              content: "Make it more punc";
+            }
+            81% {
+              content: "Make it more punch";
+            }
+            85.5% {
+              content: "Make it more punchy";
+            }
+            90% {
+              content: "Make it more punchy.";
+            }
+            100% {
+              content: "Make it more punchy.";
+              opacity: 1;
+            }
           }
 
-          @keyframes demoCaretAnimation { /* Controls both visibility and blinking */
-            0%, 100% { opacity: 0; } /* Ends hidden */
-            1% { opacity: 1; } /* Visible when typing starts */
+          @keyframes demoCaretAnimation {
+            /* Controls both visibility and blinking */
+            0%,
+            100% {
+              opacity: 0;
+            } /* Ends hidden */
+            1% {
+              opacity: 1;
+            } /* Visible when typing starts */
             /* Blinking effect */
-            5%, 15%, 25%, 35%, 45%, 55%, 65%, 75%, 85%, 95% { opacity: 1; }
-            10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90% { opacity: 0; }
+            5%,
+            15%,
+            25%,
+            35%,
+            45%,
+            55%,
+            65%,
+            75%,
+            85%,
+            95% {
+              opacity: 1;
+            }
+            10%,
+            20%,
+            30%,
+            40%,
+            50%,
+            60%,
+            70%,
+            80%,
+            90% {
+              opacity: 0;
+            }
           }
 
           .demo-overlay-diff-view {
@@ -171,14 +278,19 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             border-radius: 4px;
             padding: 0.5rem;
             font-size: 0.75rem;
-            background-color: var(--muted-background-subtle, rgba(0,0,0,0.015));
+            background-color: var(
+              --muted-background-subtle,
+              rgba(0, 0, 0, 0.015)
+            );
             min-height: 32px;
             opacity: 0; /* Initially hidden */
             animation: fadeInDiffView 0.3s ease-out 4.3s forwards; /* Fade in after input typing */
           }
 
           @keyframes fadeInDiffView {
-            to { opacity: 1; }
+            to {
+              opacity: 1;
+            }
           }
 
           .demo-diff-new-text-animated {
@@ -191,11 +303,16 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
           }
 
           @keyframes streamInDiffNewText {
-            to { width: max-content; } /* Ensure it takes the full width of its text content */
+            to {
+              width: max-content;
+            } /* Ensure it takes the full width of its text content */
           }
 
           html.dark .demo-overlay-diff-view {
-              background-color: var(--muted-background-subtle, rgba(255,255,255,0.02));
+            background-color: var(
+              --muted-background-subtle,
+              rgba(255, 255, 255, 0.02)
+            );
           }
           .demo-overlay-actions {
             display: flex;
@@ -206,8 +323,14 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
           }
 
           @keyframes slideInOverlayEnhanced {
-            from { opacity: 0; transform: translateY(calc(100% + 1rem)) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+              opacity: 0;
+              transform: translateY(calc(100% + 1rem)) scale(0.98);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
           }
 
           /* Synonym Plugin Animation */
@@ -219,17 +342,29 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             margin-right: 0.25em; /* Added for spacing */
           }
           .demo-synonym-word-animated::before {
-            content: '';
+            content: "";
             position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
             background-color: transparent;
             border-radius: 4px;
             pointer-events: none;
-            animation: synonymLoadingState 0.7s 0.7s forwards var(--ease-out-quad); /* Delay 0.7s */
+            animation: synonymLoadingState 0.7s 0.7s forwards
+              var(--ease-out-quad); /* Delay 0.7s */
           }
           @keyframes synonymLoadingState {
-            0% { text-decoration: none; background-color: transparent; }
-            40%, 60%, 100% { text-decoration: underline dotted var(--muted-foreground); background-color: rgba(100, 100, 100, 0.07); }
+            0% {
+              text-decoration: none;
+              background-color: transparent;
+            }
+            40%,
+            60%,
+            100% {
+              text-decoration: underline dotted var(--muted-foreground);
+              background-color: rgba(100, 100, 100, 0.07);
+            }
           }
 
           .demo-synonym-menu-animated {
@@ -241,7 +376,7 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             border: 1px solid hsl(var(--border));
             border-radius: 4px;
             padding: 7px 9px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
             display: flex;
             gap: 7px;
             font-size: 0.75rem;
@@ -249,26 +384,35 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             opacity: 0;
             white-space: nowrap;
             transform: translateX(-50%) translateY(8px) scale(0.95);
-            animation: fadeInSynonymMenu 0.5s 1.6s forwards var(--ease-out-cubic);
+            animation: fadeInSynonymMenu 0.5s 1.6s forwards
+              var(--ease-out-cubic);
           }
           .demo-synonym-menu-animated span {
             padding: 4px 6px;
             border-radius: 4px;
-            transition: background-color 0.2s, color 0.2s;
+            transition:
+              background-color 0.2s,
+              color 0.2s;
           }
           .demo-synonym-menu-animated span:hover {
             background-color: hsl(var(--accent));
             color: hsl(var(--accent-foreground));
           }
           @keyframes fadeInSynonymMenu {
-            from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.95); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+            from {
+              opacity: 0;
+              transform: translateX(-50%) translateY(8px) scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(-50%) translateY(0) scale(1);
+            }
           }
 
           html.dark .demo-overlay-input-placeholder {
-              /* border: 1px solid var(--input-border, #374151); Fallback already uses CSS var, explicit now */
-              /* color: var(--muted-foreground, #9ca3af); Fallback already uses CSS var, explicit now */
-           }
+            /* border: 1px solid var(--input-border, #374151); Fallback already uses CSS var, explicit now */
+            /* color: var(--muted-foreground, #9ca3af); Fallback already uses CSS var, explicit now */
+          }
 
           /* Metallic macOS style frame for hero image */
           .hero-frame {
@@ -302,7 +446,8 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             animation: highlightText 0.6s 0.7s forwards var(--ease-out-quad);
           }
           #features.in-view .demo-suggestion-overlay-animated {
-            animation: slideInOverlayEnhanced 0.6s 1.5s forwards var(--ease-out-quart);
+            animation: slideInOverlayEnhanced 0.6s 1.5s forwards
+              var(--ease-out-quart);
           }
           #features.in-view .demo-overlay-input-placeholder::before {
             animation: demoInputTyping 2s steps(22, end) 2.2s forwards;
@@ -317,22 +462,30 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             animation: streamInDiffNewText 1s steps(22, end) 4.7s forwards;
           }
           #features.in-view .demo-synonym-word-animated::before {
-            animation: synonymLoadingState 0.7s 0.7s forwards var(--ease-out-quad);
+            animation: synonymLoadingState 0.7s 0.7s forwards
+              var(--ease-out-quad);
           }
           #features.in-view .demo-synonym-menu-animated {
-            animation: fadeInSynonymMenu 0.5s 1.6s forwards var(--ease-out-cubic);
+            animation: fadeInSynonymMenu 0.5s 1.6s forwards
+              var(--ease-out-cubic);
           }
 
           /* Ensure feature cards have no extra hover effects */
           #features .rounded-sm:hover {
-            box-shadow: var(--tw-shadow, 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06)); /* Explicitly set to base shadow if using Tailwind's 'shadow' class */
+            box-shadow: var(
+              --tw-shadow,
+              0 1px 3px 0 rgba(0, 0, 0, 0.1),
+              0 1px 2px 0 rgba(0, 0, 0, 0.06)
+            ); /* Explicitly set to base shadow if using Tailwind's 'shadow' class */
             transform: none;
           }
 
           /* Synonym menu styling enhancements */
           .demo-synonym-menu-animated {
             z-index: 20; /* Ensure above other content */
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow:
+              0 8px 24px rgba(0, 0, 0, 0.1),
+              0 2px 8px rgba(0, 0, 0, 0.06);
             border: 1px solid hsl(var(--border));
           }
 
@@ -360,17 +513,23 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
             font-size: 0.75em;
             font-weight: 500;
             color: hsl(var(--muted-foreground));
-            box-shadow: 0 2px 0 rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+            box-shadow:
+              0 2px 0 rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
             opacity: 0;
             animation: fadeInInlineTab 0.3s ease-out 1.3s forwards;
           }
           @keyframes fadeInInlineTab {
-            to { opacity: 1; }
+            to {
+              opacity: 1;
+            }
           }
           html.dark .inline-tab-icon {
             background: linear-gradient(145deg, #2c2c2c, #1f1f1f);
             border-color: #444444;
-            box-shadow: 0 2px 0 rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+            box-shadow:
+              0 2px 0 rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05);
             color: hsl(var(--muted-foreground));
           }
         `}</style>
@@ -396,7 +555,7 @@ const FeaturesSection = () => {
   const card5InView = useInView(card5Ref, { once: true, amount: 0.5 });
   const card6InView = useInView(card6Ref, { once: true, amount: 0.5 });
 
-  const modelNames = ['Llama', 'Kimi', 'Deepseek', 'Claude'] as const;
+  const modelNames = ["Llama", "Kimi", "Deepseek", "Claude"] as const;
   const proIndex = 3;
 
   return (
@@ -404,7 +563,7 @@ const FeaturesSection = () => {
       id="features"
       ref={featuresRef}
       aria-labelledby="features-heading"
-      className={`py-10 ${isFeaturesInView ? 'in-view' : ''}`}
+      className={`py-10 ${isFeaturesInView ? "in-view" : ""}`}
     >
       <div className="container mx-auto px-6 md:px-8 lg:px-12">
         <div className="text-center mb-14">
@@ -460,10 +619,10 @@ const FeaturesSection = () => {
               <CardContent className="p-6 text-sm text-muted-foreground grow relative overflow-visible">
                 <p className="demo-prose-mirror-style">
                   <span className="demo-text-base">
-                    This phrasing{' '}
+                    This phrasing{" "}
                     <span className="demo-selected-text-animated">
                       is a bit weak and verbose.
-                    </span>{' '}
+                    </span>{" "}
                     Let&apos;s ask the AI to improve it.
                   </span>
                 </p>
@@ -581,7 +740,7 @@ const FeaturesSection = () => {
               <CardContent className="p-6 text-sm text-muted-foreground grow flex flex-col justify-between items-center">
                 <div
                   className="w-full flex items-center justify-center gap-0"
-                  style={{ height: '112px' }}
+                  style={{ height: "112px" }}
                 >
                   {modelNames.map((name, i) => {
                     const mid = (modelNames.length - 1) / 2;
@@ -595,16 +754,16 @@ const FeaturesSection = () => {
                         animate={
                           card5InView
                             ? {
-                              opacity: 1,
-                              rotate: rot,
-                              y,
-                              transition: {
-                                delay: 0.2 + i * 0.1,
-                                type: 'spring',
-                                stiffness: 140,
-                                damping: 15,
-                              },
-                            }
+                                opacity: 1,
+                                rotate: rot,
+                                y,
+                                transition: {
+                                  delay: 0.2 + i * 0.1,
+                                  type: "spring",
+                                  stiffness: 140,
+                                  damping: 15,
+                                },
+                              }
                             : {}
                         }
                         className="w-20 h-28 bg-background border border-border rounded-sm flex items-center justify-center mx-[-4px] shadow-sm relative"

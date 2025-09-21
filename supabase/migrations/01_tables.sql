@@ -70,7 +70,7 @@ CREATE TABLE companies (
     website TEXT,
     industry company_industry,
     size company_size,
-    location TEXT,
+    city TEXT,
     country TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -97,7 +97,7 @@ CREATE TABLE jobs (
     description TEXT NOT NULL,
     company_name TEXT NOT NULL,
     company_id UUID REFERENCES companies(id) ON DELETE SET NULL,
-    location TEXT NOT NULL,
+    city TEXT NOT NULL,
     country TEXT NOT NULL,
     type job_type DEFAULT 'FULL_TIME',
     experience_level experience_level DEFAULT 'MID_LEVEL',
@@ -111,17 +111,13 @@ CREATE TABLE jobs (
     source_id TEXT, -- Original job ID from source
     posted_at TIMESTAMP WITH TIME ZONE NOT NULL,
     deadline TIMESTAMP WITH TIME ZONE,
-    skills TEXT[] DEFAULT '{}',
     job_category job_category DEFAULT 'ENGINEERING',
     is_sponsored BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     -- Generated columns
-    title_search TEXT GENERATED ALWAYS AS (LOWER(TRIM(title))) STORED,
-    days_since_posted INTEGER GENERATED ALWAYS AS (
-        EXTRACT(EPOCH FROM (NOW() - posted_at)) / 86400
-    )::INTEGER STORED
+    title_search TEXT GENERATED ALWAYS AS (LOWER(TRIM(title))) STORED
 );
 
 -- Jobs constraints
@@ -148,7 +144,6 @@ CREATE INDEX idx_jobs_source ON jobs(source);
 CREATE INDEX idx_jobs_company_id ON jobs(company_id);
 CREATE INDEX idx_jobs_url ON jobs(url); -- For duplicate detection
 CREATE INDEX idx_jobs_source_id ON jobs(source, source_id); -- For source tracking
-CREATE INDEX idx_jobs_skills ON jobs USING GIN(skills); -- For skill searches
 CREATE INDEX idx_jobs_is_sponsored ON jobs(is_sponsored);
 CREATE INDEX idx_jobs_active_country_category ON jobs(is_active, country, job_category) WHERE is_active = true;
 CREATE INDEX idx_jobs_active_remote_posted ON jobs(is_active, remote, posted_at DESC) WHERE is_active = true;

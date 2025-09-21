@@ -1,53 +1,53 @@
-import { memo, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { usePathname } from 'next/navigation'
-import { languages } from '@/lib/i18n/config'
-import { useTranslation } from '@/lib/contexts/translation-context'
+import { memo, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { languages } from "@/lib/i18n/config";
+import { useTranslation } from "@/lib/contexts/translation-context";
 
 interface LanguageSwitcherProps {
-  onLanguageChange?: (language: string) => void
-  className?: string
+  onLanguageChange?: (language: string) => void;
+  className?: string;
 }
 
 export const LanguageSwitcher = memo(
-  ({ onLanguageChange, className = '' }: LanguageSwitcherProps) => {
-    const { currentLanguage, setLanguage } = useTranslation()
-    const pathname = usePathname()
+  ({ onLanguageChange, className = "" }: LanguageSwitcherProps) => {
+    const { currentLanguage, setLanguage } = useTranslation();
+    const pathname = usePathname();
 
-    const currentLangObj = languages.find((l) => l.code === currentLanguage)
-    const isPortalRoute = pathname.startsWith('/portal')
+    const currentLangObj = languages.find((l) => l.code === currentLanguage);
+    const isPortalRoute = pathname.startsWith("/portal");
 
     const toggleLanguage = useCallback(
       (e: React.MouseEvent) => {
         // Prevent the event from bubbling up to any parent forms
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
 
         if (isPortalRoute) {
-          return
+          return;
         }
 
         const currentIndex = languages.findIndex(
           (l) => l.code === currentLanguage,
-        )
-        const nextIndex = (currentIndex + 1) % languages.length
-        const nextLang = languages[nextIndex]?.code || 'en'
-        const nextLangName = languages[nextIndex]?.name || 'English'
+        );
+        const nextIndex = (currentIndex + 1) % languages.length;
+        const nextLang = languages[nextIndex]?.code || "en";
+        const nextLangName = languages[nextIndex]?.name || "English";
 
         // Update language via context
-        setLanguage(nextLang)
+        setLanguage(nextLang);
 
         // Call the callback if provided (for onboarding step)
         if (onLanguageChange) {
-          onLanguageChange(nextLangName)
+          onLanguageChange(nextLangName);
         }
       },
       [currentLanguage, isPortalRoute, onLanguageChange, setLanguage],
-    )
+    );
 
     // Don't render the switcher in portal routes
     if (isPortalRoute) {
-      return null
+      return null;
     }
 
     return (
@@ -75,8 +75,8 @@ export const LanguageSwitcher = memo(
           </AnimatePresence>
         </div>
       </button>
-    )
+    );
   },
-)
+);
 
-LanguageSwitcher.displayName = 'LanguageSwitcher'
+LanguageSwitcher.displayName = "LanguageSwitcher";

@@ -10,7 +10,8 @@ export async function GET(request: NextRequest) {
 
     const { data: jobs, error } = await supabase
       .from("jobs")
-      .select(`
+      .select(
+        `
         *,
         companies (
           id,
@@ -20,7 +21,8 @@ export async function GET(request: NextRequest) {
           size,
           industry
         )
-      `)
+      `,
+      )
       .eq("is_active", true)
       .eq("is_sponsored", true)
       .order("posted_at", { ascending: false })

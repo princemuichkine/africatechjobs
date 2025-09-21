@@ -18,7 +18,7 @@ export async function GET(
       if (error.code === "PGRST116") {
         return NextResponse.json(
           { data: null, error: "Company not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
       console.error("Error fetching company:", error);

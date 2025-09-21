@@ -15,12 +15,12 @@ const navigationLinks = [
 export function Header() {
   const pathname = usePathname();
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
   const playClickSound = () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       try {
-        const audio = new Audio('/sounds/light.mp3');
+        const audio = new Audio("/sounds/light.mp3");
         audio.volume = 0.4;
         void audio.play().catch(() => {
           // Silently handle audio play errors (autoplay policies, etc.)
@@ -46,9 +46,7 @@ export function Header() {
               onClick={playClickSound}
               className={cn(
                 "flex items-center gap-2 text-sm font-medium",
-                pathname === link.href
-                  ? "text-primary"
-                  : "text-[#878787]",
+                pathname === link.href ? "text-primary" : "text-[#878787]",
               )}
             >
               {link.label}

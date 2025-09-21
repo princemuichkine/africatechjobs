@@ -25,7 +25,7 @@ export type Job = Database["public"]["Tables"]["jobs"]["Row"] & {
 // Job filters type
 export type JobFilters = {
   search?: string;
-  location?: string;
+  city?: string;
   country?: string;
   type?: string;
   experience?: string;

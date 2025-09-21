@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/actions/utils";
-import { LottieIcon } from '@/components/design/lottie-icon';
-import { animations } from '@/lib/utils/lottie-animations';
+import { LottieIcon } from "@/components/design/lottie-icon";
+import { animations } from "@/lib/utils/lottie-animations";
 import { useState } from "react";
 import { toast } from "@/components/ui/toast";
 
@@ -18,7 +18,7 @@ export function ShareButton({
   const handleCopy = () => {
     navigator.clipboard.writeText(`${window.location.origin}/${slug}`);
     setCopied(true);
-    toast({ type: 'default', description: 'URL copied to clipboard' });
+    toast({ type: "default", description: "URL copied to clipboard" });
 
     setTimeout(() => {
       setCopied(false);

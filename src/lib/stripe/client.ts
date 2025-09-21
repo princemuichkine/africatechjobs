@@ -1,41 +1,39 @@
-import Stripe from 'stripe'
-import { loadStripe, type Stripe as StripeJS } from '@stripe/stripe-js'
+import Stripe from "stripe";
+import { loadStripe, type Stripe as StripeJS } from "@stripe/stripe-js";
 
 // Server-side Stripe instance - only initialize on server
-let _stripe: Stripe | null = null
+let _stripe: Stripe | null = null;
 
 export const getServerStripe = () => {
-  if (typeof window !== 'undefined') {
-    throw new Error('This function can only be called on the server side')
+  if (typeof window !== "undefined") {
+    throw new Error("This function can only be called on the server side");
   }
 
   if (!_stripe) {
     _stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2025-08-27.basil',
+      apiVersion: "2025-08-27.basil",
       appInfo: {
-        name: 'afritechjobs',
-        version: '1.0.0',
+        name: "afritechjobs",
+        version: "1.0.0",
       },
-    })
+    });
   }
 
-  return _stripe
-}
+  return _stripe;
+};
 
 // Client-side Stripe instance
-let stripePromise: Promise<StripeJS | null> | null = null
+let stripePromise: Promise<StripeJS | null> | null = null;
 
 export const getStripe = () => {
   if (!stripePromise) {
-    stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+    stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
   }
-  return stripePromise
-}
+  return stripePromise;
+};
 
 // Price IDs - these will be configured in Stripe dashboard
-export const STRIPE_PRICE_IDS = {
-
-}
+export const STRIPE_PRICE_IDS = {};
 
 // // Usage billing configuration
 // export const USAGE_BILLING_CONFIG = {
@@ -78,26 +76,26 @@ export const STRIPE_PRICE_IDS = {
 // Helper function to record usage meter event in Stripe
 export const recordUsageEvent = async (
   customerId: string,
-  eventName: string = 'submission',
+  eventName: string = "submission",
 ) => {
-  if (typeof window !== 'undefined') {
-    throw new Error('This function can only be called on the server side')
+  if (typeof window !== "undefined") {
+    throw new Error("This function can only be called on the server side");
   }
 
   try {
-    const stripe = getServerStripe()
+    const stripe = getServerStripe();
 
     await stripe.billing.meterEvents.create({
       event_name: eventName,
       payload: {
         stripe_customer_id: customerId,
-        value: '1', // 1 submission
+        value: "1", // 1 submission
       },
-    })
+    });
 
-    return { success: true }
+    return { success: true };
   } catch (error) {
-    console.error('Error recording usage event:', error)
-    return { success: false, error }
+    console.error("Error recording usage event:", error);
+    return { success: false, error };
   }
-}
+};

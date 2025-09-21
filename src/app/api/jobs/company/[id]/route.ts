@@ -10,7 +10,8 @@ export async function GET(
     const supabase = await createClient();
     const { data: jobs, error } = await supabase
       .from("jobs")
-      .select(`
+      .select(
+        `
         *,
         companies (
           id,
@@ -20,7 +21,8 @@ export async function GET(
           size,
           industry
         )
-      `)
+      `,
+      )
       .eq("company_id", resolvedParams.id)
       .eq("is_active", true)
       .order("posted_at", { ascending: false });

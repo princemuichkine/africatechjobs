@@ -10,7 +10,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Image from "next/image";
 import { Job } from "@/lib/types/job";
 
-
 interface JobListProps {
   jobs: Job[];
   currentPage: number;
@@ -30,14 +29,13 @@ export function JobList({
   onJobClick,
   loading = false,
   error = null,
-  totalJobs = 0
+  totalJobs = 0,
 }: JobListProps) {
-
   // Loading state - show beautiful skeleton cards
   if (loading && jobs.length === 0) {
     return (
-      <div className="space-y-4">
-        {Array.from({ length: 6 }).map((_, index) => (
+      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, index) => (
           <div key={index} className="border rounded-sm p-6">
             <div className="space-y-3">
               <Skeleton className="h-6 w-3/4" />
@@ -128,7 +126,7 @@ export function JobList({
     }
 
     if (currentPage - delta > 2) {
-      rangeWithDots.push(1, '...');
+      rangeWithDots.push(1, "...");
     } else {
       rangeWithDots.push(1);
     }
@@ -136,7 +134,7 @@ export function JobList({
     rangeWithDots.push(...range);
 
     if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push('...', totalPages);
+      rangeWithDots.push("...", totalPages);
     } else if (totalPages > 1) {
       rangeWithDots.push(totalPages);
     }
@@ -151,17 +149,17 @@ export function JobList({
         Showing {jobs.length} of {totalJobs.toLocaleString()} jobs
       </div>
 
-      {/* Job cards in grid layout (like the original) */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {/* Job cards in grid layout - made wider */}
+      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
         {jobs.map((job) => (
           <JobCard key={job.id} job={job} onViewDetails={onJobClick} />
         ))}
       </div>
 
-      {/* Loading indicator for additional pages (like original) */}
+      {/* Loading indicator for additional pages */}
       {loading && jobs.length > 0 && (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
+        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, index) => (
             <div key={`loading-${index}`} className="border rounded-sm p-6">
               <div className="space-y-3">
                 <Skeleton className="h-6 w-3/4" />
@@ -197,7 +195,7 @@ export function JobList({
           <div className="flex items-center gap-1">
             {getPaginationNumbers().map((page, index) => (
               <div key={index}>
-                {page === '...' ? (
+                {page === "..." ? (
                   <span className="px-3 py-2 text-muted-foreground">...</span>
                 ) : (
                   <Button

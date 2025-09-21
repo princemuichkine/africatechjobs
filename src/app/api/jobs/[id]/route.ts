@@ -10,7 +10,8 @@ export async function GET(
     const supabase = await createClient();
     const { data: job, error } = await supabase
       .from("jobs")
-      .select(`
+      .select(
+        `
         *,
         companies (
           id,
@@ -20,7 +21,8 @@ export async function GET(
           size,
           industry
         )
-      `)
+      `,
+      )
       .eq("id", resolvedParams.id)
       .eq("is_active", true)
       .single();
@@ -29,7 +31,7 @@ export async function GET(
       if (error.code === "PGRST116") {
         return NextResponse.json(
           { data: null, error: "Job not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
       console.error("Error fetching job:", error);

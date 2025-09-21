@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 /**
  * A hook to check if the current viewport width is less than a certain breakpoint
@@ -20,10 +20,10 @@ export function useBreakpoint(breakpoint: number): boolean {
     checkWidth();
 
     // Add event listener for window resize
-    window.addEventListener('resize', checkWidth);
+    window.addEventListener("resize", checkWidth);
 
     // Clean up
-    return () => window.removeEventListener('resize', checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
   }, [breakpoint]);
 
   return isBelowBreakpoint;

@@ -66,10 +66,13 @@ export type JobData = {
 export function EditJobForm({ data }: { data: JobData }) {
   const { execute, isExecuting } = useAction(updateJobListingAction, {
     onSuccess: () => {
-      toast({ type: 'success', description: 'Job listing updated successfully' });
+      toast({
+        type: "success",
+        description: "Job listing updated successfully",
+      });
     },
     onError: () => {
-      toast({ type: 'error', description: 'Failed to update job listing' });
+      toast({ type: "error", description: "Failed to update job listing" });
     },
   });
 

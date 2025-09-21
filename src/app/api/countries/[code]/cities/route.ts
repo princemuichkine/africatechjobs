@@ -10,13 +10,15 @@ export async function GET(
     const supabase = await createClient();
     const { data: cities, error } = await supabase
       .from("cities")
-      .select(`
+      .select(
+        `
         *,
         countries (
           code,
           name
         )
-      `)
+      `,
+      )
       .eq("countries.code", resolvedParams.code)
       .order("name");
 

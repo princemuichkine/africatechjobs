@@ -1,5 +1,5 @@
-'use client'
-import React from 'react'
+"use client";
+import React from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,38 +7,38 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
+} from "@/components/ui/breadcrumb";
 
 interface TopBannerProps {
   breadcrumbs?: Array<{
-    label: string
-    href?: string
-    isCurrentPage?: boolean
-  }>
+    label: string;
+    href?: string;
+    isCurrentPage?: boolean;
+  }>;
 }
 
 export function TopBanner({ breadcrumbs }: TopBannerProps) {
   const playClickSound = React.useCallback(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       try {
-        const audio = new Audio('/sounds/light.mp3')
-        audio.volume = 0.4
-        audio.play().catch(() => { })
-      } catch { }
+        const audio = new Audio("/sounds/light.mp3");
+        audio.volume = 0.4;
+        audio.play().catch(() => {});
+      } catch {}
     }
-  }, [])
+  }, []);
 
   // Default breadcrumbs if none provided
   const defaultBreadcrumbs = [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Overview', isCurrentPage: true },
-  ]
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Overview", isCurrentPage: true },
+  ];
 
-  const items = breadcrumbs || defaultBreadcrumbs
+  const items = breadcrumbs || defaultBreadcrumbs;
 
   // Find the current page for mobile display
   const currentPage =
-    items.find((item) => item.isCurrentPage) || items[items.length - 1]
+    items.find((item) => item.isCurrentPage) || items[items.length - 1];
 
   return (
     <Breadcrumb>
@@ -57,7 +57,7 @@ export function TopBanner({ breadcrumbs }: TopBannerProps) {
                   </BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink
-                    href={item.href || '#'}
+                    href={item.href || "#"}
                     onClick={playClickSound}
                     className="text-sidebar-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent dark:hover:bg-sidebar-accent px-2 py-1.5 rounded-sm transition-colors duration-200"
                   >
@@ -79,5 +79,5 @@ export function TopBanner({ breadcrumbs }: TopBannerProps) {
         </div>
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  );
 }

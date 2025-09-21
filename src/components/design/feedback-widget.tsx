@@ -1,31 +1,34 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/toast';
-import { CheckCircle as SealCheck, Loader2 as Spinner } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
+import { CheckCircle as SealCheck, Loader2 as Spinner } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { createClient } from '@/lib/supabase/client';
-
+} from "@/components/ui/dropdown-menu";
+import { createClient } from "@/lib/supabase/client";
 
 export function FeedbackWidget({ className }: { className?: string }) {
   const [status, setStatus] = useState<
-    'idle' | 'submitting' | 'success' | 'error'
-  >('idle');
-  const [feedback, setFeedback] = useState('');
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [feedback, setFeedback] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [session, setSession] = useState<{ user?: { id: string; email?: string } } | null>(null);
+  const [session, setSession] = useState<{
+    user?: { id: string; email?: string };
+  } | null>(null);
   const [isSessionLoading, setIsSessionLoading] = useState(true);
 
   useEffect(() => {
     const getSession = async () => {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setSession(session);
       setIsSessionLoading(false);
     };
@@ -35,26 +38,26 @@ export function FeedbackWidget({ className }: { className?: string }) {
   const userId = session?.user?.id;
 
   useEffect(() => {
-    setStatus('idle');
-    setFeedback('');
+    setStatus("idle");
+    setFeedback("");
   }, [isOpen]);
 
   const closeMenu = () => {
-    setFeedback('');
-    setStatus('idle');
+    setFeedback("");
+    setStatus("idle");
     setIsOpen(false);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!userId) {
-      toast({ type: 'error', description: 'Please login to submit feedback' });
+      toast({ type: "error", description: "Please login to submit feedback" });
       return;
     }
 
-    setStatus('submitting');
+    setStatus("submitting");
     if (!feedback.trim()) {
-      setStatus('idle');
+      setStatus("idle");
       return;
     }
 
@@ -62,14 +65,17 @@ export function FeedbackWidget({ className }: { className?: string }) {
       // For now, just simulate a successful submission
       // In a real app, you'd send this to your backend/Discord
       await new Promise((resolve) => setTimeout(resolve, 1200));
-      setStatus('success');
+      setStatus("success");
       setTimeout(() => {
         closeMenu();
       }, 2500);
     } catch (error) {
-      console.error('Error submitting feedback:', error);
-      toast({ type: 'error', description: 'Failed to submit feedback. Please try again.' });
-      setStatus('error');
+      console.error("Error submitting feedback:", error);
+      toast({
+        type: "error",
+        description: "Failed to submit feedback. Please try again.",
+      });
+      setStatus("error");
     }
   };
 
@@ -81,7 +87,11 @@ export function FeedbackWidget({ className }: { className?: string }) {
     <div className={className}>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="w-full h-10 justify-start">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full h-10 justify-start"
+          >
             <SealCheck className="size-4 mr-2" />
             <span>Feedback</span>
           </Button>
@@ -93,7 +103,7 @@ export function FeedbackWidget({ className }: { className?: string }) {
         >
           <div className="size-[240px]">
             <AnimatePresence mode="popLayout">
-              {status === 'success' ? (
+              {status === "success" ? (
                 <motion.div
                   key="success"
                   className="flex size-[220px] flex-col items-center justify-center px-6"
@@ -158,7 +168,7 @@ export function FeedbackWidget({ className }: { className?: string }) {
                       className="text-foreground size-full resize-none bg-transparent pl-3 pr-8 py-3.5 text-sm outline-hidden focus:ring-0 focus:outline-none"
                       autoFocus
                       onChange={(e) => setFeedback(e.target.value)}
-                      disabled={status === 'submitting'}
+                      disabled={status === "submitting"}
                       placeholder=""
                     />
                   </div>
@@ -170,10 +180,10 @@ export function FeedbackWidget({ className }: { className?: string }) {
                       size="sm"
                       aria-label="Submit feedback"
                       className="rounded-sm bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/40 hover:text-green-800 dark:hover:text-green-200 border border-green-200 dark:border-green-800 ml-auto mr-6"
-                      disabled={status === 'submitting' || !feedback.trim()}
+                      disabled={status === "submitting" || !feedback.trim()}
                     >
                       <AnimatePresence mode="popLayout">
-                        {status === 'submitting' ? (
+                        {status === "submitting" ? (
                           <motion.span
                             key="submitting"
                             initial={{ opacity: 0, y: 5 }}

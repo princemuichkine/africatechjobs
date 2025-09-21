@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     // Filters - updated to match queries.ts
     const country = searchParams.get("country");
-    const location = searchParams.get("location");
+    const city = searchParams.get("city");
     const type = searchParams.get("type");
     const experienceLevel = searchParams.get("experience_level");
     const remote = searchParams.get("remote");
@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from("jobs")
-      .select(`
+      .select(
+        `
         *,
         companies (
           id,
@@ -33,7 +34,9 @@ export async function GET(request: NextRequest) {
           size,
           industry
         )
-      `, { count: "exact" })
+      `,
+        { count: "exact" },
+      )
       .eq("is_active", true)
       .order("is_sponsored", { ascending: false })
       .order("posted_at", { ascending: false })
@@ -42,7 +45,7 @@ export async function GET(request: NextRequest) {
     // Apply filters
     if (country) {
       // Handle multiple countries (comma-separated)
-      const countries = country.split(',').map(c => c.trim());
+      const countries = country.split(",").map((c) => c.trim());
       if (countries.length > 1) {
         query = query.in("country", countries);
       } else {
@@ -50,8 +53,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    if (location) {
-      query = query.ilike("location", `%${location}%`);
+    if (city) {
+      query = query.ilike("city", `%${city}%`);
     }
 
     if (type) {
@@ -99,13 +102,24 @@ export async function GET(request: NextRequest) {
     // Filter by company size in application layer if needed
     let filteredJobs = jobs;
     if (company_size && jobs) {
-      filteredJobs = jobs.filter(job =>
-        job.companies && job.companies.size === company_size
+      filteredJobs = jobs.filter(
+        (job) => job.companies && job.companies.size === company_size,
       );
     }
 
+    // Map database fields to camelCase aliases for frontend compatibility
+    const mappedJobs = (filteredJobs || []).map((job) => ({
+      ...job,
+      companyName: job.company_name,
+      experienceLevel: job.experience_level,
+      postedAt: job.posted_at,
+      workplace: job.remote ? "Remote" : "On site",
+      link: job.url,
+      city: job.city, // Add city field
+    }));
+
     return NextResponse.json({
-      data: filteredJobs || [],
+      data: mappedJobs,
       count: count || 0,
       error: null,
     });

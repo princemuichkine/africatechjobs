@@ -1,26 +1,26 @@
-'use client'
+"use client";
 
-import { useTheme } from 'next-themes'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useTheme } from "next-themes";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface BackgroundTextProps {
-  onClick?: () => void
+  onClick?: () => void;
 }
 
 export function BackgroundText({ onClick }: BackgroundTextProps) {
-  const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  const imageSrc = resolvedTheme === 'dark' ? '/tw.webp' : '/tb.webp'
+  const imageSrc = resolvedTheme === "dark" ? "/tw.webp" : "/tb.webp";
 
   if (!mounted) {
     // Render a placeholder or null on the server and initial client render
-    return null
+    return null;
   }
 
   return (
@@ -41,5 +41,5 @@ export function BackgroundText({ onClick }: BackgroundTextProps) {
         />
       )}
     </div>
-  )
+  );
 }

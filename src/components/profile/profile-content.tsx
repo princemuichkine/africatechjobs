@@ -1,5 +1,5 @@
-import { LottieIcon } from '@/components/design/lottie-icon';
-import { animations } from '@/lib/utils/lottie-animations';
+import { LottieIcon } from "@/components/design/lottie-icon";
+import { animations } from "@/lib/utils/lottie-animations";
 import { XIcon } from "@/components/icons/XIcon";
 
 export function ProfileContent({

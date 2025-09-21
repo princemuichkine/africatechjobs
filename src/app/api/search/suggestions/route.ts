@@ -33,9 +33,9 @@ export async function GET(request: NextRequest) {
       .limit(limit);
 
     const suggestions = {
-      titles: titleSuggestions?.map(t => t.title) || [],
-      companies: companySuggestions?.map(c => c.name) || [],
-      locations: locationSuggestions?.map(l => l.location) || [],
+      titles: titleSuggestions?.map((t) => t.title) || [],
+      companies: companySuggestions?.map((c) => c.name) || [],
+      locations: locationSuggestions?.map((l) => l.location) || [],
     };
 
     return NextResponse.json(suggestions);

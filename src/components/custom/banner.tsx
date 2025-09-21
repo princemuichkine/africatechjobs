@@ -29,7 +29,11 @@ export function Banner() {
       href: "https://lomi.africa",
       logo: mounted ? (
         <Image
-          src={theme === 'dark' ? '/ads/transparent_l.webp' : '/ads/transparent_d.webp'}
+          src={
+            theme === "dark"
+              ? "/ads/transparent_l.webp"
+              : "/ads/transparent_d.webp"
+          }
           alt="lomi logo"
           width={32}
           height={28}
@@ -41,7 +45,7 @@ export function Banner() {
       title: "lomi.",
       description:
         "The open-source payment processing platform powering West-African businesses. ↗",
-    }
+    },
   ];
 
   useEffect(() => {
@@ -126,7 +130,7 @@ export function Banner() {
       onClick={() => {
         try {
           // Play click sound
-          const audio = new Audio('/sounds/light.mp3');
+          const audio = new Audio("/sounds/light.mp3");
           audio.play().catch(() => {
             // Ignore audio play failures (user hasn't interacted with page yet, etc.)
           });

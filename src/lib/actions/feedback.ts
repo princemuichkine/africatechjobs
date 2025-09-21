@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 interface SendFeedbackParams {
   feedbackContent: string;
@@ -10,7 +10,7 @@ export async function sendFeedbackToDiscord({
   feedbackContent,
 }: SendFeedbackParams): Promise<{ success: boolean; error?: string }> {
   if (!feedbackContent) {
-    return { success: false, error: 'Feedback content cannot be empty.' };
+    return { success: false, error: "Feedback content cannot be empty." };
   }
 
   try {
@@ -18,10 +18,10 @@ export async function sendFeedbackToDiscord({
     // feedback service (email, database, external API, etc.)
     return { success: true };
   } catch (error: unknown) {
-    console.error('[Feedback Action] Error processing feedback:', error);
+    console.error("[Feedback Action] Error processing feedback:", error);
 
     let errorMessage =
-      'An unexpected error occurred while processing feedback.';
+      "An unexpected error occurred while processing feedback.";
     if (error instanceof Error) {
       errorMessage = error.message;
     }

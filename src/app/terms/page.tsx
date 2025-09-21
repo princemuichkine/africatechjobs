@@ -1,11 +1,11 @@
-import { Header } from '@/components/custom/header'
-import TermsClient from '@/components/custom/terms-client'
-import type { Metadata } from 'next'
+import { Header } from "@/components/custom/header";
+import TermsClient from "@/components/custom/terms-client";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Terms',
-  description: 'Read the terms and conditions for using our services.',
-}
+  title: "Terms",
+  description: "Read the terms and conditions for using our services.",
+};
 
 export default function TermsPage() {
   return (
@@ -15,5 +15,5 @@ export default function TermsPage() {
         <TermsClient />
       </main>
     </div>
-  )
+  );
 }

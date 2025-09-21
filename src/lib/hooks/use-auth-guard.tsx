@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -6,11 +6,11 @@ import {
   useState,
   type ReactNode,
   useEffect,
-} from 'react';
-import { AuthModal } from '@/components/custom/auth-modal';
-import { WelcomeModal } from '@/components/custom/welcome-modal';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+} from "react";
+import { AuthModal } from "@/components/custom/auth-modal";
+import { WelcomeModal } from "@/components/custom/welcome-modal";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 type AuthGuardContextType = {
   isGuest: boolean;
@@ -21,7 +21,7 @@ const AuthGuardContext = createContext<AuthGuardContextType | null>(null);
 export const useAuthGuard = () => {
   const context = useContext(AuthGuardContext);
   if (!context) {
-    throw new Error('useAuthGuard must be used within an AuthGuardProvider');
+    throw new Error("useAuthGuard must be used within an AuthGuardProvider");
   }
   return context;
 };
@@ -44,7 +44,7 @@ export const useIsAnonymous = () => {
           setIsAnonymous(false);
         }
       } catch (error) {
-        console.error('Error checking anonymous status:', error);
+        console.error("Error checking anonymous status:", error);
         setIsAnonymous(false);
       } finally {
         setIsLoading(false);
@@ -68,15 +68,15 @@ export const AuthGuardProvider = ({
   const [isGuest] = useState(initialIsGuest);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
+  const [authMode, setAuthMode] = useState<"login" | "signup">("signup");
   const [modalJustClosed, setModalJustClosed] = useState(false);
   const [welcomeShown, setWelcomeShown] = useState(false);
 
   // Check if welcome modal has been shown before
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const hasSeenWelcome =
-        localStorage.getItem('antwrite-welcome-shown') === 'true';
+        localStorage.getItem("antwrite-welcome-shown") === "true";
       setWelcomeShown(hasSeenWelcome);
     }
   }, []);
@@ -89,41 +89,39 @@ export const AuthGuardProvider = ({
       // Don't trigger on the auth modal itself, welcome modal, theme toggle, sidebar components, or if modal just closed
       const target = e.target as HTMLElement;
       if (
-        target.closest('[data-auth-modal]') ||
-        target.closest('[data-welcome-modal]') ||
-        target.closest('[data-theme-toggle]') ||
-        target.closest('[data-sidebar]') ||
-        target.closest('[data-resizable-panel]') ||
+        target.closest("[data-auth-modal]") ||
+        target.closest("[data-welcome-modal]") ||
+        target.closest("[data-theme-toggle]") ||
+        target.closest("[data-sidebar]") ||
+        target.closest("[data-resizable-panel]") ||
         modalJustClosed
       )
         return;
 
       // Allow ALL document-related interactions (text editor, document creation, editing, etc.)
       if (
-        target.closest('.editor-area') ||
-        target.closest('.ProseMirror') ||
-        target.closest('[data-create-document]') ||
-        target.closest('[data-document-editor]') ||
-        target.closest('button')?.textContent?.includes('Create') ||
-        target.closest('button')?.textContent?.includes('New') ||
-        target.closest('button')?.querySelector('svg') || // buttons with icons (like file plus)
+        target.closest(".editor-area") ||
+        target.closest(".ProseMirror") ||
+        target.closest("[data-create-document]") ||
+        target.closest("[data-document-editor]") ||
+        target.closest("button")?.textContent?.includes("Create") ||
+        target.closest("button")?.textContent?.includes("New") ||
+        target.closest("button")?.querySelector("svg") || // buttons with icons (like file plus)
         target.closest('[role="textbox"]') ||
-        target.closest('input') ||
-        target.closest('textarea') ||
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
-        target.contentEditable === 'true' ||
+        target.closest("input") ||
+        target.closest("textarea") ||
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.contentEditable === "true" ||
         target.closest('[contenteditable="true"]') ||
         // Allow document management buttons
-        target
-          .closest('button')
-          ?.textContent?.includes('Save') ||
-        target.closest('button')?.textContent?.includes('Rename') ||
-        target.closest('button')?.textContent?.includes('Edit') ||
-        target.closest('button')?.textContent?.includes('Delete') ||
+        target.closest("button")?.textContent?.includes("Save") ||
+        target.closest("button")?.textContent?.includes("Rename") ||
+        target.closest("button")?.textContent?.includes("Edit") ||
+        target.closest("button")?.textContent?.includes("Delete") ||
         // Allow toolbar interactions
-        target.closest('[data-toolbar]') ||
-        target.closest('.toolbar')
+        target.closest("[data-toolbar]") ||
+        target.closest(".toolbar")
       ) {
         // Let all document editing and creation proceed - anonymous auth will handle it
         return;
@@ -131,16 +129,16 @@ export const AuthGuardProvider = ({
 
       // BLOCK AI chat interactions for guests
       if (
-        target.closest('[data-chat-input]') ||
-        target.closest('[data-multimodal-input]') ||
-        target.closest('.chat-input') ||
-        target.closest('[data-chat]') ||
-        target.closest('button')?.textContent?.includes('Send') ||
-        target.closest('button')?.textContent?.includes('Chat') ||
-        target.closest('button')?.textContent?.includes('Ask') ||
-        target.closest('[data-ai-chat]') ||
-        target.closest('[data-ai-widget]') ||
-        target.closest('[data-chat-widget]')
+        target.closest("[data-chat-input]") ||
+        target.closest("[data-multimodal-input]") ||
+        target.closest(".chat-input") ||
+        target.closest("[data-chat]") ||
+        target.closest("button")?.textContent?.includes("Send") ||
+        target.closest("button")?.textContent?.includes("Chat") ||
+        target.closest("button")?.textContent?.includes("Ask") ||
+        target.closest("[data-ai-chat]") ||
+        target.closest("[data-ai-widget]") ||
+        target.closest("[data-chat-widget]")
       ) {
         e.preventDefault();
         e.stopPropagation();
@@ -157,11 +155,11 @@ export const AuthGuardProvider = ({
       // Allow other non-sensitive interactions (theme toggle, sidebar navigation, etc.)
       // Only block truly sensitive operations that need authentication
       if (
-        target.closest('button')?.textContent?.includes('Upgrade') ||
-        target.closest('button')?.textContent?.includes('Account') ||
-        target.closest('[data-account]') ||
-        target.closest('[data-billing]') ||
-        target.closest('[data-settings]')
+        target.closest("button")?.textContent?.includes("Upgrade") ||
+        target.closest("button")?.textContent?.includes("Account") ||
+        target.closest("[data-account]") ||
+        target.closest("[data-billing]") ||
+        target.closest("[data-settings]")
       ) {
         e.preventDefault();
         e.stopPropagation();
@@ -184,12 +182,12 @@ export const AuthGuardProvider = ({
 
       // Allow all keyboard input in document editing areas
       if (
-        target.closest('.editor-area') ||
-        target.closest('.ProseMirror') ||
-        target.closest('[data-document-editor]') ||
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
-        target.contentEditable === 'true' ||
+        target.closest(".editor-area") ||
+        target.closest(".ProseMirror") ||
+        target.closest("[data-document-editor]") ||
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.contentEditable === "true" ||
         target.closest('[contenteditable="true"]') ||
         target.closest('[role="textbox"]')
       ) {
@@ -199,10 +197,10 @@ export const AuthGuardProvider = ({
 
       // Block AI chat keyboard interactions
       if (
-        target.closest('[data-chat-input]') ||
-        target.closest('[data-multimodal-input]') ||
-        target.closest('.chat-input') ||
-        target.closest('[data-chat]')
+        target.closest("[data-chat-input]") ||
+        target.closest("[data-multimodal-input]") ||
+        target.closest(".chat-input") ||
+        target.closest("[data-chat]")
       ) {
         e.preventDefault();
         e.stopPropagation();
@@ -219,12 +217,12 @@ export const AuthGuardProvider = ({
       return;
     };
 
-    document.addEventListener('click', handleClick, true);
-    document.addEventListener('keydown', handleKeyDown, true);
+    document.addEventListener("click", handleClick, true);
+    document.addEventListener("keydown", handleKeyDown, true);
 
     return () => {
-      document.removeEventListener('click', handleClick, true);
-      document.removeEventListener('keydown', handleKeyDown, true);
+      document.removeEventListener("click", handleClick, true);
+      document.removeEventListener("keydown", handleKeyDown, true);
     };
   }, [isGuest, modalJustClosed, welcomeShown]);
 
@@ -253,7 +251,7 @@ export const AuthGuardProvider = ({
     setShowWelcomeModal(open);
     if (!open) {
       // Mark welcome as shown and show auth modal
-      localStorage.setItem('antwrite-welcome-shown', 'true');
+      localStorage.setItem("antwrite-welcome-shown", "true");
       setWelcomeShown(true);
       setModalJustClosed(true);
       // Small delay to prevent immediate trigger

@@ -3,7 +3,6 @@ import "./globals.css";
 import type { Metadata } from "next";
 import ClientLayout from "@/components/layout/client-layout";
 
-
 export const metadata: Metadata = {
   title: "afritechjobs.com",
   description:

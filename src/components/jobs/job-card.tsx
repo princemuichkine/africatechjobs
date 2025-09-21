@@ -6,12 +6,10 @@ import {
   formatSalary,
   getJobTypeLabel,
   getExperienceLabel,
-  truncateText,
-  getInitials,
 } from "@/lib/actions/utils";
 import { useAnalytics } from "@/lib/hooks/use-analytics";
-import { LottieIcon } from '@/components/design/lottie-icon';
-import { animations } from '@/lib/utils/lottie-animations';
+import { LottieIcon } from "@/components/design/lottie-icon";
+import { animations } from "@/lib/utils/lottie-animations";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +18,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import Image from "next/image";
 
 interface JobCardProps {
   job: Job;
@@ -37,7 +36,7 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
       onViewDetails(job);
     } else {
       // Track external link click
-      trackUserAction('job_external_link_click', {
+      trackUserAction("job_external_link_click", {
         job_id: job.id,
         job_title: job.title,
         company_name: job.companyName,
@@ -64,16 +63,105 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
                 initialFrame={0}
               />
               <span className="font-medium">
-                {job.companyName || "Unknown Company"}
+                {job.companyName ||
+                  (job as { company_name?: string }).company_name ||
+                  "Unknown Company"}
               </span>
             </div>
           </div>
           <div className="flex-shrink-0 ml-4">
-            <div className="w-10 h-10 rounded-sm bg-blue-100 flex items-center justify-center">
-              <span className="text-sm font-semibold text-blue-600">
-                {getInitials(job.companyName || "Unknown Company")}
-              </span>
-            </div>
+            {(() => {
+              // Extract main company domain from URL for logo fetching
+              const getDomainFromUrl = (url: string) => {
+                try {
+                  const urlObj = new URL(url);
+                  let hostname = urlObj.hostname.replace("www.", "");
+
+                  // Remove common subdomains like careers, jobs, apply, etc.
+                  const subdomainsToRemove = [
+                    "careers",
+                    "jobs",
+                    "apply",
+                    "recruiting",
+                    "talent",
+                    "workday",
+                    "greenhouse",
+                    "lever",
+                    "jobvite",
+                  ];
+                  for (const subdomain of subdomainsToRemove) {
+                    if (hostname.startsWith(subdomain + ".")) {
+                      hostname = hostname.replace(subdomain + ".", "");
+                      break;
+                    }
+                  }
+
+                  // Take the main domain (everything before the first dot after removing subdomains)
+                  return hostname.split(".")[0];
+                } catch {
+                  return null;
+                }
+              };
+
+              const domain = job.url ? getDomainFromUrl(job.url) : null;
+              const companyName =
+                job.companyName ||
+                (job as { company_name?: string }).company_name;
+
+              // Check if this is a LinkedIn URL (internal application)
+              const isLinkedInUrl =
+                job.url &&
+                (job.url.includes("linkedin.com") ||
+                  job.url.includes("lnkd.in"));
+
+              if (isLinkedInUrl) {
+                // Use LinkedIn logo for LinkedIn URLs
+                return (
+                  <Image
+                    src="https://twenty-icons.com/linkedin.com"
+                    alt="LinkedIn logo"
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-sm object-contain bg-white border"
+                    onError={(e) => {
+                      // Fallback to generic icon if logo fails to load
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                );
+              }
+
+              // Try domain from URL first, then fallback to cleaned company name
+              const logoDomain =
+                domain ||
+                (companyName
+                  ? companyName.toLowerCase().replace(/[^a-z0-9]/g, "")
+                  : null);
+
+              return logoDomain ? (
+                <Image
+                  src={`https://twenty-icons.com/${logoDomain}.com`}
+                  alt={`${companyName || "Company"} logo`}
+                  width={40}
+                  height={40}
+                  className="w-10 h-10 rounded-sm object-contain bg-white border"
+                  onError={(e) => {
+                    // Fallback to generic icon if logo fails to load
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-sm bg-gray-100 flex items-center justify-center">
+                  <LottieIcon
+                    animationData={animations.store}
+                    size={20}
+                    loop={false}
+                    autoplay={false}
+                    initialFrame={0}
+                  />
+                </div>
+              );
+            })()}
           </div>
         </div>
       </CardHeader>
@@ -90,7 +178,9 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
               initialFrame={0}
             />
             <span>
-              {job.location}, {job.country}
+              {job.city && job.country && job.city !== job.country
+                ? `${job.city}, ${job.country}`
+                : job.city || job.country || "Remote"}
             </span>
             {job.remote && (
               <Badge variant="secondary" className="text-xs">
@@ -105,10 +195,11 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
               {getJobTypeLabel(job.type || "FULL_TIME")}
             </Badge>
             <Badge variant="outline" className="text-xs">
-              {getExperienceLabel(job.experienceLevel || "ENTRY_LEVEL")}
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              {job.source}
+              {getExperienceLabel(
+                job.experienceLevel ||
+                  (job as { experience_level?: string }).experience_level ||
+                  "ENTRY_LEVEL",
+              )}
             </Badge>
           </div>
 
@@ -148,7 +239,10 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
 
           {/* Description Preview */}
           <p className="text-sm text-gray-600 line-clamp-3">
-            {truncateText(job.description, 120)}
+            {(() => {
+              const firstSentence = job.description?.split(".")[0];
+              return firstSentence ? `${firstSentence}.` : "";
+            })()}
           </p>
 
           {/* Skills */}
