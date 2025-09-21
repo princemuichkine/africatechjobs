@@ -9,9 +9,37 @@ export interface AIResponse {
   is_tech_job: 1 | 0;
   quality_score: number;
   is_visa_sponsored: 1 | 0;
-  job_category: 'ENGINEERING' | 'SALES' | 'MARKETING' | 'DATA' | 'DEVOPS' | 'PRODUCT' | 'DESIGN' | 'CLOUD' | 'SUPPORT' | 'MANAGEMENT' | 'RESEARCH' | 'LEGAL' | 'FINANCE' | 'OPERATIONS' | 'PR' | 'HR' | 'OTHER';
-  job_type: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'FREELANCE' | 'INTERNSHIP' | 'APPRENTICESHIP';
-  experience_level: 'ENTRY_LEVEL' | 'JUNIOR' | 'MID_LEVEL' | 'SENIOR' | 'EXECUTIVE';
+  job_category:
+    | "ENGINEERING"
+    | "SALES"
+    | "MARKETING"
+    | "DATA"
+    | "DEVOPS"
+    | "PRODUCT"
+    | "DESIGN"
+    | "CLOUD"
+    | "SUPPORT"
+    | "MANAGEMENT"
+    | "RESEARCH"
+    | "LEGAL"
+    | "FINANCE"
+    | "OPERATIONS"
+    | "PR"
+    | "HR"
+    | "OTHER";
+  job_type:
+    | "FULL_TIME"
+    | "PART_TIME"
+    | "CONTRACT"
+    | "FREELANCE"
+    | "INTERNSHIP"
+    | "APPRENTICESHIP";
+  experience_level:
+    | "ENTRY_LEVEL"
+    | "JUNIOR"
+    | "MID_LEVEL"
+    | "SENIOR"
+    | "EXECUTIVE";
   salary_min: number | null;
   salary_max: number | null;
   currency: string;
@@ -83,7 +111,7 @@ export class AIClient {
       ? `Description: ${description.substring(0, 800)}${description.length > 800 ? "..." : ""}`
       : "";
     const salarySnippet = salaryText ? `Salary Info: ${salaryText}` : "";
-    
+
     const prompt = `Analyze this job posting and respond with EXACTLY this format:
 TECH_JOB: [1 or 0]
 QUALITY: [0.0 to 1.0]
@@ -148,15 +176,15 @@ WEBSITE: google.com`;
         is_tech_job: 1, // Default to tech for our board
         quality_score: 0.5,
         is_visa_sponsored: 0, // Default to no visa sponsorship
-        job_category: 'OTHER',
-        job_type: 'FULL_TIME',
-        experience_level: 'MID_LEVEL',
+        job_category: "OTHER",
+        job_type: "FULL_TIME",
+        experience_level: "MID_LEVEL",
         salary_min: null,
         salary_max: null,
-        currency: 'USD',
-        standardized_city: location || 'Remote',
-        extracted_apply_url: 'LINKEDIN',
-        company_website: 'unknown.com',
+        currency: "USD",
+        standardized_city: location || "Remote",
+        extracted_apply_url: "LINKEDIN",
+        company_website: "unknown.com",
       };
     }
   }
@@ -169,66 +197,106 @@ WEBSITE: google.com`;
       is_tech_job: 1,
       quality_score: 0.5,
       is_visa_sponsored: 0,
-      job_category: 'OTHER',
-      job_type: 'FULL_TIME',
-      experience_level: 'MID_LEVEL',
+      job_category: "OTHER",
+      job_type: "FULL_TIME",
+      experience_level: "MID_LEVEL",
       salary_min: null,
       salary_max: null,
-      currency: 'USD',
-      standardized_city: 'Remote',
-      extracted_apply_url: 'LINKEDIN',
-      company_website: 'unknown.com',
+      currency: "USD",
+      standardized_city: "Remote",
+      extracted_apply_url: "LINKEDIN",
+      company_website: "unknown.com",
     };
 
     try {
       // Parse the structured format
-      const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+      const lines = text
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
       const parsed: Partial<AIResponse> = {};
 
       for (const line of lines) {
-        const [key, value] = line.split(':').map(s => s.trim());
-        
+        const [key, value] = line.split(":").map((s) => s.trim());
+
         switch (key) {
-          case 'TECH_JOB':
+          case "TECH_JOB":
             parsed.is_tech_job = parseInt(value) as 0 | 1;
             break;
-          case 'QUALITY':
+          case "QUALITY":
             parsed.quality_score = Math.max(0, Math.min(1, parseFloat(value)));
             break;
-          case 'VISA':
+          case "VISA":
             parsed.is_visa_sponsored = parseInt(value) as 0 | 1;
             break;
-          case 'CATEGORY':
-            if (['ENGINEERING', 'SALES', 'MARKETING', 'DATA', 'DEVOPS', 'PRODUCT', 'DESIGN', 'CLOUD', 'SUPPORT', 'MANAGEMENT', 'RESEARCH', 'LEGAL', 'FINANCE', 'OPERATIONS', 'PR', 'HR', 'OTHER'].includes(value)) {
-              parsed.job_category = value as AIResponse['job_category'];
+          case "CATEGORY":
+            if (
+              [
+                "ENGINEERING",
+                "SALES",
+                "MARKETING",
+                "DATA",
+                "DEVOPS",
+                "PRODUCT",
+                "DESIGN",
+                "CLOUD",
+                "SUPPORT",
+                "MANAGEMENT",
+                "RESEARCH",
+                "LEGAL",
+                "FINANCE",
+                "OPERATIONS",
+                "PR",
+                "HR",
+                "OTHER",
+              ].includes(value)
+            ) {
+              parsed.job_category = value as AIResponse["job_category"];
             }
             break;
-          case 'TYPE':
-            if (['FULL_TIME', 'PART_TIME', 'CONTRACT', 'FREELANCE', 'INTERNSHIP', 'APPRENTICESHIP'].includes(value)) {
-              parsed.job_type = value as AIResponse['job_type'];
+          case "TYPE":
+            if (
+              [
+                "FULL_TIME",
+                "PART_TIME",
+                "CONTRACT",
+                "FREELANCE",
+                "INTERNSHIP",
+                "APPRENTICESHIP",
+              ].includes(value)
+            ) {
+              parsed.job_type = value as AIResponse["job_type"];
             }
             break;
-          case 'LEVEL':
-            if (['ENTRY_LEVEL', 'JUNIOR', 'MID_LEVEL', 'SENIOR', 'EXECUTIVE'].includes(value)) {
-              parsed.experience_level = value as AIResponse['experience_level'];
+          case "LEVEL":
+            if (
+              [
+                "ENTRY_LEVEL",
+                "JUNIOR",
+                "MID_LEVEL",
+                "SENIOR",
+                "EXECUTIVE",
+              ].includes(value)
+            ) {
+              parsed.experience_level = value as AIResponse["experience_level"];
             }
             break;
-          case 'SALARY_MIN':
-            parsed.salary_min = value === 'NULL' ? null : parseInt(value);
+          case "SALARY_MIN":
+            parsed.salary_min = value === "NULL" ? null : parseInt(value);
             break;
-          case 'SALARY_MAX':
-            parsed.salary_max = value === 'NULL' ? null : parseInt(value);
+          case "SALARY_MAX":
+            parsed.salary_max = value === "NULL" ? null : parseInt(value);
             break;
-          case 'CURRENCY':
+          case "CURRENCY":
             parsed.currency = value;
             break;
-          case 'CITY':
+          case "CITY":
             parsed.standardized_city = value;
             break;
-          case 'APPLY_URL':
+          case "APPLY_URL":
             parsed.extracted_apply_url = value;
             break;
-          case 'WEBSITE':
+          case "WEBSITE":
             parsed.company_website = value;
             break;
         }
@@ -239,9 +307,11 @@ WEBSITE: google.com`;
         ...fallback,
         ...parsed,
       };
-
     } catch (error) {
-      console.warn(`⚠️ AI response parsing failed, using fallback. Response: "${text}"`, error);
+      console.warn(
+        `⚠️ AI response parsing failed, using fallback. Response: "${text}"`,
+        error,
+      );
       return fallback;
     }
   }
@@ -300,8 +370,7 @@ export async function testAIModels(
   console.log(`🧪 Testing AI models for: "${jobTitle}" at ${companyName}`);
   if (description)
     console.log(`Description: ${description.substring(0, 100)}...`);
-  if (salary)
-    console.log(`Salary: ${salary}`);
+  if (salary) console.log(`Salary: ${salary}`);
   console.log("");
 
   for (const model of modelKeys) {

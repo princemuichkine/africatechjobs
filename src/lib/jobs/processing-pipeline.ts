@@ -260,14 +260,17 @@ export class JobProcessingPipeline {
       salaryMin: enrichedData.salary_min,
       salaryMax: enrichedData.salary_max,
       currency: enrichedData.currency,
-      url: enrichedData.extracted_apply_url !== 'LINKEDIN' ? enrichedData.extracted_apply_url : job.url,
+      url:
+        enrichedData.extracted_apply_url !== "LINKEDIN"
+          ? enrichedData.extracted_apply_url
+          : job.url,
       // Processed job fields
       coordinates: { lat: 0, lng: 0 },
       company: { id: "placeholder", name: job.company_name },
       extracted_skills: [],
       quality_score: enrichedData.quality_score,
       categories: [enrichedData.job_category], // AI-determined category
-      job_category: enrichedData.job_category as 
+      job_category: enrichedData.job_category as
         | "ENGINEERING"
         | "SALES"
         | "MARKETING"
@@ -334,13 +337,13 @@ export class JobProcessingPipeline {
         is_tech_job: 1, // Default to tech for our board
         quality_score: 0.5,
         is_visa_sponsored: false,
-        job_category: 'OTHER',
-        job_type: 'FULL_TIME',
-        experience_level: 'MID_LEVEL',
-        currency: 'USD',
-        standardized_city: job.city || 'Remote',
-        extracted_apply_url: 'LINKEDIN',
-        company_website: 'unknown.com',
+        job_category: "OTHER",
+        job_type: "FULL_TIME",
+        experience_level: "MID_LEVEL",
+        currency: "USD",
+        standardized_city: job.city || "Remote",
+        extracted_apply_url: "LINKEDIN",
+        company_website: "unknown.com",
       };
     }
   }

@@ -197,8 +197,8 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
             <Badge className="text-xs bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200">
               {getExperienceLabel(
                 job.experienceLevel ||
-                (job as { experience_level?: string }).experience_level ||
-                "ENTRY_LEVEL",
+                  (job as { experience_level?: string }).experience_level ||
+                  "ENTRY_LEVEL",
               )}
             </Badge>
           </div>
