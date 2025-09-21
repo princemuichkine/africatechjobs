@@ -2,7 +2,6 @@ import type { Language } from "./config";
 import enTranslations from "./locales/en.json";
 import frTranslations from "./locales/fr.json";
 import esTranslations from "./locales/es.json";
-import arTranslations from "./locales/ar.json";
 
 // Define a more specific type for translation values
 export type TranslationValue =
@@ -14,7 +13,6 @@ const translations: { [key in Language]: Record<string, TranslationValue> } = {
   en: enTranslations as Record<string, TranslationValue>,
   fr: frTranslations as Record<string, TranslationValue>,
   es: esTranslations as Record<string, TranslationValue>,
-  ar: arTranslations as Record<string, TranslationValue>,
 };
 
 export const getTranslations = (
