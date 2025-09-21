@@ -47,14 +47,14 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
   };
 
   return (
-    <Card className="h-full hover:shadow-lg transition-shadow duration-200">
+    <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
+            <h3 className="text-lg font-semibold text-zinc-800 dark:text-white mb-1 line-clamp-2">
               {job.title}
             </h3>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-foreground/90">
               <LottieIcon
                 animationData={animations.store}
                 size={16}
@@ -151,7 +151,7 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
                   }}
                 />
               ) : (
-                <div className="w-10 h-10 rounded-sm bg-gray-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-sm bg-muted flex items-center justify-center">
                   <LottieIcon
                     animationData={animations.store}
                     size={20}
@@ -166,10 +166,10 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="pb-3">
+      <CardContent className="pb-3 flex-1">
         <div className="space-y-3">
           {/* Location and Remote */}
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2 text-sm text-foreground/90">
             <LottieIcon
               animationData={animations.globe}
               size={16}
@@ -183,7 +183,7 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
                 : job.city || job.country || "Remote"}
             </span>
             {job.remote && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge className="text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:text-emerald-900 dark:hover:text-emerald-200">
                 Remote
               </Badge>
             )}
@@ -191,21 +191,21 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
 
           {/* Job Type and Experience */}
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="text-xs">
+            <Badge className="text-xs bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-800 dark:hover:text-purple-200">
               {getJobTypeLabel(job.type || "FULL_TIME")}
             </Badge>
-            <Badge variant="outline" className="text-xs">
+            <Badge className="text-xs bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200">
               {getExperienceLabel(
                 job.experienceLevel ||
-                  (job as { experience_level?: string }).experience_level ||
-                  "ENTRY_LEVEL",
+                (job as { experience_level?: string }).experience_level ||
+                "ENTRY_LEVEL",
               )}
             </Badge>
           </div>
 
           {/* Salary */}
           {(job.salary || job.salaryMin || job.salaryMax) && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-foreground/90">
               <LottieIcon
                 animationData={animations.coin}
                 size={16}
@@ -225,7 +225,7 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
 
           {/* Posted Date */}
           {job.postedAt && (
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <LottieIcon
                 animationData={animations.hourglass}
                 size={16}
@@ -238,7 +238,7 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
           )}
 
           {/* Description Preview */}
-          <p className="text-sm text-gray-600 line-clamp-3">
+          <p className="text-sm text-foreground/90 line-clamp-3">
             {(() => {
               const firstSentence = job.description?.split(".")[0];
               return firstSentence ? `${firstSentence}.` : "";
@@ -266,8 +266,7 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
       <CardFooter className="pt-0">
         <Button
           onClick={handleViewDetails}
-          className="w-full"
-          variant="default"
+          className="w-full h-9 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/40 hover:text-green-900 dark:hover:text-green-200 border border-green-300 dark:border-green-800"
         >
           <LottieIcon
             animationData={animations.link}

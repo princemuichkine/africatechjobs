@@ -34,7 +34,7 @@ export function JobList({
   // Loading state - show beautiful skeleton cards
   if (loading && jobs.length === 0) {
     return (
-      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+      <div className="grid gap-6 grid-cols-1">
         {Array.from({ length: 4 }).map((_, index) => (
           <div key={index} className="border rounded-sm p-6">
             <div className="space-y-3">
@@ -150,7 +150,7 @@ export function JobList({
       </div>
 
       {/* Job cards in grid layout - made wider */}
-      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+      <div className="grid gap-6 grid-cols-1">
         {jobs.map((job) => (
           <JobCard key={job.id} job={job} onViewDetails={onJobClick} />
         ))}
@@ -158,7 +158,7 @@ export function JobList({
 
       {/* Loading indicator for additional pages */}
       {loading && jobs.length > 0 && (
-        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+        <div className="grid gap-6 grid-cols-1">
           {Array.from({ length: 4 }).map((_, index) => (
             <div key={`loading-${index}`} className="border rounded-sm p-6">
               <div className="space-y-3">
