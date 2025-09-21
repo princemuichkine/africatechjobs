@@ -11,11 +11,7 @@ import { useAnalytics } from "@/lib/hooks/use-analytics";
 import { LottieIcon } from "@/components/design/lottie-icon";
 import { animations } from "@/lib/utils/lottie-animations";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 
 interface JobCardProps {
@@ -44,7 +40,7 @@ export function JobCard({ job }: JobCardProps) {
 
   return (
     <Card
-      className="h-full flex flex-col hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+      className="h-full flex flex-col hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 cursor-pointer"
       onClick={handleCardClick}
     >
       <CardHeader className="pb-3">
@@ -121,7 +117,7 @@ export function JobCard({ job }: JobCardProps) {
                     alt="LinkedIn logo"
                     width={40}
                     height={40}
-                    className="w-10 h-10 rounded-sm object-contain bg-white border"
+                    className="w-10 h-10 rounded-sm object-cover"
                     onError={(e) => {
                       // Fallback to generic icon if logo fails to load
                       e.currentTarget.style.display = "none";
@@ -143,7 +139,7 @@ export function JobCard({ job }: JobCardProps) {
                   alt={`${companyName || "Company"} logo`}
                   width={40}
                   height={40}
-                  className="w-10 h-10 rounded-sm object-contain bg-white border"
+                  className="w-10 h-10 rounded-sm object-cover border"
                   onError={(e) => {
                     // Fallback to generic icon if logo fails to load
                     e.currentTarget.style.display = "none";
@@ -167,7 +163,7 @@ export function JobCard({ job }: JobCardProps) {
 
       <CardContent className="pb-3 flex-1">
         <div className="space-y-3">
-          {/* Location and Remote */}
+          {/* Location */}
           <div className="flex items-center gap-2 text-sm text-foreground/90">
             <LottieIcon
               animationData={animations.globe}
@@ -181,58 +177,79 @@ export function JobCard({ job }: JobCardProps) {
                 ? `${job.city}, ${job.country}`
                 : job.city || job.country || "Remote"}
             </span>
+          </div>
+
+          {/* Job Type, Experience, Remote, and Sponsored badges */}
+          <div className="flex flex-wrap gap-2">
+            {/* Special badges first */}
             {job.remote && (
               <Badge className="text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:text-emerald-900 dark:hover:text-emerald-200">
                 Remote
               </Badge>
             )}
-          </div>
+            {(job as { is_sponsored?: boolean }).is_sponsored && (
+              <Badge className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/40 hover:text-amber-900 dark:hover:text-amber-200">
+                Sponsored
+              </Badge>
+            )}
 
-          {/* Job Type and Experience */}
-          <div className="flex flex-wrap gap-2">
+            {/* Separator */}
+            {(job.remote ||
+              (job as { is_sponsored?: boolean }).is_sponsored) && (
+              <span className="text-muted-foreground text-xs self-center">
+                |
+              </span>
+            )}
+
+            {/* Regular job badges */}
             <Badge className="text-xs bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-800 dark:hover:text-purple-200">
               {getJobTypeLabel(job.type || "FULL_TIME")}
             </Badge>
             <Badge className="text-xs bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200">
               {getExperienceLabel(
                 job.experienceLevel ||
-                (job as { experience_level?: string }).experience_level ||
-                "ENTRY_LEVEL",
+                  (job as { experience_level?: string }).experience_level ||
+                  "ENTRY_LEVEL",
               )}
             </Badge>
           </div>
 
-          {/* Salary */}
-          {(job.salary || job.salaryMin || job.salaryMax) && (
-            <div className="flex items-center gap-2 text-sm text-foreground/90">
-              <LottieIcon
-                animationData={animations.coin}
-                size={16}
-                loop={false}
-                autoplay={false}
-                initialFrame={0}
-              />
-              <span>
-                {formatSalary(
-                  job.salaryMin ?? undefined,
-                  job.salaryMax ?? undefined,
-                  job.currency ?? undefined,
-                )}
-              </span>
-            </div>
-          )}
+          {/* Salary and Posted Date on same line */}
+          {(job.salary || job.salaryMin || job.salaryMax || job.postedAt) && (
+            <div className="flex items-center justify-between text-sm">
+              {/* Left side - Salary */}
+              {(job.salary || job.salaryMin || job.salaryMax) && (
+                <div className="flex items-center gap-2 text-foreground/90">
+                  <LottieIcon
+                    animationData={animations.coin}
+                    size={16}
+                    loop={false}
+                    autoplay={false}
+                    initialFrame={0}
+                  />
+                  <span>
+                    {formatSalary(
+                      job.salaryMin ?? undefined,
+                      job.salaryMax ?? undefined,
+                      job.currency ?? undefined,
+                    )}
+                  </span>
+                </div>
+              )}
 
-          {/* Posted Date */}
-          {job.postedAt && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <LottieIcon
-                animationData={animations.hourglass}
-                size={16}
-                loop={false}
-                autoplay={false}
-                initialFrame={0}
-              />
-              <span>Posted {formatDate(job.postedAt)}</span>
+              {/* Right side - Posted Date */}
+              {job.postedAt && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <LottieIcon
+                    animationData={animations.hourglass}
+                    size={16}
+                    loop={false}
+                    autoplay={false}
+                    initialFrame={0}
+                  />
+                  <span>Posted {formatDate(job.postedAt)}</span>
+                </div>
+              )}
             </div>
           )}
 

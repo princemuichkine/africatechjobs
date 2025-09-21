@@ -28,7 +28,7 @@ INSERT INTO countries (name, code, region, currency) VALUES
     ('Ghana', 'GH', 'West', 'GHS'),
     ('Guinea', 'GN', 'West', 'GNF'),
     ('Guinea-Bissau', 'GW', 'West', 'XOF'),
-    ('Ivory Coast', 'CI', 'West', 'XOF'),
+    ('Côte d''Ivoire', 'CI', 'West', 'XOF'),
     ('Kenya', 'KE', 'East', 'KES'),
     ('Lesotho', 'LS', 'Southern', 'LSL'),
     ('Liberia', 'LR', 'West', 'LRD'),
@@ -106,7 +106,7 @@ INSERT INTO cities (name, country_id, is_tech_hub) VALUES
     -- Tanzania (East Africa's potential)
     ('Dar es Salaam', (SELECT id FROM countries WHERE code = 'TZ'), false),
     
-    -- Ivory Coast (West Africa's economic engine)
+    -- Côte d'Ivoire (West Africa's economic engine)
     ('Abidjan', (SELECT id FROM countries WHERE code = 'CI'), false),
     
     -- Angola (Central Africa's oil giant)

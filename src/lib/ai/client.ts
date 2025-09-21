@@ -147,7 +147,7 @@ CURRENCY: USD|EUR|GBP|ZAR|NGN|KES|EGP|MAD|TND|etc (local currency)
 CITY: Clean, standardized city name (e.g. "Lagos" not "Greater Lagos Area")
 APPLY_URL: If description mentions external application URL, extract it. Otherwise return "LINKEDIN"
 WEBSITE: Company main website (e.g. "google.com", "shopify.com") for logo fetching
-DESCRIPTION: Take first 270 characters only, remove LinkedIn boilerplate ("About the Role", "About us:", etc.), reformat into ONE coherent sentence describing the job role and requirements
+DESCRIPTION: Summarize the role and key requirements into ONE sentence (max 270 chars). Do NOT repeat the job title or company name. Remove boilerplate like "About us:".
 
 Example:
 TECH_JOB: 1
@@ -162,7 +162,7 @@ CURRENCY: USD
 CITY: Lagos
 APPLY_URL: https://careers.google.com/apply/123
 WEBSITE: google.com
-DESCRIPTION: We are seeking a Senior React Developer to join our team, requiring 5+ years of experience with React, Node.js, and cloud technologies to build scalable web applications and lead development teams.`;
+DESCRIPTION: Seeking a Senior React Developer for our team, requiring 5+ years of experience with React, Node.js, and cloud technologies to build scalable web applications and lead development teams.`;
 
     try {
       const { text } = await generateText({

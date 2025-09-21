@@ -149,11 +149,13 @@ export function JobFiltersModal({
       <div className="space-y-4 sm:space-y-6 flex-1">
         {/* Job Category */}
         <div>
-          <label className="text-sm font-medium mb-2 sm:mb-3 block">Category</label>
+          <label className="text-sm font-medium mb-2 sm:mb-3 block">
+            Category
+          </label>
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => { }}
+              onValueChange={() => {}}
               open={isCategoryDropdownOpen}
               onOpenChange={setIsCategoryDropdownOpen}
             >
@@ -212,7 +214,7 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => { }}
+              onValueChange={() => {}}
               open={isTypeDropdownOpen}
               onOpenChange={setIsTypeDropdownOpen}
             >
@@ -265,11 +267,13 @@ export function JobFiltersModal({
 
         {/* Experience Level */}
         <div>
-          <label className="text-sm font-medium mb-2 sm:mb-3 block">Experience</label>
+          <label className="text-sm font-medium mb-2 sm:mb-3 block">
+            Experience
+          </label>
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => { }}
+              onValueChange={() => {}}
               open={isExperienceDropdownOpen}
               onOpenChange={setIsExperienceDropdownOpen}
             >
@@ -322,11 +326,13 @@ export function JobFiltersModal({
 
         {/* Company Size */}
         <div>
-          <label className="text-sm font-medium mb-2 sm:mb-3 block">Company size</label>
+          <label className="text-sm font-medium mb-2 sm:mb-3 block">
+            Company size
+          </label>
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => { }}
+              onValueChange={() => {}}
               open={isCompanySizeDropdownOpen}
               onOpenChange={setIsCompanySizeDropdownOpen}
             >

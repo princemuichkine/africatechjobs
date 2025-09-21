@@ -54,15 +54,33 @@ export async function GET(request: NextRequest) {
     }
 
     if (city) {
-      query = query.ilike("city", `%${city}%`);
+      const cities = city.split(",").map((c) => c.trim());
+      if (cities.length > 1) {
+        const cityFilters = cities.map((c) => `city.ilike.%${c}%`).join(",");
+        query = query.or(cityFilters);
+      } else if (cities.length === 1 && cities[0]) {
+        query = query.ilike("city", `%${cities[0]}%`);
+      }
     }
 
     if (type) {
-      query = query.eq("type", type);
+      const types = type.split(",").map((t) => t.trim().toUpperCase());
+      if (types.length > 1) {
+        query = query.in("type", types);
+      } else if (types.length === 1 && types[0]) {
+        query = query.eq("type", types[0]);
+      }
     }
 
     if (experienceLevel) {
-      query = query.eq("experience_level", experienceLevel);
+      const experienceLevels = experienceLevel
+        .split(",")
+        .map((e) => e.trim().toUpperCase());
+      if (experienceLevels.length > 1) {
+        query = query.in("experience_level", experienceLevels);
+      } else if (experienceLevels.length === 1 && experienceLevels[0]) {
+        query = query.eq("experience_level", experienceLevels[0]);
+      }
     }
 
     if (remote !== null && remote !== undefined) {
@@ -70,7 +88,14 @@ export async function GET(request: NextRequest) {
     }
 
     if (job_category) {
-      query = query.eq("job_category", job_category);
+      const jobCategories = job_category
+        .split(",")
+        .map((c) => c.trim().toUpperCase());
+      if (jobCategories.length > 1) {
+        query = query.in("job_category", jobCategories);
+      } else if (jobCategories.length === 1 && jobCategories[0]) {
+        query = query.eq("job_category", jobCategories[0]);
+      }
     }
 
     if (search) {
@@ -81,8 +106,12 @@ export async function GET(request: NextRequest) {
 
     // Handle company_size filter
     if (company_size) {
-      query = query.not("company_id", "is", null);
-      // We'll filter by company size in the application layer
+      const companySizes = company_size.split(",").map((s) => s.trim());
+      if (companySizes.length > 1) {
+        query = query.in("companies.size", companySizes);
+      } else if (companySizes.length === 1 && companySizes[0]) {
+        query = query.eq("companies.size", companySizes[0]);
+      }
     }
 
     if (is_sponsored === "true") {
@@ -99,16 +128,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Filter by company size in application layer if needed
-    let filteredJobs = jobs;
-    if (company_size && jobs) {
-      filteredJobs = jobs.filter(
-        (job) => job.companies && job.companies.size === company_size,
-      );
-    }
-
     // Map database fields to camelCase aliases for frontend compatibility
-    const mappedJobs = (filteredJobs || []).map((job) => ({
+    const mappedJobs = (jobs || []).map((job) => ({
       ...job,
       companyName: job.company_name,
       experienceLevel: job.experience_level,

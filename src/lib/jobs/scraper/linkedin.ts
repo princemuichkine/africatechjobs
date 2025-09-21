@@ -439,8 +439,39 @@ async function extractJobDetails(
       timeout: 30000,
     });
 
-    // Wait for content to load
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // Wait for content to load, handle modals, and wait for the apply button to be visible.
+    try {
+      // First, try to close any potential modals that might be covering the page.
+      const modalCloseButton = await page.$(
+        'button[aria-label*="Dismiss"], button[aria-label*="Close"]',
+      );
+      if (modalCloseButton) {
+        console.log(" M odal detected, attempting to close.");
+        await modalCloseButton.click();
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for animation
+      }
+    } catch {
+      console.warn(
+        "Could not close modal, it might not exist or another issue occurred.",
+      );
+    }
+
+    try {
+      // Now, wait for the apply button to be visible on the page.
+      // This is more reliable than a fixed delay.
+      console.log("⏳ Waiting for apply button to become visible...");
+      const applyButtonSelector =
+        '#jobs-apply-button-id, .jobs-apply-button, a[data-tracking-control-name*="apply"]';
+      await page.waitForSelector(applyButtonSelector, {
+        timeout: 10000,
+        visible: true,
+      });
+      console.log("✅ Apply button is visible.");
+    } catch {
+      console.warn(
+        "⚠️ Apply button did not become visible after 10 seconds. The scraper will try to find it anyway.",
+      );
+    }
 
     // Extract job description with multiple selector attempts
     let description = "";
@@ -483,7 +514,7 @@ async function extractJobDetails(
       if (!description) {
         // Debug: Try to see what's actually on the page
         try {
-          const pageContent = await page.evaluate(() => {
+          /* const pageContent = await page.evaluate(() => {
             const elements = document.querySelectorAll("*");
             const textElements = Array.from(elements)
               .filter((el) => el.textContent && el.textContent.length > 100)
@@ -498,7 +529,7 @@ async function extractJobDetails(
           console.warn(
             `Could not extract description from ${jobUrl}. Page content:`,
             pageContent,
-          );
+          ); */
         } catch {
           console.warn(
             `Could not extract description from ${jobUrl} and failed to debug page content`,
@@ -612,7 +643,7 @@ async function extractJobDetails(
       }
 
       // DEBUG: If no apply element found, let's see what's on the page
-      if (!applyElement) {
+      /* if (!applyElement) {
         console.log(
           `🔍 No apply element found with standard selectors. Checking page content...`,
         );
@@ -626,23 +657,23 @@ async function extractJobDetails(
           }));
         });
         console.log("Available buttons/links:", pageButtons);
-      }
+      } */
 
       if (applyElement) {
-        console.log(
+        /* console.log(
           `🎯 Found apply element! Tag: ${await page.evaluate((el) => el.tagName, applyElement)}`,
-        );
+        ); */
         try {
           // First try to extract href directly (for links)
           const href = await page.evaluate((el) => {
-            console.log("Apply element details:", {
+            /* console.log("Apply element details:", {
               tagName: el.tagName,
               href: el.getAttribute("href"),
               dataJobUrl: el.getAttribute("data-job-url"),
               dataApplyUrl: el.getAttribute("data-apply-url"),
               textContent: el.textContent?.trim(),
               className: el.className,
-            });
+            }); */
             if (el.tagName === "A") {
               return el.getAttribute("href");
             }
@@ -653,7 +684,7 @@ async function extractJobDetails(
             );
           }, applyElement);
 
-          console.log(`🔍 Extracted href: ${href}`);
+          // console.log(`🔍 Extracted href: ${href}`);
 
           if (href) {
             if (href.includes("externalApply") && href.includes("url=")) {
@@ -1044,6 +1075,7 @@ export async function query(queryObject: QueryOptions): Promise<LinkedInJob[]> {
               .replace(/\s+at\s+.*$/i, "") // Remove "at Company Name"
               .replace(/\s*\([^)]*\)\s*$/, "") // Remove trailing parentheses like "(Remote)" or "(2 Openings)"
               .replace(/\s*\([^)]*at[^)]*\)\s*$/i, "") // Remove "at company" in parentheses
+              .replace(/\s*[-–—]\s*Remote\s*$/i, "")
               .trim();
 
             // Parse city to extract just the city name

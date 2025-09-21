@@ -112,7 +112,7 @@ export const AFRICAN_COUNTRIES = [
   { value: "Ghana", label: "Ghana" },
   { value: "Guinea", label: "Guinea" },
   { value: "Guinea-Bissau", label: "Guinea-Bissau" },
-  { value: "Ivory Coast", label: "Ivory Coast" },
+  { value: "Côte d'Ivoire", label: "Côte d'Ivoire" },
   { value: "Kenya", label: "Kenya" },
   { value: "Lesotho", label: "Lesotho" },
   { value: "Liberia", label: "Liberia" },
