@@ -1,5 +1,5 @@
 import WelcomeEmail from "@/lib/emails/templates/welcome";
-import { resend } from "@/lib/utils/resend";
+import { getResendClient } from "@/lib/resend/client";
 import { createClient } from "@/lib/supabase/server";
 import { waitUntil } from "@vercel/functions";
 import { differenceInSeconds } from "date-fns";
@@ -26,16 +26,19 @@ export async function GET(request: Request) {
           new Date(data.session.user.created_at),
         ) < 20
       ) {
-        waitUntil(
-          resend.emails.send({
-            from: "afritechjobs.com <hello@transactional.afritechjobs.com>",
-            to: data.session.user.email!,
-            subject: "Welcome to afritechjobs.com",
-            react: WelcomeEmail({
-              name: data.session.user.user_metadata.full_name,
+        const resendClient = getResendClient();
+        if (resendClient) {
+          waitUntil(
+            resendClient.emails.send({
+              from: "afritechjobs.com <hello@transactional.afritechjobs.com>",
+              to: data.session.user.email!,
+              subject: "Welcome to afritechjobs.com",
+              react: WelcomeEmail({
+                name: data.session.user.user_metadata.full_name,
+              }),
             }),
-          }),
-        );
+          );
+        }
       }
 
       if (isLocalEnv) {
