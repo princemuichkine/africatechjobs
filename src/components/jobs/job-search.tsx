@@ -15,6 +15,13 @@ import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from "@/lib/utils/localStorage";
+import {
+  AFRICAN_COUNTRIES,
+  JOB_CATEGORIES,
+  JOB_TYPES,
+  EXPERIENCE_LEVELS,
+  COMPANY_SIZES,
+} from "@/lib/types/job";
 
 // Dynamically import Select components to avoid hydration mismatch
 const Select = dynamic(
@@ -48,64 +55,6 @@ interface JobSearchProps {
   onFiltersChange: (filters: JobFilters) => void;
   initialFilters?: JobFilters;
 }
-
-const AFRICAN_COUNTRIES = [
-  { value: "Nigeria", label: "Nigeria" },
-  { value: "South Africa", label: "South Africa" },
-  { value: "Kenya", label: "Kenya" },
-  { value: "Egypt", label: "Egypt" },
-  { value: "Ghana", label: "Ghana" },
-  { value: "Morocco", label: "Morocco" },
-  { value: "Rwanda", label: "Rwanda" },
-  { value: "Uganda", label: "Uganda" },
-  { value: "Tunisia", label: "Tunisia" },
-  { value: "Senegal", label: "Senegal" },
-  { value: "Ethiopia", label: "Ethiopia" },
-  { value: "Tanzania", label: "Tanzania" },
-  { value: "Cameroon", label: "Cameroon" },
-  { value: "Ivory Coast", label: "Ivory Coast" },
-  { value: "Angola", label: "Angola" },
-];
-
-const JOB_CATEGORIES = [
-  { value: "ENGINEERING", label: "Engineering" },
-  { value: "DATA", label: "Data science" },
-  { value: "PRODUCT", label: "Product" },
-  { value: "DESIGN", label: "Design" },
-  { value: "MARKETING", label: "Marketing" },
-  { value: "SALES", label: "Sales" },
-  { value: "DEVOPS", label: "DevOps" },
-  { value: "MOBILE", label: "Mobile" },
-  { value: "AI", label: "AI/ML" },
-  { value: "BLOCKCHAIN", label: "Blockchain" },
-  { value: "CLOUD", label: "Cloud" },
-  { value: "OTHER", label: "Other" },
-];
-
-const JOB_TYPES = [
-  { value: "FULL_TIME", label: "Full time" },
-  { value: "PART_TIME", label: "Part time" },
-  { value: "CONTRACT", label: "Contract" },
-  { value: "FREELANCE", label: "Freelance" },
-  { value: "INTERNSHIP", label: "Internship" },
-  { value: "APPRENTICESHIP", label: "Apprenticeship" },
-];
-
-const EXPERIENCE_LEVELS = [
-  { value: "ENTRY_LEVEL", label: "Entry level" },
-  { value: "JUNIOR", label: "Junior" },
-  { value: "MID_LEVEL", label: "Mid level" },
-  { value: "SENIOR", label: "Senior" },
-  { value: "EXECUTIVE", label: "Executive" },
-];
-
-const COMPANY_SIZES = [
-  { value: "1_10", label: "1-10 employees" },
-  { value: "11_50", label: "11-50 employees" },
-  { value: "51_200", label: "51-200 employees" },
-  { value: "201_1000", label: "201-1000 employees" },
-  { value: "1000_PLUS", label: "1000+ employees" },
-];
 
 // Constants for localStorage
 const FILTERS_STORAGE_KEY = "afritechjobs_job_filters";
@@ -270,8 +219,8 @@ export function JobSearch({
   return (
     <div className="space-y-4">
       {/* Main Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-3 max-w-4xl mx-auto">
-        <div className="relative w-[500px]">
+      <div className="flex flex-col sm:flex-row gap-3 max-w-4xl mx-auto px-4 sm:px-0 sm:translate-x-3 transition-transform duration-300 ease-in-out">
+        <div className="relative w-full sm:w-[500px] min-w-[350px] sm:min-w-0">
           <LottieIcon
             animationData={animations.search}
             size={16}
@@ -288,15 +237,15 @@ export function JobSearch({
           />
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-row gap-2 items-stretch">
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               open={isCountryDropdownOpen}
               onOpenChange={setIsCountryDropdownOpen}
             >
-              <SelectTrigger className="w-[145px] h-12">
+              <SelectTrigger className={`flex-1 sm:w-[200px] min-w-0 sm:min-w-0 h-12`}>
                 <div className="flex items-center pl-2">
                   <LottieIcon
                     animationData={animations.globe}
@@ -315,7 +264,7 @@ export function JobSearch({
                   />
                 </div>
               </SelectTrigger>
-              <SelectContent className="w-[145px] max-w-[145px] min-w-[145px] max-h-[240px] overflow-y-auto">
+              <SelectContent className="w-[158px] sm:w-[158px] sm:max-w-[158px] max-h-[220px] overflow-y-auto">
                 {AFRICAN_COUNTRIES.map((country) => (
                   <div
                     key={country.value}
@@ -347,7 +296,7 @@ export function JobSearch({
               </SelectContent>
             </Select>
           ) : (
-            <div className="w-[145px] h-12 border rounded-sm border-input bg-background flex items-center px-3">
+            <div className={`flex-1 sm:w-[200px] min-w-0 sm:min-w-0 h-12 border rounded-sm border-input bg-background flex items-center px-3`}>
               <div className="flex items-center pl-1">
                 <LottieIcon
                   animationData={animations.globe}
@@ -362,49 +311,63 @@ export function JobSearch({
             </div>
           )}
 
-          <div className="flex space-x-2">
-            <Dialog.Root
-              modal={false}
-              open={isFilterOpen}
-              onOpenChange={setIsFilterOpen}
-            >
-              <Dialog.Trigger asChild>
-                <Button variant="outline" className="w-[120px] h-12 relative">
-                  <LottieIcon
-                    animationData={animations.filter}
-                    size={16}
-                    loop={false}
-                    autoplay={false}
-                    initialFrame={0}
-                    className="mr-1.5"
-                  />
-                  Filters
-                </Button>
-              </Dialog.Trigger>
-              <Dialog.Portal>
-                <Dialog.Content className="fixed z-50 right-0 inset-y-0 sm:max-w-md w-full p-0 h-full sm:m-4 sm:h-[calc(100%-2rem)] rounded-sm border bg-background shadow-lg flex flex-col data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right overflow-y-auto">
-                  <div className="sticky top-0 z-10 bg-background border-b px-4 py-3 flex-shrink-0">
-                    <Dialog.Title className="text-base font-normal text-left">
-                      Filters
-                    </Dialog.Title>
-                    <Dialog.Description className="text-sm text-muted-foreground text-left">
-                      Refine your search with these filters
-                    </Dialog.Description>
+          <Dialog.Root
+            modal={false}
+            open={isFilterOpen}
+            onOpenChange={setIsFilterOpen}
+          >
+            <Dialog.Trigger asChild>
+              <Button variant="outline" className={`flex-1 sm:w-[120px] min-w-0 sm:min-w-0 h-12 relative`}>
+                <LottieIcon
+                  animationData={animations.filter}
+                  size={16}
+                  loop={false}
+                  autoplay={false}
+                  initialFrame={0}
+                  className="mr-1.5"
+                />
+                Filters
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Portal>
+              <Dialog.Content className="fixed z-50 right-0 inset-y-0 sm:max-w-md w-full p-0 h-full m-0 sm:m-4 sm:h-[calc(100%-2rem)] rounded-none sm:rounded-sm border bg-background shadow-lg flex flex-col data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right overflow-y-auto">
+                <div className="sticky top-0 z-10 bg-background border-b px-4 py-3 flex-shrink-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <Dialog.Title className="text-base font-normal text-left">
+                        Filters
+                      </Dialog.Title>
+                      <Dialog.Description className="text-sm text-muted-foreground text-left">
+                        Refine your search with these filters
+                      </Dialog.Description>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 sm:hidden"
+                      onClick={() => setIsFilterOpen(false)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
-                  <JobFiltersModal
-                    filters={filters}
-                    onFiltersChange={handleFiltersChange}
-                    isClient={isClient}
-                  />
-                </Dialog.Content>
-              </Dialog.Portal>
-            </Dialog.Root>
+                </div>
+                <JobFiltersModal
+                  filters={filters}
+                  onFiltersChange={handleFiltersChange}
+                  isClient={isClient}
+                  onClose={() => setIsFilterOpen(false)}
+                />
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
 
-            {hasActiveFilters && (
+          {/* Clear button with responsive placeholder for desktop */}
+          {hasActiveFilters ? (
+            <div className="w-12 h-12 relative">
               <Button
                 variant="outline"
                 onClick={onClearFilters}
-                className="w-12 h-12 p-0 rounded-sm bg-transparent border-border text-muted-foreground hover:text-card-foreground hover:bg-accent"
+                className="absolute inset-0 w-12 h-12 p-0 rounded-sm bg-transparent border-border text-muted-foreground hover:text-card-foreground hover:bg-accent"
               >
                 <span className="group inline-flex items-center justify-center">
                   <LottieIcon
@@ -414,19 +377,20 @@ export function JobSearch({
                   />
                 </span>
               </Button>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="w-0 sm:w-12 h-12" />
+          )}
         </div>
       </div>
 
       {/* Default Toggle Badges */}
-      <div className="flex flex-wrap gap-2 max-w-4xl mx-auto -mt-2">
+      <div className="flex flex-wrap gap-2 max-w-4xl mx-auto px-4 sm:px-0 -mt-2 sm:translate-x-3 transition-transform duration-300 ease-in-out">
         <Badge
-          className={`cursor-pointer transition-colors ${
-            filters.remote
-              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:text-emerald-900 dark:hover:text-emerald-200"
-              : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
-          }`}
+          className={`cursor-pointer transition-colors ${filters.remote
+            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:text-emerald-900 dark:hover:text-emerald-200"
+            : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
+            }`}
           onClick={() => {
             playClickSound();
             const updatedFilters = {
@@ -440,11 +404,10 @@ export function JobSearch({
         </Badge>
 
         <Badge
-          className={`cursor-pointer transition-colors ${
-            filters.is_sponsored
-              ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-900/40 hover:text-indigo-900 dark:hover:text-indigo-200"
-              : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
-          }`}
+          className={`cursor-pointer transition-colors ${filters.is_sponsored
+            ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-900/40 hover:text-indigo-900 dark:hover:text-indigo-200"
+            : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
+            }`}
           onClick={() => {
             playClickSound();
             const updatedFilters = {
@@ -460,7 +423,7 @@ export function JobSearch({
 
       {/* Active Filters Display */}
       {activeFilterCount > 0 && (
-        <div className="flex flex-wrap gap-2 max-w-4xl mx-auto">
+        <div className="flex flex-wrap gap-2 max-w-4xl mx-auto px-4 sm:px-0 sm:translate-x-3 transition-transform duration-300 ease-in-out">
           {/* Country Badges - Blue */}
           {selectedCountries.length > 0 && (
             <>

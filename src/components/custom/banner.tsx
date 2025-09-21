@@ -146,7 +146,7 @@ export function Banner() {
       }}
     >
       <div
-        className={`fixed overflow-hidden ${slideClass} z-50 bottom-4 md:bottom-4 left-4 md:left-auto right-4 md:right-4 w-[calc(100vw-32px)] md:w-auto md:max-w-[370px] border border-border p-4 transition-all bg-background h-[88px] rounded-sm group`}
+        className={`fixed overflow-hidden ${slideClass} z-50 bottom-4 md:bottom-4 left-1/2 md:left-auto right-4 md:right-4 w-[calc(100vw-48px)] md:w-auto md:max-w-[354px] border border-border p-4 transition-all bg-background h-[88px] rounded-sm group -translate-x-1/2 md:translate-x-0`}
       >
         {currentBanner.logo}
 

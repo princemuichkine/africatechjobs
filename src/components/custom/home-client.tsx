@@ -19,9 +19,9 @@ export default function HomeClient({
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative pt-24 md:pt-32 mb-6 text-center">
+      <div className="relative pt-20 sm:pt-24 md:pt-32 pb-4 sm:pb-6 mb-3 text-center px-4 sm:px-6">
         <motion.h1
-          className="text-4xl sm:text-5xl md:text-7xl tracking-tighter font-regular text-zinc-800 dark:text-white mb-6"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tighter font-regular text-zinc-800 dark:text-white mb-4 sm:mb-6 leading-tight"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -29,7 +29,7 @@ export default function HomeClient({
           Find your next role today.
         </motion.h1>
         <motion.p
-          className="text-xl sm:text-2xl text-zinc-600 dark:text-zinc-300 max-w-4xl mx-auto leading-relaxed"
+          className="text-lg sm:text-xl md:text-2xl text-zinc-600 dark:text-zinc-300 max-w-4xl mx-auto leading-relaxed px-2 sm:px-0"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}

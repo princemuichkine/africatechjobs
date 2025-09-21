@@ -1,6 +1,11 @@
 import { createClient } from "../supabase/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAIClient } from "../ai/client";
+import type {
+  JobTypeValue,
+  ExperienceLevelValue,
+  JobCategoryValue,
+} from "../types/job";
 
 // AI client - lazy loaded for configurability
 let aiClient: ReturnType<typeof createAIClient> | null = null;
@@ -15,21 +20,6 @@ function getAIClient(): ReturnType<typeof createAIClient> {
   }
   return aiClient;
 }
-
-// DB Enum Types from supabase/migrations/001_tables_triggers.sql
-export type JobType =
-  | "FULL_TIME"
-  | "PART_TIME"
-  | "CONTRACT"
-  | "FREELANCE"
-  | "INTERNSHIP"
-  | "APPRENTICESHIP";
-export type ExperienceLevel =
-  | "ENTRY_LEVEL"
-  | "JUNIOR"
-  | "MID_LEVEL"
-  | "SENIOR"
-  | "EXECUTIVE";
 
 // Define types to replace 'any'
 interface RawJobData {
@@ -81,24 +71,7 @@ interface ProcessedJob extends NormalizedJob {
   extracted_skills: string[];
   quality_score: number;
   categories: string[];
-  job_category?:
-    | "ENGINEERING"
-    | "SALES"
-    | "MARKETING"
-    | "DATA"
-    | "DEVOPS"
-    | "PRODUCT"
-    | "DESIGN"
-    | "CLOUD"
-    | "SUPPORT"
-    | "MANAGEMENT"
-    | "RESEARCH"
-    | "LEGAL"
-    | "FINANCE"
-    | "OPERATIONS"
-    | "PR"
-    | "HR"
-    | "OTHER";
+  job_category?: JobCategoryValue;
   is_tech_job: boolean; // Now required
   is_visa_sponsored: boolean; // Visa sponsorship information
 }
@@ -271,24 +244,7 @@ export class JobProcessingPipeline {
       extracted_skills: [],
       quality_score: enrichedData.quality_score,
       categories: [enrichedData.job_category], // AI-determined category
-      job_category: enrichedData.job_category as
-        | "ENGINEERING"
-        | "SALES"
-        | "MARKETING"
-        | "DATA"
-        | "DEVOPS"
-        | "PRODUCT"
-        | "DESIGN"
-        | "CLOUD"
-        | "SUPPORT"
-        | "MANAGEMENT"
-        | "RESEARCH"
-        | "LEGAL"
-        | "FINANCE"
-        | "OPERATIONS"
-        | "PR"
-        | "HR"
-        | "OTHER",
+      job_category: enrichedData.job_category as JobCategoryValue,
       is_tech_job: enrichedData.is_tech_job === 1,
       is_visa_sponsored: enrichedData.is_visa_sponsored,
     };
@@ -388,8 +344,8 @@ export class JobProcessingPipeline {
         company_name: job.company_name,
         city: job.city,
         country: job.country,
-        type: job.type as JobType,
-        experience_level: job.experience_level as ExperienceLevel,
+        type: job.type as JobTypeValue,
+        experience_level: job.experience_level as ExperienceLevelValue,
         salary: job.salary,
         salary_min: job.salaryMin,
         salary_max: job.salaryMax,
@@ -399,24 +355,7 @@ export class JobProcessingPipeline {
         source: job.source,
         source_id: job.sourceId,
         posted_at: job.posted_at,
-        job_category: job.categories[0] as
-          | "ENGINEERING"
-          | "SALES"
-          | "MARKETING"
-          | "DATA"
-          | "DEVOPS"
-          | "PRODUCT"
-          | "DESIGN"
-          | "CLOUD"
-          | "SUPPORT"
-          | "MANAGEMENT"
-          | "RESEARCH"
-          | "LEGAL"
-          | "FINANCE"
-          | "OPERATIONS"
-          | "PR"
-          | "HR"
-          | "OTHER",
+        job_category: job.categories[0] as JobCategoryValue,
         is_sponsored: job.is_visa_sponsored || false,
         is_active: true,
       })

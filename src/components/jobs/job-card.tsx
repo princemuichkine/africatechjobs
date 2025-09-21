@@ -11,11 +11,9 @@ import { useAnalytics } from "@/lib/hooks/use-analytics";
 import { LottieIcon } from "@/components/design/lottie-icon";
 import { animations } from "@/lib/utils/lottie-animations";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
 } from "@/components/ui/card";
 import Image from "next/image";
@@ -25,29 +23,30 @@ interface JobCardProps {
   onViewDetails?: (job: Job) => void;
 }
 
-export function JobCard({ job, onViewDetails }: JobCardProps) {
+export function JobCard({ job }: JobCardProps) {
   const { trackJobView, trackUserAction } = useAnalytics();
 
-  const handleViewDetails = () => {
+  const handleCardClick = () => {
     // Track job view
     trackJobView(job.id);
 
-    if (onViewDetails) {
-      onViewDetails(job);
-    } else {
-      // Track external link click
-      trackUserAction("job_external_link_click", {
-        job_id: job.id,
-        job_title: job.title,
-        company_name: job.companyName,
-        job_source: job.source,
-      });
-      window.open(job.url, "_blank");
-    }
+    // Track external link click
+    trackUserAction("job_external_link_click", {
+      job_id: job.id,
+      job_title: job.title,
+      company_name: job.companyName,
+      job_source: job.source,
+    });
+
+    // Open job URL in new window/tab
+    window.open(job.url, "_blank");
   };
 
   return (
-    <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-200">
+    <Card
+      className="h-full flex flex-col hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+      onClick={handleCardClick}
+    >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -197,8 +196,8 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
             <Badge className="text-xs bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200">
               {getExperienceLabel(
                 job.experienceLevel ||
-                  (job as { experience_level?: string }).experience_level ||
-                  "ENTRY_LEVEL",
+                (job as { experience_level?: string }).experience_level ||
+                "ENTRY_LEVEL",
               )}
             </Badge>
           </div>
@@ -262,23 +261,6 @@ export function JobCard({ job, onViewDetails }: JobCardProps) {
           )}
         </div>
       </CardContent>
-
-      <CardFooter className="pt-0">
-        <Button
-          onClick={handleViewDetails}
-          className="w-full h-9 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/40 hover:text-green-900 dark:hover:text-green-200 border border-green-300 dark:border-green-800"
-        >
-          <LottieIcon
-            animationData={animations.link}
-            size={16}
-            loop={false}
-            autoplay={false}
-            initialFrame={0}
-            className="mr-2"
-          />
-          View Job
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

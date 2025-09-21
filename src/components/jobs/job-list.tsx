@@ -63,6 +63,7 @@ export function JobList({
           className="w-32 h-24 mx-auto"
           width={80}
           height={80}
+          priority
         />
         <AlertDescription className="flex items-center justify-between">
           <span>{error}</span>
@@ -95,6 +96,7 @@ export function JobList({
                 className="w-32 h-24 mx-auto"
                 width={80}
                 height={80}
+                priority
               />
             </div>
             <div className="space-y-3 max-w-md">
@@ -178,21 +180,9 @@ export function JobList({
 
       {/* Enhanced pagination */}
       {totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Previous button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(currentPage - 1)}
-            disabled={currentPage === 1 || loading}
-            className="flex items-center gap-1"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Previous
-          </Button>
-
+        <div className="flex flex-col gap-4">
           {/* Page numbers */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-center gap-1 overflow-x-auto">
             {getPaginationNumbers().map((page, index) => (
               <div key={index}>
                 {page === "..." ? (
@@ -203,7 +193,7 @@ export function JobList({
                     size="sm"
                     onClick={() => onPageChange(page as number)}
                     disabled={loading}
-                    className="min-w-[40px]"
+                    className="min-w-[40px] flex-shrink-0"
                   >
                     {page}
                   </Button>
@@ -212,17 +202,32 @@ export function JobList({
             ))}
           </div>
 
-          {/* Next button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages || loading}
-            className="flex items-center gap-1"
-          >
-            Next
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+          {/* Previous/Next buttons */}
+          <div className="flex items-center justify-between gap-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage === 1 || loading}
+              className="flex items-center gap-1 flex-1 sm:flex-initial"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              <span className="hidden sm:inline">Previous</span>
+              <span className="sm:hidden">Prev</span>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage === totalPages || loading}
+              className="flex items-center gap-1 flex-1 sm:flex-initial"
+            >
+              <span className="hidden sm:inline">Next</span>
+              <span className="sm:hidden">Next</span>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       )}
 

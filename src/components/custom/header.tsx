@@ -36,17 +36,19 @@ export function Header() {
   };
 
   return (
-    <div className="flex justify-between items-center mt-2 md:mt-0">
-      <div className="md:fixed z-20 flex justify-end items-center top-0 px-6 py-2 left-0 right-0 bg-background backdrop-filter backdrop-blur-sm bg-opacity-30">
-        <div className="flex items-center gap-5">
+    <>
+      <div className="md:fixed z-20 flex justify-end items-center top-0 px-4 md:px-6 py-4 left-0 right-0 bg-background backdrop-filter backdrop-blur-sm bg-opacity-30">
+        <div className="flex items-center gap-3 md:gap-5 -translate-x-1">
           {navigationLinks.map((link: { href: string; label: string }) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={playClickSound}
               className={cn(
-                "flex items-center gap-2 text-sm font-medium",
-                pathname === link.href ? "text-primary" : "text-[#878787]",
+                "flex items-center gap-2 text-sm font-medium transition-colors",
+                pathname === link.href
+                  ? "text-zinc-900 dark:text-white"
+                  : "text-[#878787]",
               )}
             >
               {link.label}
@@ -56,7 +58,7 @@ export function Header() {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-sm"
+            className="rounded-sm px-3 md:px-4"
             onClick={() => {
               playClickSound();
               setAuthModalOpen(true);
@@ -74,6 +76,6 @@ export function Header() {
         onModeChange={setAuthMode}
         onAuthSuccess={handleAuthSuccess}
       />
-    </div>
+    </>
   );
 }
