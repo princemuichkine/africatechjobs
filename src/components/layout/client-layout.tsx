@@ -12,6 +12,7 @@ import { UserIdentifier } from "@/components/analytics/user-identifier";
 import { CustomScrollbar } from "@/components/ui/custom-scrollbar";
 import { cn } from "@/lib/actions/utils";
 import { OpenPanelComponent } from "@openpanel/nextjs";
+import { Analytics } from "@vercel/analytics/react";
 import { PlusIcon } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -81,7 +82,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
       <body className="overflow-x-hidden max-w-full">
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
@@ -125,6 +126,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
                   environment: process.env.NODE_ENV || "production",
                 }}
               />
+              <Analytics />
             </NuqsAdapter>
           </TranslationProvider>
         </ThemeProvider>

@@ -1,24 +1,14 @@
-import { getUserProfile } from "@/data/queries";
+import { getUserProfileServer } from "@/data/server-queries";
 import { getSession } from "@/lib/supabase/auth";
 import { format } from "date-fns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileContent } from "./profile-content";
-
 import { ProfilePosts } from "./profile-posts";
 import { ProfileTop } from "./profile-top";
 
-export async function Profile({
-  slug,
-  isProfilePage = false,
-}: {
-  slug: string;
-  isProfilePage?: boolean;
-}) {
+export async function Profile({ slug }: { slug: string }) {
   const session = await getSession();
-  const { data } = await getUserProfile(
-    slug,
-    isProfilePage ? session?.user?.id : undefined,
-  );
+  const { data } = await getUserProfileServer(slug);
 
   const isOwner = session?.user?.id === data?.id;
 

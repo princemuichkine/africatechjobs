@@ -2,7 +2,7 @@ import { EditJobForm } from "@/components/forms/edit-job";
 import { GithubSignin } from "@/components/custom/github-signin";
 import { GoogleSignin } from "@/components/custom/google-signin";
 import { JobListingSwitch } from "@/components/jobs/jobs-listing-switch";
-import { getJobById } from "@/data/queries";
+import { getJobByIdServer } from "@/data/server-queries";
 import { getSession } from "@/lib/supabase/auth";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function Page({ params }: { params: Params }) {
   const { id } = await params;
   const session = await getSession();
-  const { data: job } = await getJobById(id);
+  const { data: job } = await getJobByIdServer(id);
 
   if (!session) {
     return (

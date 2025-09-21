@@ -132,3 +132,59 @@ export async function getJobsServer(
     return { data: null, error, count: 0 };
   }
 }
+
+export async function getJobByIdServer(id: string) {
+  try {
+    const supabase = await createClient();
+
+    const { data: job, error } = await supabase
+      .from("jobs")
+      .select(
+        `
+        *,
+        companies (
+          id,
+          name,
+          logo,
+          website,
+          size,
+          industry
+        )
+      `,
+      )
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching job:", error);
+      return { data: null, error };
+    }
+
+    return { data: job, error: null };
+  } catch (error) {
+    console.error("Error fetching job:", error);
+    return { data: null, error };
+  }
+}
+
+export async function getUserProfileServer(slug: string) {
+  try {
+    const supabase = await createClient();
+
+    const { data: profile, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("slug", slug)
+      .single();
+
+    if (error) {
+      console.error("Error fetching user profile:", error);
+      return { data: null, error };
+    }
+
+    return { data: profile, error: null };
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    return { data: null, error };
+  }
+}
