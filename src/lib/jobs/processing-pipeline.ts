@@ -260,6 +260,7 @@ export class JobProcessingPipeline {
       salaryMin: enrichedData.salary_min,
       salaryMax: enrichedData.salary_max,
       currency: enrichedData.currency,
+      description: enrichedData.summarized_description, // Use AI-summarized description
       url:
         enrichedData.extracted_apply_url !== "LINKEDIN"
           ? enrichedData.extracted_apply_url
@@ -306,6 +307,7 @@ export class JobProcessingPipeline {
     standardized_city: string;
     extracted_apply_url: string;
     company_website: string;
+    summarized_description: string;
   }> {
     try {
       // Use the configurable AI client for comprehensive job analysis
@@ -330,6 +332,7 @@ export class JobProcessingPipeline {
         standardized_city: result.standardized_city,
         extracted_apply_url: result.extracted_apply_url,
         company_website: result.company_website,
+        summarized_description: result.summarized_description,
       };
     } catch (error) {
       console.warn("AI validation failed, using defaults:", error);
@@ -344,6 +347,9 @@ export class JobProcessingPipeline {
         standardized_city: job.city || "Remote",
         extracted_apply_url: "LINKEDIN",
         company_website: "unknown.com",
+        summarized_description:
+          job.description?.substring(0, 270) ||
+          "Job description not available.",
       };
     }
   }

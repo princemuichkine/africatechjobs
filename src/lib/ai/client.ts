@@ -46,6 +46,7 @@ export interface AIResponse {
   standardized_city: string;
   extracted_apply_url: string; // AI-extracted external application URL
   company_website: string; // AI-extracted company website for logo
+  summarized_description: string; // AI-reformatted description in one sentence
 }
 
 // Function to get model configurations with current environment variables
@@ -106,13 +107,14 @@ export class AIClient {
     description?: string,
     salaryText?: string,
   ): Promise<AIResponse> {
-    // Enhanced prompt with description and salary analysis
+    // Enhanced prompt with description and salary analysis - OPTIMIZED FOR COST
     const descSnippet = description
-      ? `Description: ${description.substring(0, 800)}${description.length > 800 ? "..." : ""}`
+      ? `Description: ${description.substring(0, 500)}${description.length > 500 ? "..." : ""}` // Reduced from 800 to 500 chars
       : "";
     const salarySnippet = salaryText ? `Salary Info: ${salaryText}` : "";
 
-    const prompt = `Analyze this job posting and respond with EXACTLY this format:
+    const prompt = `Analyze this job posting and respond with EXACTLY this format, each on a new line:
+
 TECH_JOB: [1 or 0]
 QUALITY: [0.0 to 1.0]
 VISA: [1 or 0]
@@ -125,6 +127,7 @@ CURRENCY: [3-letter code]
 CITY: [clean city name]
 APPLY_URL: [best application URL]
 WEBSITE: [company main website]
+DESCRIPTION: [reformatted into ONE sentence, first 270 chars only]
 
 Job Title: "${jobTitle}"
 Company: ${companyName}
@@ -144,6 +147,7 @@ CURRENCY: USD|EUR|GBP|ZAR|NGN|KES|EGP|MAD|TND|etc (local currency)
 CITY: Clean, standardized city name (e.g. "Lagos" not "Greater Lagos Area")
 APPLY_URL: If description mentions external application URL, extract it. Otherwise return "LINKEDIN"
 WEBSITE: Company main website (e.g. "google.com", "shopify.com") for logo fetching
+DESCRIPTION: Take first 270 characters only, remove LinkedIn boilerplate ("About the Role", "About us:", etc.), reformat into ONE coherent sentence describing the job role and requirements
 
 Example:
 TECH_JOB: 1
@@ -157,7 +161,8 @@ SALARY_MAX: 120000
 CURRENCY: USD
 CITY: Lagos
 APPLY_URL: https://careers.google.com/apply/123
-WEBSITE: google.com`;
+WEBSITE: google.com
+DESCRIPTION: We are seeking a Senior React Developer to join our team, requiring 5+ years of experience with React, Node.js, and cloud technologies to build scalable web applications and lead development teams.`;
 
     try {
       const { text } = await generateText({
@@ -185,6 +190,7 @@ WEBSITE: google.com`;
         standardized_city: location || "Remote",
         extracted_apply_url: "LINKEDIN",
         company_website: "unknown.com",
+        summarized_description: "Job description not available.",
       };
     }
   }
@@ -206,6 +212,7 @@ WEBSITE: google.com`;
       standardized_city: "Remote",
       extracted_apply_url: "LINKEDIN",
       company_website: "unknown.com",
+      summarized_description: "Job description not available.",
     };
 
     try {
@@ -298,6 +305,9 @@ WEBSITE: google.com`;
             break;
           case "WEBSITE":
             parsed.company_website = value;
+            break;
+          case "DESCRIPTION":
+            parsed.summarized_description = value;
             break;
         }
       }

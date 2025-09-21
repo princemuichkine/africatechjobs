@@ -1,5 +1,6 @@
 // Note: This file is now client-safe and uses browser client for client components
 // Server-side queries have been moved to API routes
+// Server-side direct database queries are in server-queries.ts
 
 export interface JobFilters {
   search?: string;

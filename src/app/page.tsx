@@ -1,5 +1,5 @@
 import HomeClient from "@/components/custom/home-client";
-import { getJobs, getFeaturedJobs } from "@/data/queries";
+import { getJobsServer, getFeaturedJobsServer } from "@/data/server-queries";
 
 export const metadata = {
   title: "afritechjobs.com",
@@ -14,7 +14,7 @@ export const revalidate = 3600; // Revalidate every hour
 export default async function Page() {
   // Load initial data on server
   const [{ data: featuredJobs }, { data: allJobs, count: totalJobs }] =
-    await Promise.all([getFeaturedJobs(6), getJobs({}, 20, 0)]);
+    await Promise.all([getFeaturedJobsServer(6), getJobsServer({}, 20, 0)]);
 
   return (
     <HomeClient

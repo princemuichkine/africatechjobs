@@ -546,19 +546,46 @@ async function extractJobDetails(
       console.warn(`Could not extract detailed city from ${jobUrl}:`, error);
     }
 
-    // Extract actual apply URL
+    // Extract actual apply URL - ENHANCED VERSION
     // Priority: 1) Direct external URL, 2) LinkedIn externalApply encoded URL, 3) Click and navigate, 4) LinkedIn URL for internal applications
     let applyUrl = jobUrl; // Default to LinkedIn URL for internal applications
     try {
+      // LinkedIn 2024/2025 apply button selectors (more comprehensive)
       const applySelectors = [
+        // External apply links (highest priority)
         'a[href*="externalApply"]',
-        'a[href*="apply"]',
+        'a[data-tracking-control-name="public_jobs_apply-link-offsite"]',
+        'a[href*="/jobs/apply/"]',
+
+        // LinkedIn apply buttons (various layouts)
+        'button[data-tracking-control-name*="apply"]',
+        'a[data-tracking-control-name*="apply"]',
+        'button[data-control-name*="apply"]',
+        'a[data-control-name*="apply"]',
+
+        // Specific LinkedIn 2024/2025 selectors (from actual DOM)
+        'button[id="jobs-apply-button-id"]', // The main apply button ID
         'button[data-control-name="jobdetails_topcard_primary_apply"]',
-        'button[aria-label*="Apply"]',
-        ".jobs-apply-button",
+        ".jobs-apply-button", // Main apply button class
         ".jobs-apply-button--primary",
-        '[data-tracking-control-name="public_jobs_apply-link-onsite"]',
-        '[data-tracking-control-name*="apply"]',
+        ".jobs-apply-form__button",
+        ".artdeco-button--primary", // Primary button style
+
+        // Text-based matching
+        'button[aria-label*="Apply"]',
+        'a[aria-label*="Apply"]',
+        'button:has-text("Apply")',
+        'a:has-text("Apply")',
+
+        // Broader button matching
+        'button[type="submit"]',
+        'input[type="submit"][value*="pply"]',
+
+        // Fallback patterns
+        "button.apply",
+        "a.apply",
+        ".apply-button",
+        ".apply-btn",
       ];
 
       let applyElement = null;
@@ -584,10 +611,38 @@ async function extractJobDetails(
         }
       }
 
+      // DEBUG: If no apply element found, let's see what's on the page
+      if (!applyElement) {
+        console.log(
+          `🔍 No apply element found with standard selectors. Checking page content...`,
+        );
+        const pageButtons = await page.evaluate(() => {
+          const buttons = Array.from(document.querySelectorAll("button, a"));
+          return buttons.slice(0, 10).map((btn) => ({
+            tag: btn.tagName,
+            text: btn.textContent?.trim().substring(0, 50),
+            className: btn.className,
+            href: btn.getAttribute("href"),
+          }));
+        });
+        console.log("Available buttons/links:", pageButtons);
+      }
+
       if (applyElement) {
+        console.log(
+          `🎯 Found apply element! Tag: ${await page.evaluate((el) => el.tagName, applyElement)}`,
+        );
         try {
           // First try to extract href directly (for links)
           const href = await page.evaluate((el) => {
+            console.log("Apply element details:", {
+              tagName: el.tagName,
+              href: el.getAttribute("href"),
+              dataJobUrl: el.getAttribute("data-job-url"),
+              dataApplyUrl: el.getAttribute("data-apply-url"),
+              textContent: el.textContent?.trim(),
+              className: el.className,
+            });
             if (el.tagName === "A") {
               return el.getAttribute("href");
             }
@@ -597,6 +652,8 @@ async function extractJobDetails(
               el.getAttribute("href")
             );
           }, applyElement);
+
+          console.log(`🔍 Extracted href: ${href}`);
 
           if (href) {
             if (href.includes("externalApply") && href.includes("url=")) {
@@ -610,35 +667,95 @@ async function extractJobDetails(
             ) {
               applyUrl = href;
             } else {
-              // If href is still LinkedIn or relative, try clicking
+              // If href is still LinkedIn or relative, try clicking - ENHANCED APPROACH
               try {
                 const currentUrl = page.url();
+                console.log(
+                  `🔍 Attempting to click apply button to find external URL...`,
+                );
 
-                // Click the apply button
-                await applyElement.click();
+                // First, try to scroll the element into view
+                await page.evaluate((el) => {
+                  el.scrollIntoView({ behavior: "smooth", block: "center" });
+                }, applyElement);
 
-                // Wait for potential navigation (don't assign to unused variable)
-                await page
-                  .waitForNavigation({
+                // Wait a moment for scroll
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+
+                // Try multiple click strategies
+                let navigationSucceeded = false;
+
+                // Strategy 1: Regular click
+                try {
+                  await applyElement.click();
+                  await page.waitForNavigation({
                     waitUntil: "networkidle2",
-                    timeout: 8000,
-                  })
-                  .catch(() => {}); // Ignore timeout
+                    timeout: 10000,
+                  });
+                  navigationSucceeded = true;
+                } catch {
+                  console.log(
+                    `📌 Strategy 1 (regular click) failed, trying strategy 2...`,
+                  );
+                }
 
-                // Wait a bit for potential navigation
-                await new Promise((resolve) => setTimeout(resolve, 2000));
+                // Strategy 2: Force click if regular click failed
+                if (!navigationSucceeded) {
+                  try {
+                    await page.evaluate((el: unknown) => {
+                      const element = el as HTMLElement;
+                      if (element && typeof element.click === "function") {
+                        element.click();
+                      }
+                    }, applyElement);
+                    await page.waitForNavigation({
+                      waitUntil: "networkidle2",
+                      timeout: 10000,
+                    });
+                    navigationSucceeded = true;
+                  } catch {
+                    console.log(
+                      `📌 Strategy 2 (force click) failed, trying strategy 3...`,
+                    );
+                  }
+                }
+
+                // Strategy 3: Wait for any URL change
+                if (!navigationSucceeded) {
+                  await page.evaluate((el: unknown) => {
+                    const element = el as HTMLElement;
+                    if (element && typeof element.click === "function") {
+                      element.click();
+                    }
+                  }, applyElement);
+                  // Wait longer and check for URL changes
+                  await new Promise((resolve) => setTimeout(resolve, 5000));
+                }
 
                 const newUrl = page.url();
+                console.log(`🔍 URL after click: ${newUrl}`);
 
-                // If URL changed and we're not on LinkedIn anymore, use it
+                // Check if we navigated to an external site
                 if (newUrl !== currentUrl && !newUrl.includes("linkedin.com")) {
                   applyUrl = newUrl;
+                  console.log(
+                    `🎉 Successfully extracted external apply URL: ${applyUrl}`,
+                  );
+                } else if (newUrl !== currentUrl) {
+                  console.log(
+                    `📌 URL changed but still on LinkedIn: ${newUrl}`,
+                  );
+                } else {
+                  console.log(
+                    `📌 No URL change detected - may be LinkedIn internal application`,
+                  );
                 }
               } catch (clickError) {
                 // Clicking failed, keep the extracted href if it's external
-                console.warn(`Clicking apply button failed:`, clickError);
+                console.warn(`🔍 All click strategies failed:`, clickError);
                 if (href.startsWith("http") && !href.includes("linkedin.com")) {
                   applyUrl = href;
+                  console.log(`🔄 Fallback: Using extracted href: ${applyUrl}`);
                 }
               }
             }
