@@ -259,6 +259,37 @@ BEGIN
 END;
 $$ language 'plpgsql' SET search_path = public;
 
+-- Enable the pg_trgm extension for fuzzy string matching
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+-- Function to find jobs with similar titles and company names within a date range
+CREATE OR REPLACE FUNCTION find_similar_jobs(
+    comp_name TEXT,
+    job_title TEXT,
+    start_date TIMESTAMPTZ,
+    end_date TIMESTAMPTZ
+)
+RETURNS TABLE (id UUID, title TEXT, company_name TEXT, similarity REAL)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        j.id,
+        j.title,
+        j.company_name,
+        similarity(j.title, job_title) AS similarity
+    FROM
+        jobs j
+    WHERE
+        j.company_name = comp_name
+        AND j.posted_at BETWEEN start_date AND end_date
+        AND similarity(j.title, job_title) > 0.6 -- Adjust similarity threshold as needed
+    ORDER BY
+        similarity DESC
+    LIMIT 1;
+END;
+$$ LANGUAGE plpgsql;
+
 -- =============================================
 -- TRIGGERS
 -- =============================================

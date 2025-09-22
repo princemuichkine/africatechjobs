@@ -197,18 +197,72 @@ export class JobProcessingPipeline {
     job: NormalizedJob,
   ): Promise<{ id: string } | null> {
     const supabase = await this.getSupabaseClient();
-    const { data, error } = await supabase
+
+    // Strategy 1: Check by source ID (most reliable)
+    if (job.sourceId) {
+      const { data: jobBySourceId, error: sourceIdError } = await supabase
+        .from("jobs")
+        .select("id")
+        .eq("source_id", job.sourceId)
+        .eq("source", job.source)
+        .maybeSingle();
+
+      if (sourceIdError && sourceIdError.code !== "PGRST116") {
+        console.error("Error checking duplicate by source ID:", sourceIdError);
+      }
+      if (jobBySourceId) {
+        console.log(`- DUPLICATE found by source_id: ${jobBySourceId.id}`);
+        return jobBySourceId;
+      }
+    }
+
+    // Strategy 2: Check by exact URL (fallback)
+    const { data: jobByUrl, error: urlError } = await supabase
       .from("jobs")
       .select("id")
       .eq("url", job.url)
-      .single();
+      .maybeSingle();
 
-    if (error && error.code !== "PGRST116") {
-      // Ignore 'not found' error
-      console.error("Error detecting duplicate:", error);
-      return null;
+    if (urlError && urlError.code !== "PGRST116") {
+      console.error("Error checking duplicate by URL:", urlError);
     }
-    return data;
+    if (jobByUrl) {
+      console.log(`- DUPLICATE found by url: ${jobByUrl.id}`);
+      return jobByUrl;
+    }
+
+    // Strategy 3: Fuzzy match on title and company within a 7-day window
+    try {
+      const sevenDaysAgo = new Date(
+        new Date(job.posted_at).getTime() - 7 * 24 * 60 * 60 * 1000,
+      ).toISOString();
+      const sevenDaysFromNow = new Date(
+        new Date(job.posted_at).getTime() + 7 * 24 * 60 * 60 * 1000,
+      ).toISOString();
+
+      const { data: fuzzyMatch, error: fuzzyError } = await supabase.rpc(
+        "find_similar_jobs",
+        {
+          comp_name: job.company_name,
+          job_title: job.title,
+          start_date: sevenDaysAgo,
+          end_date: sevenDaysFromNow,
+        },
+      );
+
+      if (fuzzyError) {
+        console.error("Error during fuzzy match RPC:", fuzzyError);
+      }
+
+      if (fuzzyMatch && fuzzyMatch.length > 0) {
+        console.log(`- DUPLICATE found by fuzzy match: ${fuzzyMatch[0].id}`);
+        return fuzzyMatch[0];
+      }
+    } catch (e) {
+      console.error("Error with fuzzy matching:", e);
+    }
+
+    return null;
   }
 
   private async calculateSimilarity(): Promise<{
@@ -227,6 +281,7 @@ export class JobProcessingPipeline {
     return {
       ...job,
       // Override with AI-determined values
+      title: enrichedData.cleaned_title, // Use AI-cleaned title
       city: enrichedData.standardized_city,
       type: enrichedData.job_type,
       experience_level: enrichedData.experience_level,
@@ -264,6 +319,7 @@ export class JobProcessingPipeline {
     extracted_apply_url: string;
     company_website: string;
     summarized_description: string;
+    cleaned_title: string;
   }> {
     try {
       // Use the configurable AI client for comprehensive job analysis
@@ -289,6 +345,7 @@ export class JobProcessingPipeline {
         extracted_apply_url: result.extracted_apply_url,
         company_website: result.company_website,
         summarized_description: result.summarized_description,
+        cleaned_title: result.cleaned_title,
       };
     } catch (error) {
       console.warn("AI validation failed, using defaults:", error);
@@ -306,6 +363,7 @@ export class JobProcessingPipeline {
         summarized_description:
           job.description?.substring(0, 270) ||
           "Job description not available.",
+        cleaned_title: job.title, // Default to original title if AI fails
       };
     }
   }

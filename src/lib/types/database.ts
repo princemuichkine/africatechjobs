@@ -490,6 +490,20 @@ export type Database = {
           title: string;
         }[];
       };
+      find_similar_jobs: {
+        Args: {
+          comp_name: string;
+          end_date: string;
+          job_title: string;
+          start_date: string;
+        };
+        Returns: {
+          company_name: string;
+          id: string;
+          similarity: number;
+          title: string;
+        }[];
+      };
       get_current_user_profile: {
         Args: Record<PropertyKey, never>;
         Returns: {
@@ -528,6 +542,26 @@ export type Database = {
           total_jobs: number;
         }[];
       };
+      gtrgm_compress: {
+        Args: { "": unknown };
+        Returns: unknown;
+      };
+      gtrgm_decompress: {
+        Args: { "": unknown };
+        Returns: unknown;
+      };
+      gtrgm_in: {
+        Args: { "": unknown };
+        Returns: unknown;
+      };
+      gtrgm_options: {
+        Args: { "": unknown };
+        Returns: undefined;
+      };
+      gtrgm_out: {
+        Args: { "": unknown };
+        Returns: unknown;
+      };
       increment_job_view: {
         Args: {
           job_uuid: string;
@@ -545,6 +579,18 @@ export type Database = {
       is_valid_url: {
         Args: { url: string };
         Returns: boolean;
+      };
+      set_limit: {
+        Args: { "": number };
+        Returns: number;
+      };
+      show_limit: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
+      show_trgm: {
+        Args: { "": string };
+        Returns: string[];
       };
       toggle_company_follow: {
         Args: { company_uuid: string };

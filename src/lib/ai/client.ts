@@ -47,6 +47,7 @@ export interface AIResponse {
   extracted_apply_url: string; // AI-extracted external application URL
   company_website: string; // AI-extracted company website for logo
   summarized_description: string; // AI-reformatted description in one sentence
+  cleaned_title: string; // AI-cleaned job title without location/city
 }
 
 // Function to get model configurations with current environment variables
@@ -128,6 +129,7 @@ CITY: [clean city name]
 APPLY_URL: [best application URL]
 WEBSITE: [company main website]
 DESCRIPTION: [reformatted into ONE sentence, first 270 chars only]
+TITLE: [cleaned job title without location/city]
 
 Job Title: "${jobTitle}"
 Company: ${companyName}
@@ -148,6 +150,7 @@ CITY: Clean, standardized city name (e.g. "Lagos" not "Greater Lagos Area")
 APPLY_URL: If description mentions external application URL, extract it. Otherwise return "LINKEDIN"
 WEBSITE: Company main website (e.g. "google.com", "shopify.com") for logo fetching
 DESCRIPTION: Summarize the role and key requirements into ONE sentence (max 270 chars). Do NOT repeat the job title or company name. Remove boilerplate like "About us:".
+TITLE: Clean the job title by removing city names, location suffixes, and redundant information (e.g. "Software Engineer - New York" becomes "Software Engineer")
 
 Example:
 TECH_JOB: 1
@@ -162,7 +165,8 @@ CURRENCY: USD
 CITY: Lagos
 APPLY_URL: https://careers.google.com/apply/123
 WEBSITE: google.com
-DESCRIPTION: Seeking a Senior React Developer for our team, requiring 5+ years of experience with React, Node.js, and cloud technologies to build scalable web applications and lead development teams.`;
+DESCRIPTION: Seeking a Senior React Developer for our team, requiring 5+ years of experience with React, Node.js, and cloud technologies to build scalable web applications and lead development teams.
+TITLE: Senior React Developer`;
 
     try {
       const { text } = await generateText({
@@ -171,7 +175,7 @@ DESCRIPTION: Seeking a Senior React Developer for our team, requiring 5+ years o
         temperature: 0,
       });
 
-      return this.parseResponse(text.trim());
+      return this.parseResponse(text.trim(), jobTitle, location);
     } catch (error) {
       console.warn(`❌ AI failed for job "${jobTitle}" at ${companyName}:`, {
         error: error instanceof Error ? error.message : String(error),
@@ -191,11 +195,16 @@ DESCRIPTION: Seeking a Senior React Developer for our team, requiring 5+ years o
         extracted_apply_url: "LINKEDIN",
         company_website: "unknown.com",
         summarized_description: "Job description not available.",
+        cleaned_title: jobTitle, // Default to original title if AI fails
       };
     }
   }
 
-  private parseResponse(text: string): AIResponse {
+  private parseResponse(
+    text: string,
+    originalJobTitle: string,
+    originalLocation: string,
+  ): AIResponse {
     console.log(`🤖 AI Response: "${text.trim()}"`);
 
     // Default fallback values
@@ -209,10 +218,11 @@ DESCRIPTION: Seeking a Senior React Developer for our team, requiring 5+ years o
       salary_min: null,
       salary_max: null,
       currency: "USD",
-      standardized_city: "Remote",
+      standardized_city: originalLocation,
       extracted_apply_url: "LINKEDIN",
       company_website: "unknown.com",
       summarized_description: "Job description not available.",
+      cleaned_title: originalJobTitle, // Default to original title if AI fails
     };
 
     try {
@@ -308,6 +318,9 @@ DESCRIPTION: Seeking a Senior React Developer for our team, requiring 5+ years o
             break;
           case "DESCRIPTION":
             parsed.summarized_description = value;
+            break;
+          case "TITLE":
+            parsed.cleaned_title = value;
             break;
         }
       }
