@@ -65,7 +65,7 @@ export function JobSearchWrapper({
   const [jobCount, setJobCount] = useState(initialJobCount);
   const [filters, setFilters] = useState<JobFilters>({});
   const [currentPage, setCurrentPage] = useState(1);
-  const jobsPerPage = 20;
+  const jobsPerPage = 100;
 
   // Handle filter changes - memoized to prevent infinite re-renders
   const handleFiltersChange = useCallback(async (newFilters: JobFilters) => {
