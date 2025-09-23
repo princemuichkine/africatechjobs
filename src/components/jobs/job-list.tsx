@@ -18,7 +18,6 @@ interface JobListProps {
   onJobClick?: (job: Job) => void;
   loading?: boolean;
   error?: string | null;
-  totalJobs?: number;
 }
 
 export function JobList({
@@ -29,7 +28,6 @@ export function JobList({
   onJobClick,
   loading = false,
   error = null,
-  totalJobs = 0,
 }: JobListProps) {
   // Loading state - show beautiful skeleton cards
   if (loading && jobs.length === 0) {
@@ -146,10 +144,6 @@ export function JobList({
 
   return (
     <div className="space-y-6">
-      {/* Results count */}
-      <div className="text-sm text-muted-foreground">
-        Showing {jobs.length} of {totalJobs.toLocaleString()} jobs
-      </div>
 
       {/* Job cards in grid layout - made wider */}
       <div className="grid gap-6 grid-cols-1">
@@ -231,22 +225,6 @@ export function JobList({
         </div>
       )}
 
-      {/* Page info */}
-      <div className="text-center text-sm text-muted-foreground">
-        Page {currentPage} of {totalPages}
-        {loading && (
-          <span className="ml-2 inline-flex items-center">
-            <LottieIcon
-              animationData={animations.autorenew}
-              size={12}
-              loop={true}
-              autoplay={true}
-              className="mr-1"
-            />
-            Loading...
-          </span>
-        )}
-      </div>
     </div>
   );
 }

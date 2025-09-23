@@ -13,6 +13,7 @@ export interface JobFilters {
   remote?: boolean;
   company_size?: string;
   is_sponsored?: boolean;
+  date_posted?: string;
 }
 
 export async function getFeaturedJobsServer(limit: number = 10) {
@@ -53,7 +54,7 @@ export async function getFeaturedJobsServer(limit: number = 10) {
 
 export async function getJobsServer(
   filters: JobFilters = {},
-  limit: number = 20,
+  limit: number = 100,
   offset: number = 0,
 ) {
   try {

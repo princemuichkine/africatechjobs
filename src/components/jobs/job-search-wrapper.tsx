@@ -129,12 +129,45 @@ export function JobSearchWrapper({
   );
 
   const totalPages = Math.ceil(jobCount / jobsPerPage);
-  const hasActiveFilters =
-    Object.keys(filters).some(
-      (key) =>
-        key !== "search" && filters[key as keyof JobFilters] !== undefined,
-    ) ||
-    (filters.search && filters.search.length > 0);
+  const getActiveFilterCount = () => {
+    // Count filters from the filters object
+    let count = 0;
+
+    // Search filter
+    if (filters.search && filters.search.trim() !== "") {
+      count++;
+    }
+
+    // Country filter (can be comma-separated)
+    if (filters.country) {
+      const countries = filters.country.split(",").filter(c => c.trim() !== "");
+      count += countries.length;
+    }
+
+    // Other filters
+    Object.entries(filters).forEach(([key, value]) => {
+      if (
+        key !== "search" &&
+        key !== "country" &&
+        value !== undefined &&
+        value !== null &&
+        value !== ""
+      ) {
+        // For arrays or comma-separated values, count each item
+        if (typeof value === "string" && value.includes(",")) {
+          const items = value.split(",").filter(item => item.trim() !== "");
+          count += items.length;
+        } else {
+          count++;
+        }
+      }
+    });
+
+    return count;
+  };
+
+  const activeFilterCount = getActiveFilterCount();
+  const hasActiveFilters = activeFilterCount > 0;
 
   return (
     <>
@@ -179,8 +212,10 @@ export function JobSearchWrapper({
               <div className="text-muted-foreground">
                 {jobCount > 0 && (
                   <>
-                    {jobCount.toLocaleString()} jobs
-                    {hasActiveFilters && " matching your criteria"}
+                    {hasActiveFilters
+                      ? `${jobs.length} jobs on ${jobCount.toLocaleString()} matching your ${activeFilterCount === 1 ? 'criteria' : 'criterias'}`
+                      : `${jobs.length} jobs | ${jobCount.toLocaleString()} jobs available`
+                    }
                   </>
                 )}
               </div>
@@ -205,7 +240,6 @@ export function JobSearchWrapper({
             totalPages={totalPages}
             onPageChange={handlePageChange}
             loading={loading}
-            totalJobs={jobCount}
             onJobClick={(job) => {
               // Handle job click - could navigate to job details
               window.open(job.url, "_blank");

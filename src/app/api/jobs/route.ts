@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     // Pagination - updated to match queries.ts
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const limit = parseInt(searchParams.get("limit") || "100");
     const offset = parseInt(searchParams.get("offset") || "0");
 
     // Filters - updated to match queries.ts
@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
     const job_category = searchParams.get("job_category");
     const company_size = searchParams.get("company_size");
     const is_sponsored = searchParams.get("is_sponsored");
+    const date_posted = searchParams.get("date_posted");
 
     let query = supabase
       .from("jobs")
@@ -116,6 +117,32 @@ export async function GET(request: NextRequest) {
 
     if (is_sponsored === "true") {
       query = query.eq("is_sponsored", true);
+    }
+
+    // Handle date_posted filter
+    if (date_posted) {
+      const now = new Date();
+      let dateFrom: Date | undefined;
+
+      switch (date_posted) {
+        case "past_24h":
+          dateFrom = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case "past_week":
+          dateFrom = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case "past_month":
+          dateFrom = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+        default:
+          // If invalid value, don't apply filter
+          dateFrom = undefined;
+          break;
+      }
+
+      if (dateFrom) {
+        query = query.gte("posted_at", dateFrom.toISOString());
+      }
     }
 
     const { data: jobs, error, count } = await query;

@@ -40,7 +40,7 @@ export function JobCard({ job }: JobCardProps) {
 
   return (
     <Card
-      className="h-full flex flex-col hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+      className="h-full flex flex-col hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 cursor-pointer rounded-sm"
       onClick={handleCardClick}
     >
       <CardHeader className="pb-3">
@@ -196,10 +196,10 @@ export function JobCard({ job }: JobCardProps) {
             {/* Separator */}
             {(job.remote ||
               (job as { is_sponsored?: boolean }).is_sponsored) && (
-              <span className="text-muted-foreground text-xs self-center">
-                |
-              </span>
-            )}
+                <span className="text-muted-foreground text-xs self-center">
+                  |
+                </span>
+              )}
 
             {/* Regular job badges */}
             <Badge className="text-xs bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-800 dark:hover:text-purple-200">
@@ -208,8 +208,8 @@ export function JobCard({ job }: JobCardProps) {
             <Badge className="text-xs bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200">
               {getExperienceLabel(
                 job.experienceLevel ||
-                  (job as { experience_level?: string }).experience_level ||
-                  "ENTRY_LEVEL",
+                (job as { experience_level?: string }).experience_level ||
+                "ENTRY_LEVEL",
               )}
             </Badge>
           </div>
@@ -239,14 +239,7 @@ export function JobCard({ job }: JobCardProps) {
 
               {/* Right side - Posted Date */}
               {job.postedAt && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <LottieIcon
-                    animationData={animations.hourglass}
-                    size={16}
-                    loop={false}
-                    autoplay={false}
-                    initialFrame={0}
-                  />
+                <div className="text-muted-foreground">
                   <span>Posted {formatDate(job.postedAt)}</span>
                 </div>
               )}

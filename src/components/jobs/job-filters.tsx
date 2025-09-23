@@ -70,6 +70,10 @@ export function JobFiltersModal({
     useState(false);
   const [isCompanySizeDropdownOpen, setIsCompanySizeDropdownOpen] =
     useState(false);
+  const [selectedDatePosted, setSelectedDatePosted] = useState<string>(
+    filters.date_posted || ""
+  );
+  const [isDatePostedDropdownOpen, setIsDatePostedDropdownOpen] = useState(false);
 
   const handleCategoryToggle = (categoryValue: string) => {
     const newSelected = selectedCategories.includes(categoryValue)
@@ -119,12 +123,20 @@ export function JobFiltersModal({
     onFiltersChange(updatedFilters);
   };
 
+  const handleDatePostedChange = (dateValue: string) => {
+    setSelectedDatePosted(dateValue);
+    const dateFilter = dateValue || undefined;
+    const updatedFilters = { ...filters, date_posted: dateFilter };
+    onFiltersChange(updatedFilters);
+  };
+
   const getActiveFilterCount = () => {
     return (
       selectedCategories.length +
       selectedTypes.length +
       selectedExperiences.length +
-      selectedCompanySizes.length
+      selectedCompanySizes.length +
+      (selectedDatePosted ? 1 : 0)
     );
   };
 
@@ -133,6 +145,7 @@ export function JobFiltersModal({
     setSelectedTypes([]);
     setSelectedExperiences([]);
     setSelectedCompanySizes([]);
+    setSelectedDatePosted("");
     const clearedFilters: JobFilters = {
       search: filters.search,
       country: filters.country,
@@ -155,7 +168,7 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               open={isCategoryDropdownOpen}
               onOpenChange={setIsCategoryDropdownOpen}
             >
@@ -214,7 +227,7 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               open={isTypeDropdownOpen}
               onOpenChange={setIsTypeDropdownOpen}
             >
@@ -273,7 +286,7 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               open={isExperienceDropdownOpen}
               onOpenChange={setIsExperienceDropdownOpen}
             >
@@ -332,7 +345,7 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               open={isCompanySizeDropdownOpen}
               onOpenChange={setIsCompanySizeDropdownOpen}
             >
@@ -379,6 +392,66 @@ export function JobFiltersModal({
           ) : (
             <div className="h-10 border rounded-sm border-input bg-background flex items-center px-3">
               <span className="text-sm text-muted-foreground">All sizes</span>
+            </div>
+          )}
+        </div>
+
+        {/* Date Posted */}
+        <div>
+          <label className="text-sm font-medium mb-2 sm:mb-3 block">
+            Date posted
+          </label>
+          {isClient ? (
+            <Select
+              value={selectedDatePosted}
+              onValueChange={handleDatePostedChange}
+              open={isDatePostedDropdownOpen}
+              onOpenChange={setIsDatePostedDropdownOpen}
+            >
+              <SelectTrigger>
+                <SelectValue
+                  placeholder="Any time"
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {[
+                  { value: "", label: "Any time" },
+                  { value: "past_24h", label: "Past 24 hours" },
+                  { value: "past_week", label: "Past week" },
+                  { value: "past_month", label: "Past month" },
+                ].map((option) => (
+                  <div
+                    key={option.value}
+                    className={`relative flex w-full cursor-default select-none items-center rounded-sm py-2.5 pl-10 pr-2 text-sm outline-none hover:bg-accent/60 dark:hover:bg-accent hover:text-accent-foreground mb-0.5 ${selectedDatePosted === option.value ? "bg-accent/80 dark:bg-accent text-accent-foreground" : ""}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDatePostedChange(option.value);
+                    }}
+                  >
+                    <span className="absolute left-4 flex h-3.5 w-3.5 items-center justify-center">
+                      {selectedDatePosted === option.value && (
+                        <svg
+                          className="h-4 w-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20,6 9,17 4,12" />
+                        </svg>
+                      )}
+                    </span>
+                    <span>{option.label}</span>
+                  </div>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <div className="h-10 border rounded-sm border-input bg-background flex items-center px-3">
+              <span className="text-sm text-muted-foreground">Any time</span>
             </div>
           )}
         </div>

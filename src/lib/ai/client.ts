@@ -138,7 +138,7 @@ ${salarySnippet}
 ${descSnippet}
 
 TECH_JOB: 1 if REAL tech/software job OR tech company role, 0 if not. Include: developers, engineers, data roles, product, design, DevOps, AND sales/marketing/support/operations at tech companies (Google, Meta, Shopify, etc.). Reject: non-tech companies, pure consulting, generic business roles.
-QUALITY: 0.0-1.0 based on detail, specificity, company reputation
+QUALITY: 0.0-1.0 based on detail, specificity, company reputation. Give LOW scores (0.0-0.4) for: no salary info, generic/vague descriptions, unknown companies, suspicious company names.
 VISA: 1 if mentions visa sponsorship/work permits/relocation assistance, 0 if not
 CATEGORY: ENGINEERING|SALES|MARKETING|DATA|DEVOPS|PRODUCT|DESIGN|CLOUD|SUPPORT|MANAGEMENT|RESEARCH|LEGAL|FINANCE|OPERATIONS|PR|HR|OTHER
 TYPE: FULL_TIME|PART_TIME|CONTRACT|FREELANCE|INTERNSHIP|APPRENTICESHIP
