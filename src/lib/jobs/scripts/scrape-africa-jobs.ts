@@ -93,7 +93,7 @@ async function scrapeAfricaJobs() {
 
     // Safety check: Don't overwhelm LinkedIn
     const totalRequests =
-      africanCountries.length * categoriesToProcess.length * (testMode ? 2 : 8);
+      africanCountries.length * categoriesToProcess.length * (testMode ? 2 : 12);
     if (totalRequests > 1000 && !testMode) {
       console.log(
         `⚠️  Warning: This will make approximately ${totalRequests} LinkedIn requests. Consider using SCRAPE_TEST=true for smaller runs.`,
@@ -127,9 +127,9 @@ async function scrapeAfricaJobs() {
           const scrapedJobs: LinkedInJob[] = await scrapeLinkedInJobs({
             keyword: keywordQuery,
             location: country,
-            limit: testMode ? 2 : 8, // Get more jobs per category
+            limit: testMode ? 2 : 12, // Get more jobs per category
             sortBy: "recent",
-            dateSincePosted: "past week",
+            dateSincePosted: process.env.SCRAPE_TIMEFRAME || "past week",
           });
 
           console.log(
