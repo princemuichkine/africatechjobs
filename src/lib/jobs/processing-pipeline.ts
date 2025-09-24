@@ -313,6 +313,9 @@ export class JobProcessingPipeline {
         ? job.city // Trust the scraper's city if it's not a remote job
         : enrichedData.standardized_city;
 
+    const hasAiSalary =
+      enrichedData.salary_min != null || enrichedData.salary_max != null;
+
     return {
       ...job,
       remote: enrichedData.is_remote, // Use AI's remote decision
@@ -321,9 +324,9 @@ export class JobProcessingPipeline {
       city: finalCity && finalCity.toLowerCase() !== "null" ? finalCity : "",
       type: enrichedData.job_type,
       experience_level: enrichedData.experience_level,
-      salaryMin: enrichedData.salary_min,
-      salaryMax: enrichedData.salary_max,
-      currency: enrichedData.currency,
+      salaryMin: hasAiSalary ? enrichedData.salary_min : job.salaryMin,
+      salaryMax: hasAiSalary ? enrichedData.salary_max : job.salaryMax,
+      currency: hasAiSalary ? enrichedData.currency : job.currency,
       description: enrichedData.summarized_description, // Use AI-summarized description
       url:
         enrichedData.extracted_apply_url !== "LINKEDIN"
@@ -374,8 +377,8 @@ export class JobProcessingPipeline {
         is_remote: result.is_remote === 1,
         job_type: result.job_type,
         experience_level: result.experience_level,
-        salary_min: result.salary_min || undefined,
-        salary_max: result.salary_max || undefined,
+        salary_min: result.salary_min ?? undefined,
+        salary_max: result.salary_max ?? undefined,
         currency: result.currency,
         standardized_city: result.standardized_city,
         extracted_apply_url: result.extracted_apply_url,

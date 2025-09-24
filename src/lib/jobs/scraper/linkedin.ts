@@ -692,7 +692,8 @@ async function extractJobDetails(
         document.querySelector(".jobs-description")?.textContent?.trim() || "",
     );
     const sourceId = extractJobId(jobUrl);
-    const salaryInfo = parseSalaryInfo(job.salary || description); // Also check description for salary
+    // Try parsing structured salary first, then fall back to description
+    const salaryInfo = parseSalaryInfo(job.salary || description);
 
     const visaSponsorshipIndicators = [
       "visa sponsorship",
