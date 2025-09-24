@@ -53,7 +53,7 @@ export interface AIResponse {
 // Function to get model configurations with current environment variables
 function getAIModels() {
   return {
-    gemini: google("gemini-2.0-flash"),
+    gemini: google("gemini-2.5-flash-lite"),
     openai: openai("gpt-4o-mini"),
     anthropic: anthropic("claude-3-5-sonnet-20241022"),
   } as const;
@@ -128,7 +128,7 @@ CURRENCY: [3-letter code]
 CITY: [clean city name]
 APPLY_URL: [best application URL]
 WEBSITE: [company main website]
-DESCRIPTION: [reformatted into ONE sentence, first 270 chars only]
+DESCRIPTION: [reformatted into ONE compelling sentence, first 270 chars only]
 TITLE: [cleaned job title without location/city]
 
 Job Title: "${jobTitle}"
@@ -149,7 +149,7 @@ CURRENCY: USD|EUR|GBP|ZAR|NGN|KES|EGP|MAD|TND|etc (local currency)
 CITY: Clean, standardized city name (e.g. "Lagos" not "Greater Lagos Area")
 APPLY_URL: If description mentions external application URL, extract it. Otherwise return "LINKEDIN"
 WEBSITE: Company main website (e.g. "google.com", "shopify.com") for logo fetching
-DESCRIPTION: Summarize the role and key requirements into ONE sentence (max 270 chars). Do NOT repeat the job title or company name. Remove boilerplate like "About us:".
+DESCRIPTION: Summarize the role into ONE compelling sentence (max 270 chars). If the provided description is detailed, extract key responsibilities/technologies. If sparse, generate an engaging summary based on the title, framing it as an opportunity (e.g., for "QA Engineer", write "Take a key role in shaping product quality and implementing testing strategies in a dynamic environment."). Avoid generic phrases like "Seeking a Manager to manage things". Do NOT repeat the company name.
 TITLE: Clean the job title by removing city names, location suffixes, and redundant information (e.g. "Software Engineer - New York" becomes "Software Engineer")
 
 Example:
@@ -175,7 +175,7 @@ TITLE: Senior React Developer`;
         temperature: 0,
       });
 
-      return this.parseResponse(text.trim(), jobTitle, location);
+      return this.parseResponse(text.trim(), jobTitle, location, companyName);
     } catch (error) {
       console.warn(`❌ AI failed for job "${jobTitle}" at ${companyName}:`, {
         error: error instanceof Error ? error.message : String(error),
@@ -194,7 +194,7 @@ TITLE: Senior React Developer`;
         standardized_city: location || "Remote",
         extracted_apply_url: "LINKEDIN",
         company_website: "unknown.com",
-        summarized_description: "Job description not available.",
+        summarized_description: `Join ${companyName} as a ${jobTitle} and be a key part of their team's success.`,
         cleaned_title: jobTitle, // Default to original title if AI fails
       };
     }
@@ -204,6 +204,7 @@ TITLE: Senior React Developer`;
     text: string,
     originalJobTitle: string,
     originalLocation: string,
+    companyName: string,
   ): AIResponse {
     console.log(`🤖 AI Response: "${text.trim()}"`);
 
@@ -221,7 +222,7 @@ TITLE: Senior React Developer`;
       standardized_city: originalLocation,
       extracted_apply_url: "LINKEDIN",
       company_website: "unknown.com",
-      summarized_description: "Job description not available.",
+      summarized_description: `Join ${companyName} as a ${originalJobTitle} and be a key part of their team's success.`,
       cleaned_title: originalJobTitle, // Default to original title if AI fails
     };
 
