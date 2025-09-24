@@ -13,7 +13,7 @@ export function CustomScrollbar({ children, className }: CustomScrollbarProps) {
   const scrollbarRef = useRef<HTMLDivElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
-  const lastYRef = useRef(0);
+  const dragOffsetRef = useRef(0);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -52,7 +52,11 @@ export function CustomScrollbar({ children, className }: CustomScrollbarProps) {
     const handleMouseDown = (e: MouseEvent) => {
       e.preventDefault();
       isDraggingRef.current = true;
-      lastYRef.current = e.clientY;
+
+      // Calculate offset from thumb top where user clicked
+      const rect = thumb.getBoundingClientRect();
+      dragOffsetRef.current = e.clientY - rect.top;
+
       document.body.style.cursor = "grabbing";
       document.body.style.userSelect = "none";
     };
@@ -60,26 +64,22 @@ export function CustomScrollbar({ children, className }: CustomScrollbarProps) {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDraggingRef.current) return;
 
-      const deltaY = e.clientY - lastYRef.current;
+      const rect = scrollbar.getBoundingClientRect();
+      const mouseY = e.clientY - rect.top;
       const scrollbarHeight = scrollbar.clientHeight;
       const thumbHeight = thumb.offsetHeight;
       const maxTop = scrollbarHeight - thumbHeight;
 
-      const currentTop = parseFloat(
-        thumb.style.transform?.replace("translateY(", "").replace("px)", "") ||
-          "0",
-      );
-      const newTop = Math.max(0, Math.min(maxTop, currentTop + deltaY));
+      // Calculate new thumb position based on mouse position minus drag offset
+      const newTop = Math.max(0, Math.min(maxTop, mouseY - dragOffsetRef.current));
 
       thumb.style.transform = `translateY(${newTop}px)`;
 
       // Update container scroll
-      const scrollRatio = newTop / maxTop;
       const { scrollHeight, clientHeight } = container;
-      const scrollTop = scrollRatio * (scrollHeight - clientHeight);
+      const maxScrollTop = scrollHeight - clientHeight;
+      const scrollTop = (newTop / maxTop) * maxScrollTop;
       container.scrollTop = scrollTop;
-
-      lastYRef.current = e.clientY;
     };
 
     const handleMouseUp = () => {
@@ -95,12 +95,30 @@ export function CustomScrollbar({ children, className }: CustomScrollbarProps) {
       setTimeout(updateThumb, 0);
     };
 
+    const handleScrollbarClick = (e: MouseEvent) => {
+      // Don't handle clicks on the thumb (dragging is handled separately)
+      if (e.target === thumb) return;
+
+      const rect = scrollbar.getBoundingClientRect();
+      const clickY = e.clientY - rect.top;
+      const scrollbarHeight = scrollbar.clientHeight;
+
+      // Calculate the new scroll position
+      const scrollRatio = clickY / scrollbarHeight;
+      const { scrollHeight, clientHeight } = container;
+      const maxScrollTop = scrollHeight - clientHeight;
+      const newScrollTop = Math.max(0, Math.min(maxScrollTop, scrollRatio * maxScrollTop));
+
+      container.scrollTop = newScrollTop;
+    };
+
     // Initial update
     updateThumb();
 
     // Event listeners
     container.addEventListener("scroll", handleScroll);
     thumb.addEventListener("mousedown", handleMouseDown);
+    scrollbar.addEventListener("mousedown", handleScrollbarClick);
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
     container.addEventListener("wheel", handleWheel);
@@ -112,6 +130,7 @@ export function CustomScrollbar({ children, className }: CustomScrollbarProps) {
     return () => {
       container.removeEventListener("scroll", handleScroll);
       thumb.removeEventListener("mousedown", handleMouseDown);
+      scrollbar.removeEventListener("mousedown", handleScrollbarClick);
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
       container.removeEventListener("wheel", handleWheel);
@@ -127,7 +146,7 @@ export function CustomScrollbar({ children, className }: CustomScrollbarProps) {
 
       <div
         ref={scrollbarRef}
-        className="absolute right-0 top-0 bottom-0 w-1 bg-transparent pointer-events-none"
+        className="absolute right-0 top-0 bottom-0 w-1 bg-transparent cursor-pointer"
       >
         <div
           ref={thumbRef}

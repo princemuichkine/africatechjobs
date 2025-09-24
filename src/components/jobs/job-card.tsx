@@ -34,6 +34,11 @@ export function JobCard({ job }: JobCardProps) {
       job_source: job.source,
     });
 
+    // Increment click count - fire and forget
+    fetch(`/api/jobs/${job.id}/click`, {
+      method: "POST",
+    }).catch((error) => console.error("Failed to track click:", error));
+
     // Open job URL in new window/tab
     window.open(job.url, "_blank");
   };
@@ -182,6 +187,11 @@ export function JobCard({ job }: JobCardProps) {
           {/* Job Type, Experience, Remote, and Sponsored badges */}
           <div className="flex flex-wrap gap-2">
             {/* Special badges first */}
+            {job.clicks > 10 && (
+              <Badge className="text-xs bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/40 hover:text-red-900 dark:hover:text-red-200">
+                Hot
+              </Badge>
+            )}
             {job.remote && (
               <Badge className="text-xs bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:text-emerald-900 dark:hover:text-emerald-200">
                 Remote
@@ -195,7 +205,8 @@ export function JobCard({ job }: JobCardProps) {
 
             {/* Separator */}
             {(job.remote ||
-              (job as { is_sponsored?: boolean }).is_sponsored) && (
+              (job as { is_sponsored?: boolean }).is_sponsored ||
+              job.clicks > 10) && (
                 <span className="text-muted-foreground text-xs self-center">
                   |
                 </span>

@@ -117,7 +117,8 @@ CREATE TABLE jobs (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     -- Generated columns
-    title_search TEXT GENERATED ALWAYS AS (LOWER(TRIM(title))) STORED
+    title_search TEXT GENERATED ALWAYS AS (LOWER(TRIM(title))) STORED,
+    clicks INTEGER DEFAULT 0 NOT NULL
 );
 
 -- Jobs constraints
@@ -145,6 +146,7 @@ CREATE INDEX idx_jobs_company_id ON jobs(company_id);
 CREATE INDEX idx_jobs_url ON jobs(url); -- For duplicate detection
 CREATE INDEX idx_jobs_source_id ON jobs(source, source_id); -- For source tracking
 CREATE INDEX idx_jobs_is_sponsored ON jobs(is_sponsored);
+CREATE INDEX idx_jobs_clicks ON jobs(clicks DESC);
 CREATE INDEX idx_jobs_active_country_category ON jobs(is_active, country, job_category) WHERE is_active = true;
 CREATE INDEX idx_jobs_active_remote_posted ON jobs(is_active, remote, posted_at DESC) WHERE is_active = true;
 CREATE INDEX idx_jobs_active_type_level ON jobs(is_active, type, experience_level) WHERE is_active = true;

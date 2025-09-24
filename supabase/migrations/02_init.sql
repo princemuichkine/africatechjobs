@@ -92,6 +92,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
+-- Function to increment job clicks
+CREATE OR REPLACE FUNCTION increment_job_click(job_uuid UUID)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE jobs
+    SET clicks = clicks + 1
+    WHERE id = job_uuid;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
 -- Function to follow/unfollow a company
 CREATE OR REPLACE FUNCTION toggle_company_follow(company_uuid UUID)
 RETURNS BOOLEAN AS $$

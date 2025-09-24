@@ -242,7 +242,8 @@ export type Database = {
       }
       jobs: {
         Row: {
-          city: string
+          city: string | null
+          clicks: number
           company_id: string | null
           company_name: string
           country: string
@@ -271,7 +272,8 @@ export type Database = {
           url: string
         }
         Insert: {
-          city: string
+          city?: string | null
+          clicks?: number
           company_id?: string | null
           company_name: string
           country: string
@@ -300,7 +302,8 @@ export type Database = {
           url: string
         }
         Update: {
-          city?: string
+          city?: string | null
+          clicks?: number
           company_id?: string | null
           company_name?: string
           country?: string
@@ -480,6 +483,10 @@ export type Database = {
         Args: { days_old?: number }
         Returns: number
       }
+      deactivate_old_jobs: {
+        Args: { days_old?: number }
+        Returns: number
+      }
       find_duplicate_jobs: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -561,6 +568,10 @@ export type Database = {
       gtrgm_out: {
         Args: { "": unknown }
         Returns: unknown
+      }
+      increment_job_click: {
+        Args: { job_uuid: string }
+        Returns: undefined
       }
       increment_job_view: {
         Args: {

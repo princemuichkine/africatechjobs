@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
       )
       .eq("is_active", true)
       .order("is_sponsored", { ascending: false })
+      .order("clicks", { ascending: false })
       .order("posted_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
