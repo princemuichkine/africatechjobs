@@ -93,7 +93,7 @@ export const AuthModal = ({
         setIsSuccessful(true);
         toast({
           type: "success",
-          description: "Account created! Welcome to afritechjobs.com!",
+          description: "Account created! Welcome to africatechjobs.xyz!",
         });
         // Clear inputs on successful auth
         setEmail("");
@@ -242,7 +242,7 @@ export const AuthModal = ({
               : forgotPasswordMode === "reset"
                 ? "Check your email for a password reset link."
                 : mode === "signup"
-                  ? "Get started with afritechjobs.com in seconds."
+                  ? "Get started with africatechjobs.xyz in seconds."
                   : "Sign in to continue to your account."}
           </DialogDescription>
         </DialogHeader>

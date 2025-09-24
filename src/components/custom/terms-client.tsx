@@ -23,7 +23,7 @@ export default function TermsClient() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             Please read these terms carefully before using our service. By using
-            afritechjobs.com, you agree to these terms.
+            africatechjobs.xyz, you agree to these terms.
           </motion.p>
         </div>
 
@@ -39,7 +39,7 @@ export default function TermsClient() {
               Acceptance of terms
             </h2>
             <p className="text-foreground/90 text-base leading-relaxed tracking-tight">
-              By accessing and using afritechjobs.com (&ldquo;Service&rdquo;),
+              By accessing and using africatechjobs.xyz (&ldquo;Service&rdquo;),
               you accept and agree to be bound by the terms and provision of
               this agreement. If you do not agree to abide by the above, please
               do not use this service nor create an account.
@@ -51,7 +51,7 @@ export default function TermsClient() {
               Description of service
             </h2>
             <p className="text-foreground/90 text-base leading-relaxed tracking-tight">
-              afritechjobs.com is Africa&apos;s premier tech job board platform
+              africatechjobs.xyz is Africa&apos;s premier tech job board platform
               that connects talented developers, designers, and tech
               professionals with leading African companies and startups. Our
               platform aggregates daily updated, high-quality tech job
@@ -144,7 +144,7 @@ export default function TermsClient() {
               Limitation of liability
             </h2>
             <p className="text-foreground/90 text-base leading-relaxed tracking-tight">
-              In no event shall afritechjobs.com be liable for any indirect,
+              In no event shall africatechjobs.xyz be liable for any indirect,
               incidental, special, consequential, or punitive damages, including
               without limitation, loss of profits, data, use, goodwill, or other
               intangible losses.
@@ -172,10 +172,10 @@ export default function TermsClient() {
               contact us through our website or reach out to our support team
               from the dashboard or via email at{" "}
               <a
-                href="mailto:hello@afritechjobs.com"
+                href="mailto:hello@africatechjobs.xyz"
                 className="text-primary border-border border-dashed border-b-[1px] hover:text-primary/80 transition-colors font-semibold"
               >
-                hello@afritechjobs.com
+                hello@africatechjobs.xyz
               </a>
               .
             </p>

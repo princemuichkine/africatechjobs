@@ -12,7 +12,7 @@ type Params = Promise<{ id: string }>;
 export const metadata: Metadata = {
   title: "Edit job listing",
   description:
-    "Edit a job listing on afritechjobs.com and reach 100,000+ tech professionals today.",
+    "Edit a job listing on africatechjobs.xyz and reach 100,000+ tech professionals today.",
 };
 
 export default async function Page({ params }: { params: Params }) {

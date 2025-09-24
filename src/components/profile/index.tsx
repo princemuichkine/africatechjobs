@@ -53,7 +53,7 @@ export async function Profile({ slug }: { slug: string }) {
       </Tabs>
 
       <div className="text-sm text-[#878787] flex justify-between items-center border-t border-border pt-6 mt-10">
-        <span>Joined afritechjobs.com</span>
+        <span>Joined africatechjobs.xyz</span>
         {format(new Date(data?.created_at), "MMM d, yyyy")}
       </div>
     </div>

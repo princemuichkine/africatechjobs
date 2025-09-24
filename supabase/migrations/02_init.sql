@@ -73,7 +73,7 @@ BEGIN
             SELECT 1 FROM profiles
             WHERE id = (select auth.uid())
             AND (
-                email LIKE '%@afritechjobs.com' OR
+                email LIKE '%@africatechjobs.xyz' OR
                 is_verified = true
             )
         )
@@ -479,7 +479,7 @@ CREATE POLICY "System can manage scrape logs" ON scrape_logs
              SELECT 1 FROM profiles
              WHERE id = (select auth.uid())
              AND (
-                 email LIKE '%@afritechjobs.com' OR
+                 email LIKE '%@africatechjobs.xyz' OR
                  is_verified = true
              )
          ))

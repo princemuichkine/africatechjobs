@@ -77,7 +77,7 @@ export default function PrivacyClient() {
             <p className="text-foreground/90 text-base leading-relaxed tracking-tight">
               We use a third-party payment processor to handle payments. Payment
               method details are processed and stored by the processor, not by
-              afritechjobs.com. We receive limited information related to your
+              africatechjobs.xyz. We receive limited information related to your
               transactions (for example, the last four digits of a card, card
               brand, and billing country) to help us manage your subscription.
               For information about refunds or credits, please refer to our
@@ -226,10 +226,10 @@ export default function PrivacyClient() {
               contact us through our website or reach out to our support team
               for assistance from the dashboard or via email at{" "}
               <a
-                href="mailto:hello@afritechjobs.com"
+                href="mailto:hello@africatechjobs.xyz"
                 className="text-primary border-border border-dashed border-b-[1px] hover:text-primary/80 transition-colors font-semibold"
               >
-                hello@afritechjobs.com
+                hello@africatechjobs.xyz
               </a>
               .
             </p>

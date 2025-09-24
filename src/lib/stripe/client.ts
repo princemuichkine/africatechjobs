@@ -13,7 +13,7 @@ export const getServerStripe = () => {
     _stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
       apiVersion: "2025-08-27.basil",
       appInfo: {
-        name: "afritechjobs",
+        name: "africatechjobs.xyz",
         version: "1.0.0",
       },
     });
@@ -52,7 +52,7 @@ export const STRIPE_PRICE_IDS = {};
 // export const SUBSCRIPTION_PLANS = {
 //   starter: {
 //     name: 'Core',
-//     description: 'Get started with afritechjobs.com',
+//     description: 'Get started with africatechjobs.xyz',
 //     price: 0,
 //     interval: 'month' as const,
 //     tier: 'starter' as const,

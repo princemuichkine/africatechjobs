@@ -4,10 +4,10 @@ import type { Metadata } from "next";
 import ClientLayout from "@/components/layout/client-layout";
 
 export const metadata: Metadata = {
-  title: "afritechjobs.com",
+  title: "africatechjobs.xyz",
   description:
     "Find your dream tech job in Africa. Connect with top companies and build your career in the growing African tech ecosystem.",
-  metadataBase: new URL("https://afritechjobs.com"),
+  metadataBase: new URL("https://africatechjobs.xyz"),
   icons: [
     {
       rel: "icon",
@@ -15,10 +15,10 @@ export const metadata: Metadata = {
     },
   ],
   openGraph: {
-    title: "afritechjobs.com",
+    title: "africatechjobs.xyz",
     description:
       "Find your dream tech job in Africa. Connect with top companies and build your career in the growing African tech ecosystem.",
-    url: "https://afritechjobs.com",
+    url: "https://africatechjobs.xyz",
     locale: "en_US",
     type: "website",
     images: [
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    title: "afritechjobs.com",
+    title: "africatechjobs.xyz",
     description:
       "Find your dream tech job in Africa. Connect with top companies and build your career in the growing African tech ecosystem.",
     images: [

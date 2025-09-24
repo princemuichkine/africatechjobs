@@ -30,7 +30,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     // Get initial language from localStorage
-    const savedLanguage = localStorage.getItem("afritechjobs.language");
+    const savedLanguage = localStorage.getItem("africatechjobs.xyz.language");
     if (savedLanguage) {
       setCurrentLanguageState(savedLanguage);
     }
@@ -39,7 +39,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
   // Listen for language changes
   React.useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "afritechjobs.language" && e.newValue) {
+      if (e.key === "africatechjobs.xyz.language" && e.newValue) {
         setCurrentLanguageState(e.newValue);
       }
     };
@@ -93,7 +93,7 @@ function ClientLayout({ children }: { children: React.ReactNode }) {
                 {children}
 
                 <a
-                  href="https://github.com/princemuichkine/afritechjobs"
+                  href="https://github.com/princemuichkine/africatechjobs.xyz"
                   target="_blank"
                   rel="noreferrer"
                 >

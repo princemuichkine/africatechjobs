@@ -7,7 +7,7 @@ export function Login({ redirectTo }: { redirectTo?: string }) {
   return (
     <div>
       <p className="text-md mt-4">
-        Join the growing afritechjobs.com community
+        Join the growing africatechjobs.xyz community
         <br />
         community and learn together.
       </p>

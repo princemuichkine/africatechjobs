@@ -2,7 +2,7 @@ import HomeClient from "@/components/custom/home-client";
 import { getJobsServer, getFeaturedJobsServer } from "@/data/server-queries";
 
 export const metadata = {
-  title: "afritechjobs.com",
+  title: "africatechjobs.xyz",
   description:
     "Find your next tech role in Africa. Browse thousands of jobs from Lagos to Cairo, Cape Town to Nairobi. Connect with top African companies and startups.",
   keywords:

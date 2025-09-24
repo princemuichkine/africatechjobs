@@ -31,7 +31,7 @@ export default function AdvertiseClient() {
               Reach an engaged audience
             </h2>
             <p className="text-foreground/90 text-sm sm:text-base leading-relaxed tracking-tight">
-              afritechjobs.com attracts over{" "}
+              africatechjobs.xyz attracts over{" "}
               <a
                 href="https://dashboard.openpanel.dev/share/overview/a5hhbY?range=6m"
                 className="text-primary border-border border-dashed border-b-[1px] hover:text-primary/80 transition-colors font-semibold"

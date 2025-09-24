@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-export const SOUND_STORAGE_KEY = "afritechjobs-sound-enabled";
+export const SOUND_STORAGE_KEY = "africatechjobs.xyz-sound-enabled";
 
 /**
  * Returns whether sound is currently enabled (defaults to true when unset).
@@ -39,7 +39,7 @@ export const setSoundEnabled = (enabled: boolean): void => {
   window.__africatechjobsSoundEnabled = enabled;
   try {
     window.dispatchEvent(
-      new CustomEvent("afritechjobs:sound-changed", { detail: { enabled } }),
+      new CustomEvent("africatechjobs.xyz:sound-changed", { detail: { enabled } }),
     );
   } catch {
     // ignore
@@ -86,7 +86,7 @@ export const initSoundGate = (): void => {
     }
   });
 
-  window.addEventListener("afritechjobs:sound-changed", (e: Event) => {
+  window.addEventListener("africatechjobs.xyz:sound-changed", (e: Event) => {
     try {
       const detail = (e as CustomEvent).detail;
       w.__africatechjobsSoundEnabled = !!detail?.enabled;

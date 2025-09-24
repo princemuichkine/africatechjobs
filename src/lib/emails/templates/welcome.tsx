@@ -29,7 +29,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
         />
       </Head>
       <Preview>
-        Welcome to afritechjobs.com – Find your dream tech job in Africa!
+        Welcome to africatechjobs.xyz – Find your dream tech job in Africa!
       </Preview>
       <Tailwind>
         <Body className="bg-white font-mono">
@@ -39,7 +39,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs leading-7 mb-6 font-mono">Hi {name},</Text>
 
             <Text className="text-xs leading-7 pb-2 font-mono">
-              Welcome to afritechjobs.com – your gateway to the best tech
+              Welcome to africatechjobs.xyz – your gateway to the best tech
               opportunities across Africa!
             </Text>
 
@@ -51,13 +51,13 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             </Text>
 
             <Text className="text-xs leading-7 pb-2 font-mono">
-              Here&apos;s what you can do in afritechjobs.com:
+              Here&apos;s what you can do in africatechjobs.xyz:
             </Text>
 
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://afritechjobs.com/jobs"
+                href="https://africatechjobs.xyz/jobs"
                 className="underline text-black font-mono"
               >
                 Browse Jobs
@@ -68,7 +68,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://afritechjobs.com/companies"
+                href="https://africatechjobs.xyz/companies"
                 className="underline text-black font-mono"
               >
                 Explore Companies
@@ -79,7 +79,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://afritechjobs.com/advertise"
+                href="https://africatechjobs.xyz/advertise"
                 className="underline text-black font-mono"
               >
                 Post a job
@@ -90,7 +90,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs font-mono">
               <span className="text-lg">◇ </span>
               <Link
-                href="https://afritechjobs.com/about"
+                href="https://africatechjobs.xyz/about"
                 className="underline text-black font-mono"
               >
                 About Us
@@ -99,7 +99,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             </Text>
 
             <Text className="text-xs leading-7 mt-4 font-mono">
-              afritechjobs.com is more than just a platform – it&apos;s a
+              africatechjobs.xyz is more than just a platform – it&apos;s a
               community. Connect with like-minded developers, share your
               knowledge, and be part of the movement.
             </Text>
@@ -108,10 +108,10 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
               <Text className="text-xs leading-7 mb-6 font-mono">
                 Ready to get started?{" "}
                 <Link
-                  href="https://afritechjobs.com"
+                  href="https://africatechjobs.xyz"
                   className="underline text-black font-mono"
                 >
-                  afritechjobs.com
+                  africatechjobs.xyz
                 </Link>
               </Text>
             </Section>
@@ -123,7 +123,7 @@ export default function WelcomeEmail({ name = "there" }: { name: string }) {
             <Text className="text-xs leading-7 mt-2 font-mono">
               Best regards,
               <br />
-              The afritechjobs.com Team
+              The africatechjobs.xyz Team
             </Text>
 
             <Footer />
