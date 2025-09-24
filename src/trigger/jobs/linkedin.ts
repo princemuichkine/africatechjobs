@@ -59,7 +59,6 @@ export const linkedinScraper = schemaTask({
           category,
           job: {
             ...job,
-            location: job.city, // Add the missing location field
           },
         },
       }));

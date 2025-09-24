@@ -36,6 +36,24 @@ BEGIN
 END;
 $$ language 'plpgsql' SET search_path = public;
 
+-- Function to update the search_vector column in jobs
+CREATE OR REPLACE FUNCTION update_job_search_vector()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.search_vector = (
+        to_tsvector('english', coalesce(NEW.title, '')) ||
+        to_tsvector('english', coalesce(NEW.description, '')) ||
+        to_tsvector('english', coalesce(NEW.company_name, '')) ||
+        to_tsvector('english', coalesce(NEW.city, '')) ||
+        to_tsvector('english', coalesce(NEW.country, '')) ||
+        to_tsvector('english', coalesce(NEW.job_category::text, '')) ||
+        to_tsvector('english', coalesce(NEW.type::text, '')) ||
+        to_tsvector('english', coalesce(NEW.experience_level::text, ''))
+    );
+    RETURN NEW;
+END;
+$$ language 'plpgsql' SET search_path = public;
+
 -- Function to validate URL format
 CREATE OR REPLACE FUNCTION is_valid_url(url TEXT)
 RETURNS BOOLEAN AS $$
@@ -50,10 +68,10 @@ RETURNS BOOLEAN AS $$
 BEGIN
     -- Check if current user is admin based on email domain or verified status
     RETURN (
-        auth.jwt() ->> 'role' = 'service_role' OR
+        (select auth.jwt()) ->> 'role' = 'service_role' OR
         EXISTS (
             SELECT 1 FROM profiles
-            WHERE id = auth.uid()
+            WHERE id = (select auth.uid())
             AND (
                 email LIKE '%@afritechjobs.com' OR
                 is_verified = true
@@ -288,7 +306,7 @@ END;
 $$ language 'plpgsql' SET search_path = public;
 
 -- Enable the pg_trgm extension for fuzzy string matching
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA extensions;
 
 -- Function to find jobs with similar titles and company names within a date range
 CREATE OR REPLACE FUNCTION find_similar_jobs(
@@ -297,7 +315,7 @@ CREATE OR REPLACE FUNCTION find_similar_jobs(
     start_date TIMESTAMPTZ,
     end_date TIMESTAMPTZ
 )
-RETURNS TABLE (id UUID, title TEXT, company_name TEXT, similarity REAL)
+RETURNS TABLE (id UUID, title TEXT, company_name TEXT, similarity_score REAL)
 AS $$
 BEGIN
     RETURN QUERY
@@ -305,18 +323,18 @@ BEGIN
         j.id,
         j.title,
         j.company_name,
-        similarity(j.title, job_title) AS similarity
+        extensions.similarity(j.title, job_title) AS similarity_score
     FROM
         jobs j
     WHERE
         j.company_name = comp_name
         AND j.posted_at BETWEEN start_date AND end_date
-        AND similarity(j.title, job_title) > 0.6 -- Adjust similarity threshold as needed
+        AND extensions.similarity(j.title, job_title) > 0.6 -- Adjust similarity threshold as needed
     ORDER BY
-        similarity DESC
+        extensions.similarity(j.title, job_title) DESC
     LIMIT 1;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = public;
 
 -- =============================================
 -- TRIGGERS
@@ -335,9 +353,37 @@ CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles
 CREATE TRIGGER update_role_category_mappings_updated_at BEFORE UPDATE ON role_category_mappings
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+-- Trigger to update search_vector on job insert/update
+CREATE TRIGGER update_job_search_vector_trigger
+    BEFORE INSERT OR UPDATE ON jobs
+    FOR EACH ROW EXECUTE FUNCTION update_job_search_vector();
+
 -- Auto-categorize jobs on insert/update
 CREATE TRIGGER auto_categorize_job_trigger BEFORE INSERT OR UPDATE ON jobs
     FOR EACH ROW EXECUTE FUNCTION auto_categorize_job();
+
+-- =============================================
+-- ROLE CATEGORY MAPPINGS POLICIES
+-- =============================================
+
+-- Allow public read access to role mappings, and admin-only write access.
+ALTER TABLE role_category_mappings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view role category mappings" ON role_category_mappings
+    FOR SELECT USING (true);
+
+CREATE POLICY "Admins can insert role category mappings" ON role_category_mappings
+    FOR INSERT
+    WITH CHECK (is_admin_user());
+
+CREATE POLICY "Admins can update role category mappings" ON role_category_mappings
+    FOR UPDATE
+    USING (is_admin_user())
+    WITH CHECK (is_admin_user());
+
+CREATE POLICY "Admins can delete role category mappings" ON role_category_mappings
+    FOR DELETE
+    USING (is_admin_user());
 
 -- =============================================
 -- ROW LEVEL SECURITY (RLS) POLICIES

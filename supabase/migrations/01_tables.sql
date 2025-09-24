@@ -1,5 +1,6 @@
 -- Enable necessary extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE SCHEMA IF NOT EXISTS extensions;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
 
 -- =============================================
 -- ENUMS (All custom types defined first)
@@ -118,7 +119,8 @@ CREATE TABLE jobs (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     -- Generated columns
     title_search TEXT GENERATED ALWAYS AS (LOWER(TRIM(title))) STORED,
-    clicks INTEGER DEFAULT 0 NOT NULL
+    clicks INTEGER DEFAULT 0 NOT NULL,
+    search_vector tsvector
 );
 
 -- Jobs constraints
@@ -154,6 +156,7 @@ CREATE INDEX idx_jobs_active_posted_category ON jobs(posted_at DESC, job_categor
 CREATE INDEX idx_jobs_active_country_posted ON jobs(country, posted_at DESC) WHERE is_active = true;
 CREATE INDEX idx_jobs_title_search ON jobs USING GIN(to_tsvector('english', title));
 CREATE INDEX idx_jobs_description_search ON jobs USING GIN(to_tsvector('english', description));
+CREATE INDEX idx_jobs_search_vector ON jobs USING GIN(search_vector);
 
 -- User profiles (extends Supabase auth.users)
 CREATE TABLE profiles (

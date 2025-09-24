@@ -75,52 +75,117 @@ export async function getJobsServer(
       `,
         { count: "exact" },
       )
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .order("is_sponsored", { ascending: false })
+      .order("clicks", { ascending: false })
+      .order("posted_at", { ascending: false });
 
     // Apply filters
-    if (filters.search) {
-      query = query.ilike("title", `%${filters.search}%`);
-    }
-
     if (filters.country) {
-      query = query.eq("country", filters.country);
+      const countries = filters.country.split(",").map((c) => c.trim());
+      if (countries.length > 1) {
+        query = query.in("country", countries);
+      } else {
+        query = query.eq("country", filters.country);
+      }
     }
 
     if (filters.city) {
-      query = query.ilike("location", `%${filters.city}%`);
-    }
-
-    if (filters.job_category) {
-      query = query.eq("job_category", filters.job_category);
+      const cities = filters.city.split(",").map((c) => c.trim());
+      if (cities.length > 1) {
+        const cityFilters = cities.map((c) => `city.ilike.%${c}%`).join(",");
+        query = query.or(cityFilters);
+      } else if (cities.length === 1 && cities[0]) {
+        query = query.ilike("city", `%${cities[0]}%`);
+      }
     }
 
     if (filters.type) {
-      query = query.eq("type", filters.type);
+      const types = filters.type.split(",").map((t) => t.trim().toUpperCase());
+      if (types.length > 1) {
+        query = query.in("type", types);
+      } else if (types.length === 1 && types[0]) {
+        query = query.eq("type", types[0]);
+      }
     }
 
     if (filters.experience_level) {
-      query = query.eq("experience_level", filters.experience_level);
+      const experienceLevels = filters.experience_level
+        .split(",")
+        .map((e) => e.trim().toUpperCase());
+      if (experienceLevels.length > 1) {
+        query = query.in("experience_level", experienceLevels);
+      } else if (experienceLevels.length === 1 && experienceLevels[0]) {
+        query = query.eq("experience_level", experienceLevels[0]);
+      }
     }
 
-    if (filters.remote !== undefined) {
+    if (filters.remote !== undefined && filters.remote !== null) {
       query = query.eq("remote", filters.remote);
     }
 
-    if (filters.company_size) {
-      query = query.eq("companies.size", filters.company_size);
+    if (filters.job_category) {
+      const jobCategories = filters.job_category
+        .split(",")
+        .map((c) => c.trim().toUpperCase());
+      if (jobCategories.length > 1) {
+        query = query.in("job_category", jobCategories);
+      } else if (jobCategories.length === 1 && jobCategories[0]) {
+        query = query.eq("job_category", jobCategories[0]);
+      }
     }
 
-    if (filters.is_sponsored !== undefined) {
-      query = query.eq("is_sponsored", filters.is_sponsored);
+    if (filters.search) {
+      query = query.textSearch("search_vector", filters.search, {
+        type: "websearch",
+        config: "english",
+      });
+    }
+
+    if (filters.company_size) {
+      const companySizes = filters.company_size.split(",").map((s) => s.trim());
+      if (companySizes.length > 1) {
+        query = query.filter(
+          "companies.size",
+          "in",
+          `(${companySizes.map((s) => `"${s}"`).join(",")})`,
+        );
+      } else if (companySizes.length === 1 && companySizes[0]) {
+        query = query.filter("companies.size", "eq", companySizes[0]);
+      }
+    }
+
+    if (filters.is_sponsored) {
+      query = query.eq("is_sponsored", true);
+    }
+
+    if (filters.date_posted) {
+      const now = new Date();
+      let dateFrom: Date | undefined;
+      switch (filters.date_posted) {
+        case "past_24h":
+          dateFrom = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case "past_week":
+          dateFrom = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case "past_month":
+          dateFrom = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+        default:
+          dateFrom = undefined;
+          break;
+      }
+      if (dateFrom) {
+        query = query.gte("posted_at", dateFrom.toISOString());
+      }
     }
 
     const {
       data: jobs,
       error,
       count,
-    } = await query
-      .order("posted_at", { ascending: false })
-      .range(offset, offset + limit - 1);
+    } = await query.range(offset, offset + limit - 1);
 
     if (error) {
       console.error("Error fetching jobs:", error);

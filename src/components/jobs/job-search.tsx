@@ -89,28 +89,32 @@ export function JobSearch({
   onFiltersChange,
   initialFilters = {},
 }: JobSearchProps) {
-  // Merge initialFilters with saved filters, giving priority to initialFilters
-  const [filters, setFilters] = useState<JobFilters>(() => {
-    const savedFilters = loadFiltersFromStorage();
-    return { ...savedFilters, ...initialFilters };
-  });
-
-  const [searchInput, setSearchInput] = useState(() => {
-    const savedFilters = loadFiltersFromStorage();
-    const mergedFilters = { ...savedFilters, ...initialFilters };
-    return mergedFilters.search || "";
-  });
-
+  const [filters, setFilters] = useState<JobFilters>(initialFilters);
+  const [searchInput, setSearchInput] = useState(initialFilters.search || "");
+  const [selectedCountries, setSelectedCountries] = useState<string[]>(
+    initialFilters.country ? initialFilters.country.split(",") : [],
+  );
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
-
-  const [selectedCountries, setSelectedCountries] = useState<string[]>(() => {
-    const savedFilters = loadFiltersFromStorage();
-    const mergedFilters = { ...savedFilters, ...initialFilters };
-    return mergedFilters.country ? mergedFilters.country.split(",") : [];
-  });
-
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+
+  // Set client-side flag and load filters from storage
+  useEffect(() => {
+    if (!isClient) {
+      setIsClient(true);
+      const savedFilters = loadFiltersFromStorage();
+      if (Object.keys(savedFilters).length > 0) {
+        const mergedFilters = { ...savedFilters, ...initialFilters };
+        setFilters(mergedFilters);
+        setSearchInput(mergedFilters.search || "");
+        setSelectedCountries(
+          mergedFilters.country ? mergedFilters.country.split(",") : [],
+        );
+      }
+    }
+    // We only want this to run once on mount, so we intentionally leave the dependency array empty.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isClient]);
 
   const playClickSound = useCallback(() => {
     try {
@@ -137,11 +141,6 @@ export function JobSearch({
     onFiltersChangeRef.current = onFiltersChange;
   }, [onFiltersChange]);
 
-  // Set client-side flag
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   // Notify parent component about loaded filters on mount (only once)
   useEffect(() => {
     if (isClient && Object.keys(filtersRef.current).length > 0) {
@@ -162,7 +161,7 @@ export function JobSearch({
       const updatedFilters = { ...filtersRef.current, search: searchInput };
       setFilters(updatedFilters);
       onFiltersChange(updatedFilters);
-    }, 300);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [searchInput, onFiltersChange]);
@@ -200,17 +199,26 @@ export function JobSearch({
   }, [playClickSound, onFiltersChange]);
 
   const getActiveFilterCount = () => {
-    const otherFilters = Object.entries(filters).filter(
-      ([key, value]) =>
+    let count = 0;
+    Object.entries(filters).forEach(([key, value]) => {
+      if (
         key !== "search" &&
         key !== "country" &&
         value !== undefined &&
         value !== null &&
-        value !== "",
-    ).length;
+        value !== ""
+      ) {
+        if (typeof value === "string" && value.includes(",")) {
+          count += value.split(",").filter((item) => item.trim() !== "").length;
+        } else {
+          count++;
+        }
+      }
+    });
+
     const countryFilters = selectedCountries.length;
     const searchFilter = searchInput.trim() !== "" ? 1 : 0;
-    return otherFilters + countryFilters + searchFilter;
+    return count + countryFilters + searchFilter;
   };
 
   const activeFilterCount = getActiveFilterCount();

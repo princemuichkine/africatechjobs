@@ -11,7 +11,7 @@ export const processJob = schemaTask({
     job: z.object({
       position: z.string(),
       company: z.string(),
-      location: z.string(),
+      city: z.string(),
       date: z.string(),
       salary: z.string(),
       jobUrl: z.string().url(),

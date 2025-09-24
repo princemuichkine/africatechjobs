@@ -41,8 +41,7 @@ export async function GET(request: NextRequest) {
       .eq("is_active", true)
       .order("is_sponsored", { ascending: false })
       .order("clicks", { ascending: false })
-      .order("posted_at", { ascending: false })
-      .range(offset, offset + limit - 1);
+      .order("posted_at", { ascending: false });
 
     // Apply filters
     if (country) {
@@ -101,18 +100,25 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
-      query = query.or(
-        `title.ilike.%${search}%,description.ilike.%${search}%,company_name.ilike.%${search}%,skills.cs.{${search}}`,
-      );
+      query = query.textSearch("search_vector", search, {
+        type: "websearch",
+        config: "english",
+      });
     }
 
     // Handle company_size filter
     if (company_size) {
       const companySizes = company_size.split(",").map((s) => s.trim());
       if (companySizes.length > 1) {
-        query = query.in("companies.size", companySizes);
+        // Correct syntax for 'in' filter on a related table
+        query = query.filter(
+          "companies.size",
+          "in",
+          `(${companySizes.map((s) => `"${s}"`).join(",")})`,
+        );
       } else if (companySizes.length === 1 && companySizes[0]) {
-        query = query.eq("companies.size", companySizes[0]);
+        // Correct syntax for 'eq' filter on a related table
+        query = query.filter("companies.size", "eq", companySizes[0]);
       }
     }
 
@@ -146,7 +152,10 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const { data: jobs, error, count } = await query;
+    const { data: jobs, error, count } = await query.range(
+      offset,
+      offset + limit - 1,
+    );
 
     if (error) {
       console.error("Error fetching jobs:", error);
