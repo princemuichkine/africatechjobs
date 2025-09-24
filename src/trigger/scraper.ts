@@ -1,5 +1,5 @@
 import { schedules, tasks, logger } from "@trigger.dev/sdk";
-import { createClient } from "@/lib/supabase/server";
+import { createTriggerClient } from "@/lib/supabase/trigger";
 import { JOB_CATEGORY_KEYWORDS, JobCategoryKeywords } from "@/lib/types/job";
 
 type JobCategory = JobCategoryKeywords;
@@ -9,7 +9,7 @@ export const weeklyScraper = schedules.task({
   cron: "0 10 * * 2", // Runs every Tuesday at 10 AM
   run: async () => {
     logger.info("🚀 Kicking off the comprehensive weekly job scraping process.");
-    const supabase = await createClient();
+    const supabase = createTriggerClient();
 
     // 1. Fetch all active countries from the database
     const { data: countries, error: countriesError } = await supabase

@@ -1,4 +1,4 @@
-import { createClient } from "../supabase/server";
+import { createTriggerClient } from "../supabase/trigger";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAIClient } from "../ai/client";
 import type {
@@ -88,7 +88,7 @@ export class JobProcessingPipeline {
       return this.supabase;
     }
     try {
-      return await createClient();
+      return createTriggerClient();
     } catch (error) {
       console.error("Failed to create Supabase client:", error);
       throw new Error(
