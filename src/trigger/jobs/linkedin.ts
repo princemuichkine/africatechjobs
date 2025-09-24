@@ -4,6 +4,9 @@ import { query as scrapeLinkedIn } from "@/lib/jobs/scraper/linkedin";
 
 export const linkedinScraper = schemaTask({
   id: "linkedin-scraper",
+  machine: {
+    preset: "small-2x", // Upgrade machine to handle Puppeteer memory usage
+  },
   schema: z.object({
     location: z.string(),
     category: z.string(),

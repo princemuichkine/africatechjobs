@@ -281,11 +281,17 @@ export class JobProcessingPipeline {
     // Use AI for comprehensive job analysis - all fields now AI-powered!
     const enrichedData = await this.enrichJobWithAI(job);
 
+    // Prevent AI from overwriting a valid city with "Remote" if scraper says it's not remote
+    const finalCity =
+      enrichedData.standardized_city.toLowerCase() === "remote" && !job.remote
+        ? job.city // Trust the scraper's city if it's not a remote job
+        : enrichedData.standardized_city;
+
     return {
       ...job,
       // Override with AI-determined values
       title: enrichedData.cleaned_title, // Use AI-cleaned title
-      city: enrichedData.standardized_city,
+      city: finalCity,
       type: enrichedData.job_type,
       experience_level: enrichedData.experience_level,
       salaryMin: enrichedData.salary_min,
