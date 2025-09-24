@@ -70,10 +70,6 @@ export function JobFiltersModal({
     useState(false);
   const [isCompanySizeDropdownOpen, setIsCompanySizeDropdownOpen] =
     useState(false);
-  const [selectedDatePosted, setSelectedDatePosted] = useState<string>(
-    filters.date_posted || ""
-  );
-  const [isDatePostedDropdownOpen, setIsDatePostedDropdownOpen] = useState(false);
 
   const handleCategoryToggle = (categoryValue: string) => {
     const newSelected = selectedCategories.includes(categoryValue)
@@ -123,20 +119,12 @@ export function JobFiltersModal({
     onFiltersChange(updatedFilters);
   };
 
-  const handleDatePostedChange = (dateValue: string) => {
-    setSelectedDatePosted(dateValue);
-    const dateFilter = dateValue || undefined;
-    const updatedFilters = { ...filters, date_posted: dateFilter };
-    onFiltersChange(updatedFilters);
-  };
-
   const getActiveFilterCount = () => {
     return (
       selectedCategories.length +
       selectedTypes.length +
       selectedExperiences.length +
-      selectedCompanySizes.length +
-      (selectedDatePosted ? 1 : 0)
+      selectedCompanySizes.length
     );
   };
 
@@ -145,7 +133,6 @@ export function JobFiltersModal({
     setSelectedTypes([]);
     setSelectedExperiences([]);
     setSelectedCompanySizes([]);
-    setSelectedDatePosted("");
     const clearedFilters: JobFilters = {
       search: filters.search,
       country: filters.country,
@@ -396,8 +383,8 @@ export function JobFiltersModal({
           )}
         </div>
 
-        {/* Date Posted */}
-        <div>
+        {/* Date Posted - Commented out as per user request */}
+        {/* <div>
           <label className="text-sm font-medium mb-2 sm:mb-3 block">
             Date posted
           </label>
@@ -454,7 +441,7 @@ export function JobFiltersModal({
               <span className="text-sm text-muted-foreground">Any time</span>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* Bottom Actions */}

@@ -651,8 +651,13 @@ async function extractJobDetails(
     const visaSponsorshipIndicators = [
       "visa sponsorship",
       "work visa",
-      "h1b",
       "relocation assistance",
+      "visa support",
+      "relocation package",
+      "relocation support",
+      "soutien visa",
+      "aide à la relocalisation",
+      "package de relocalisation",
     ];
     const isSponsored = visaSponsorshipIndicators.some((indicator) =>
       description.toLowerCase().includes(indicator),
@@ -796,9 +801,11 @@ export async function query(queryObject: QueryOptions): Promise<LinkedInJob[]> {
           // Clean and validate the data
           if (position && company) {
             // Check if job is remote by looking for remote indicators in title and city
+            const remoteKeywords =
+              /\b(remote|work from home|wfh|telecommute|anywhere|fully remote|100% remote|télétravail|full remote|100% télétravail|à distance)\b/i;
             const isRemote =
-              /\b(remote|work from home|wfh|telecommute)\b/i.test(position) ||
-              /\b(remote|work from home|wfh|telecommute)\b/i.test(city) ||
+              remoteKeywords.test(position) ||
+              remoteKeywords.test(city) ||
               city.toLowerCase() === "remote";
 
             // Clean the position title - remove "at company name" and extra info
@@ -809,20 +816,14 @@ export async function query(queryObject: QueryOptions): Promise<LinkedInJob[]> {
               .replace(/\s*[-–—]\s*Remote\s*$/i, "")
               .trim();
 
-            // Parse city to extract just the city name
+            const country = queryObject.location || "";
             let cleanCity = city;
-            if (city && city !== "Remote") {
-              // Split by comma and take first part (usually the city)
-              const cityParts = city.split(",");
-              cleanCity = cityParts[0]?.trim() || city;
-
-              // Handle common cases
-              if (
-                cleanCity.toLowerCase().includes("remote") ||
-                cleanCity.toLowerCase().includes("hybrid")
-              ) {
-                cleanCity = city; // Keep full city for remote/hybrid
+            if (city) {
+              cleanCity = city.replace(/\b(remote|hybrid)\b/i, "");
+              if (country) {
+                cleanCity = cleanCity.replace(new RegExp(country, "i"), "");
               }
+              cleanCity = cleanCity.replace(/[,()]/g, "").trim();
             }
 
             // Removed keyword pre-filtering - let AI handle tech job validation

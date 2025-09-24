@@ -9,24 +9,7 @@ export interface AIResponse {
   is_tech_job: 1 | 0;
   quality_score: number;
   is_visa_sponsored: 1 | 0;
-  job_category:
-    | "ENGINEERING"
-    | "SALES"
-    | "MARKETING"
-    | "DATA"
-    | "DEVOPS"
-    | "PRODUCT"
-    | "DESIGN"
-    | "CLOUD"
-    | "SUPPORT"
-    | "MANAGEMENT"
-    | "RESEARCH"
-    | "LEGAL"
-    | "FINANCE"
-    | "OPERATIONS"
-    | "PR"
-    | "HR"
-    | "OTHER";
+  is_remote: 1 | 0;
   job_type:
     | "FULL_TIME"
     | "PART_TIME"
@@ -119,7 +102,7 @@ export class AIClient {
 TECH_JOB: [1 or 0]
 QUALITY: [0.0 to 1.0]
 VISA: [1 or 0]
-CATEGORY: [one word from list]
+REMOTE: [1 or 0]
 TYPE: [one word from list]
 LEVEL: [one word from list]
 SALARY_MIN: [number or NULL]
@@ -129,7 +112,7 @@ CITY: [clean city name]
 APPLY_URL: [best application URL]
 WEBSITE: [company main website]
 DESCRIPTION: [reformatted into ONE compelling sentence, first 270 chars only]
-TITLE: [cleaned job title without location/city]
+TITLE: [cleaned job title without ANY extra info]
 
 Job Title: "${jobTitle}"
 Company: ${companyName}
@@ -139,8 +122,8 @@ ${descSnippet}
 
 TECH_JOB: 1 if REAL tech/software job OR tech company role, 0 if not. Include: developers, engineers, data roles, product, design, DevOps, AND sales/marketing/support/operations at tech companies (Google, Meta, Shopify, etc.). Reject: non-tech companies, pure consulting, generic business roles.
 QUALITY: 0.0-1.0 based on detail, specificity, company reputation. Give LOW scores (0.0-0.4) for: no salary info, generic/vague descriptions, unknown companies, suspicious company names.
-VISA: 1 if mentions visa sponsorship/work permits/relocation assistance, 0 if not
-CATEGORY: ENGINEERING|SALES|MARKETING|DATA|DEVOPS|PRODUCT|DESIGN|CLOUD|SUPPORT|MANAGEMENT|RESEARCH|LEGAL|FINANCE|OPERATIONS|PR|HR|OTHER
+VISA: 1 if mentions visa sponsorship, work permits, or relocation assistance/package for international candidates, 0 if not
+REMOTE: 1 if job is explicitly remote (e.g., télétravail, work from home, full remote, anywhere), 0 otherwise.
 TYPE: FULL_TIME|PART_TIME|CONTRACT|FREELANCE|INTERNSHIP|APPRENTICESHIP
 LEVEL: ENTRY_LEVEL|JUNIOR|MID_LEVEL|SENIOR|EXECUTIVE
 SALARY_MIN: Extract minimum salary as number (in local currency) or NULL
@@ -150,13 +133,13 @@ CITY: Clean, standardized city name (e.g. "Lagos" not "Greater Lagos Area")
 APPLY_URL: If description mentions external application URL, extract it. Otherwise return "LINKEDIN"
 WEBSITE: Company main website (e.g. "google.com", "shopify.com") for logo fetching
 DESCRIPTION: Summarize the role into ONE compelling sentence (max 270 chars). If the provided description is detailed, extract key responsibilities/technologies. If sparse, generate an engaging summary based on the title, framing it as an opportunity (e.g., for "QA Engineer", write "Take a key role in shaping product quality and implementing testing strategies in a dynamic environment."). Avoid generic phrases like "Seeking a Manager to manage things". Do NOT repeat the company name.
-TITLE: Clean the job title by removing city names, location suffixes, and redundant information (e.g. "Software Engineer - New York" becomes "Software Engineer")
+TITLE: Clean the job title THOROUGHLY. Extract the core job role ONLY. Remove ALL extra text: recruitment prefixes ("Recrutement", "Hiring"), locations/countries ("Bénin", "sao jose"), project descriptions ("Termes de référence..."), requisition IDs ("req34418"), and contract details ("10 jours ouvrables"). Keep the original language. For "Recrutement "Chargé de la communication marketing"", the result is "Chargé de la communication marketing". For "Associate Operations Officer - req34418", the result is "Associate Operations Officer".
 
 Example:
 TECH_JOB: 1
 QUALITY: 0.85
 VISA: 0
-CATEGORY: ENGINEERING
+REMOTE: 1
 TYPE: FULL_TIME
 LEVEL: SENIOR
 SALARY_MIN: 80000
@@ -185,7 +168,7 @@ TITLE: Senior React Developer`;
         is_tech_job: 1, // Default to tech for our board
         quality_score: 0.5,
         is_visa_sponsored: 0, // Default to no visa sponsorship
-        job_category: "OTHER",
+        is_remote: 0,
         job_type: "FULL_TIME",
         experience_level: "MID_LEVEL",
         salary_min: null,
@@ -213,7 +196,7 @@ TITLE: Senior React Developer`;
       is_tech_job: 1,
       quality_score: 0.5,
       is_visa_sponsored: 0,
-      job_category: "OTHER",
+      is_remote: 0,
       job_type: "FULL_TIME",
       experience_level: "MID_LEVEL",
       salary_min: null,
@@ -247,30 +230,8 @@ TITLE: Senior React Developer`;
           case "VISA":
             parsed.is_visa_sponsored = parseInt(value) as 0 | 1;
             break;
-          case "CATEGORY":
-            if (
-              [
-                "ENGINEERING",
-                "SALES",
-                "MARKETING",
-                "DATA",
-                "DEVOPS",
-                "PRODUCT",
-                "DESIGN",
-                "CLOUD",
-                "SUPPORT",
-                "MANAGEMENT",
-                "RESEARCH",
-                "LEGAL",
-                "FINANCE",
-                "OPERATIONS",
-                "PR",
-                "HR",
-                "OTHER",
-              ].includes(value)
-            ) {
-              parsed.job_category = value as AIResponse["job_category"];
-            }
+          case "REMOTE":
+            parsed.is_remote = parseInt(value) as 0 | 1;
             break;
           case "TYPE":
             if (
@@ -415,7 +376,7 @@ export async function testAIModels(
       const duration = Date.now() - startTime;
 
       console.log(
-        `${model.toUpperCase()}: ✅ Connected - ${result.is_tech_job ? "TECH" : "NOT TECH"} | ${result.job_category} | ${result.job_type} | ${result.experience_level} | ${result.standardized_city} | (${result.quality_score.toFixed(2)}) - ${duration}ms`,
+        `${model.toUpperCase()}: ✅ Connected - ${result.is_tech_job ? "TECH" : "NOT TECH"} | ${result.job_type} | ${result.experience_level} | ${result.standardized_city} | (${result.quality_score.toFixed(2)}) - ${duration}ms`,
       );
     } catch (error) {
       console.log(
@@ -436,7 +397,7 @@ export async function testAIModels(
       salary,
     );
     console.log(
-      `FALLBACK: ✅ Working - ${result.is_tech_job ? "TECH" : "NOT TECH"} | ${result.job_category} | ${result.job_type} | ${result.experience_level} | ${result.standardized_city} | (${result.quality_score.toFixed(2)})`,
+      `FALLBACK: ✅ Working - ${result.is_tech_job ? "TECH" : "NOT TECH"} | ${result.job_type} | ${result.experience_level} | ${result.standardized_city} | (${result.quality_score.toFixed(2)})`,
     );
   } catch (error) {
     console.log(

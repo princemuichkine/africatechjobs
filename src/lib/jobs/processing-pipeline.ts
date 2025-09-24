@@ -39,6 +39,7 @@ interface RawJobData {
   salaryMax?: number;
   currency?: string;
   applyUrl?: string;
+  job_category?: JobCategoryValue;
   [key: string]: unknown;
 }
 
@@ -63,6 +64,7 @@ interface NormalizedJob {
   salaryMax?: number;
   currency?: string;
   applyUrl?: string;
+  job_category?: JobCategoryValue;
 }
 
 interface ProcessedJob extends NormalizedJob {
@@ -101,6 +103,7 @@ export class JobProcessingPipeline {
     rawJobData: RawJobData,
     source: string,
     knownCountry?: string,
+    category?: string,
   ): Promise<{ status: string; jobId?: string }> {
     try {
       // 1. Data Validation & Normalization
@@ -108,6 +111,7 @@ export class JobProcessingPipeline {
         rawJobData,
         source,
         knownCountry,
+        category,
       );
 
       // 2. Duplicate Detection (using fuzzy matching)
@@ -149,6 +153,7 @@ export class JobProcessingPipeline {
     rawJobData: RawJobData,
     source: string,
     knownCountry?: string,
+    category?: string,
   ): NormalizedJob {
     const posted_at = this.parsePostedAt(rawJobData.date);
 
@@ -156,7 +161,7 @@ export class JobProcessingPipeline {
       title: rawJobData.position || "Untitled Position",
       description: rawJobData.description || "", // Now extracted by Puppeteer
       company_name: rawJobData.company || "Unknown Company",
-      city: rawJobData.city || "Remote",
+      city: rawJobData.city || "", // Default to empty string instead of "Remote"
       country: knownCountry || "Unknown",
       posted_at: posted_at,
       type: "FULL_TIME", // AI will override this
@@ -173,6 +178,9 @@ export class JobProcessingPipeline {
       salaryMax: rawJobData.salaryMax,
       currency: rawJobData.currency,
       applyUrl: rawJobData.applyUrl,
+      job_category: category
+        ? (category.toUpperCase() as JobCategoryValue)
+        : undefined,
     };
   }
 
@@ -283,15 +291,17 @@ export class JobProcessingPipeline {
 
     // Prevent AI from overwriting a valid city with "Remote" if scraper says it's not remote
     const finalCity =
-      enrichedData.standardized_city.toLowerCase() === "remote" && !job.remote
+      enrichedData.standardized_city.toLowerCase() === "remote" &&
+      !enrichedData.is_remote
         ? job.city // Trust the scraper's city if it's not a remote job
         : enrichedData.standardized_city;
 
     return {
       ...job,
+      remote: enrichedData.is_remote, // Use AI's remote decision
       // Override with AI-determined values
       title: enrichedData.cleaned_title, // Use AI-cleaned title
-      city: finalCity,
+      city: finalCity && finalCity.toLowerCase() !== "null" ? finalCity : "",
       type: enrichedData.job_type,
       experience_level: enrichedData.experience_level,
       salaryMin: enrichedData.salary_min,
@@ -307,8 +317,8 @@ export class JobProcessingPipeline {
       company: { id: "placeholder", name: job.company_name },
       extracted_skills: [],
       quality_score: enrichedData.quality_score,
-      categories: [enrichedData.job_category], // AI-determined category
-      job_category: enrichedData.job_category as JobCategoryValue,
+      categories: [job.job_category || "OTHER"], // Use scraper category, fallback to OTHER
+      job_category: (job.job_category || "OTHER") as JobCategoryValue,
       is_tech_job: enrichedData.is_tech_job === 1,
       is_visa_sponsored: enrichedData.is_visa_sponsored,
     };
@@ -318,7 +328,7 @@ export class JobProcessingPipeline {
     is_tech_job: 1 | 0;
     quality_score: number;
     is_visa_sponsored: boolean;
-    job_category: string;
+    is_remote: boolean;
     job_type: string;
     experience_level: string;
     salary_min?: number;
@@ -344,7 +354,7 @@ export class JobProcessingPipeline {
         is_tech_job: result.is_tech_job,
         quality_score: result.quality_score,
         is_visa_sponsored: result.is_visa_sponsored === 1,
-        job_category: result.job_category,
+        is_remote: result.is_remote === 1,
         job_type: result.job_type,
         experience_level: result.experience_level,
         salary_min: result.salary_min || undefined,
@@ -362,7 +372,7 @@ export class JobProcessingPipeline {
         is_tech_job: 1, // Default to tech for our board
         quality_score: 0.5,
         is_visa_sponsored: false,
-        job_category: "OTHER",
+        is_remote: job.remote || false, // Fallback to scraper's value
         job_type: "FULL_TIME",
         experience_level: "MID_LEVEL",
         currency: "USD",

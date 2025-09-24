@@ -1,6 +1,6 @@
 "use client";
 
-import { Job } from "@/lib/types/job";
+import { Job, JOB_CATEGORIES } from "@/lib/types/job";
 import {
   formatDate,
   formatSalary,
@@ -200,6 +200,14 @@ export function JobCard({ job }: JobCardProps) {
                   |
                 </span>
               )}
+
+            {/* Category badge */}
+            {(job as { job_category?: string }).job_category && (
+              <Badge className="text-xs bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/40 hover:text-orange-800 dark:hover:text-orange-200">
+                {JOB_CATEGORIES.find((c) => c.value === (job as { job_category?: string }).job_category)?.label ||
+                  (job as { job_category?: string }).job_category}
+              </Badge>
+            )}
 
             {/* Regular job badges */}
             <Badge className="text-xs bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 hover:text-purple-800 dark:hover:text-purple-200">

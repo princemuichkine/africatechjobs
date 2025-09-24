@@ -7,6 +7,7 @@ export const processJob = schemaTask({
   schema: z.object({
     source: z.string(),
     country: z.string().optional(),
+    category: z.string().optional(),
     job: z.object({
       position: z.string(),
       company: z.string(),
@@ -38,6 +39,7 @@ export const processJob = schemaTask({
         payload.job,
         payload.source,
         payload.country,
+        payload.category,
       );
 
       logger.info(`Job processing result: ${result.status}`, { result });

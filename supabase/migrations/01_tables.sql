@@ -97,7 +97,7 @@ CREATE TABLE jobs (
     description TEXT NOT NULL,
     company_name TEXT NOT NULL,
     company_id UUID REFERENCES companies(id) ON DELETE SET NULL,
-    city TEXT NOT NULL,
+    city TEXT,
     country TEXT NOT NULL,
     type job_type DEFAULT 'FULL_TIME',
     experience_level experience_level DEFAULT 'MID_LEVEL',
@@ -106,13 +106,13 @@ CREATE TABLE jobs (
     salary_max INTEGER,
     currency TEXT DEFAULT 'USD',
     remote BOOLEAN DEFAULT FALSE,
+    is_sponsored BOOLEAN DEFAULT FALSE,
     url TEXT NOT NULL UNIQUE, -- External job URL (where users get redirected)
     source TEXT NOT NULL, -- Source platform (LinkedIn, Indeed, etc.)
     source_id TEXT, -- Original job ID from source
     posted_at TIMESTAMP WITH TIME ZONE NOT NULL,
     deadline TIMESTAMP WITH TIME ZONE,
     job_category job_category DEFAULT 'ENGINEERING',
-    is_sponsored BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
