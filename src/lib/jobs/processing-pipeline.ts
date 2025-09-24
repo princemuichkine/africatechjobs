@@ -157,15 +157,30 @@ export class JobProcessingPipeline {
   ): NormalizedJob {
     const posted_at = this.parsePostedAt(rawJobData.date);
 
+    const title = rawJobData.position || "Untitled Position";
+    let jobType: JobTypeValue = "FULL_TIME";
+    let experienceLevel: ExperienceLevelValue = "MID_LEVEL";
+
+    // Heuristic pre-classification for internships. AI will still override this if it runs successfully.
+    // This provides a better fallback if AI fails for jobs that are clearly internships.
+    if (
+      /\b(intern|internship|stagiaire|stage|pasantía|prácticas|becario)\b/i.test(
+        title,
+      )
+    ) {
+      jobType = "INTERNSHIP";
+      experienceLevel = "ENTRY_LEVEL";
+    }
+
     return {
-      title: rawJobData.position || "Untitled Position",
+      title: title,
       description: rawJobData.description || "", // Now extracted by Puppeteer
       company_name: rawJobData.company || "Unknown Company",
       city: rawJobData.city || "", // Default to empty string instead of "Remote"
       country: knownCountry || "Unknown",
       posted_at: posted_at,
-      type: "FULL_TIME", // AI will override this
-      experience_level: "MID_LEVEL", // AI will override this
+      type: jobType, // AI will override this
+      experience_level: experienceLevel, // AI will override this
       salary: rawJobData.salary,
       url: rawJobData.applyUrl || rawJobData.jobUrl || "", // Use apply URL if available
       source,
