@@ -4,11 +4,11 @@ import { JOB_CATEGORY_KEYWORDS, JobCategoryKeywords } from "@/lib/types/job";
 
 type JobCategory = JobCategoryKeywords;
 
-export const dailyScraper = schedules.task({
-  id: "daily-job-scraper",
+export const weeklyScraper = schedules.task({
+  id: "weekly-job-scraper",
   cron: "0 10 * * 2", // Runs every Tuesday at 10 AM
   run: async () => {
-    logger.info("🚀 Kicking off the comprehensive daily job scraping process.");
+    logger.info("🚀 Kicking off the comprehensive weekly job scraping process.");
     const supabase = await createClient();
 
     // 1. Fetch all active countries from the database
@@ -132,7 +132,7 @@ export const dailyScraper = schedules.task({
 
     return {
       message:
-        "Comprehensive daily scraper completed for all countries and job categories.",
+        "Comprehensive weekly scraper completed for all countries and job categories.",
       countries: countries.length,
       categories: categories.length,
       totalTasks: scrapingEvents.length,
