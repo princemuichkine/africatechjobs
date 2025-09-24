@@ -1,4 +1,5 @@
-import { defineConfig } from "@trigger.dev/sdk/v3";
+import { defineConfig } from "@trigger.dev/sdk";
+import { puppeteer } from "@trigger.dev/build/extensions/puppeteer";
 
 export default defineConfig({
   project: "proj_wnssyjcyqulvzjkxmatd",
@@ -7,7 +8,7 @@ export default defineConfig({
   // The max compute seconds a task is allowed to run. If the task run exceeds this duration, it will be stopped.
   // You can override this on an individual task.
   // See https://trigger.dev/docs/runs/max-duration
-  maxDuration: 3600,
+  maxDuration: 6000,
   retries: {
     enabledInDev: true,
     default: {
@@ -19,4 +20,7 @@ export default defineConfig({
     },
   },
   dirs: ["./src/trigger"],
+  build: {
+    extensions: [puppeteer()],
+  },
 });

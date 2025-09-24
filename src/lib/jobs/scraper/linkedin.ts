@@ -419,7 +419,7 @@ async function extractJobDetails(
     const browser = await getBrowser();
     page = await browser.newPage();
 
-    // Set user agent and headers to look more like a real browser
+    // Enhanced browser setup to avoid detection
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     );
@@ -430,7 +430,18 @@ async function extractJobDetails(
       "Accept-Encoding": "gzip, deflate, br",
       "Cache-Control": "no-cache",
       Pragma: "no-cache",
+      "Sec-Ch-Ua": '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+      "Sec-Ch-Ua-Mobile": "?0",
+      "Sec-Ch-Ua-Platform": '"Windows"',
+      "Sec-Fetch-Dest": "document",
+      "Sec-Fetch-Mode": "navigate",
+      "Sec-Fetch-Site": "none",
+      "Sec-Fetch-User": "?1",
+      "Upgrade-Insecure-Requests": "1",
     });
+
+    // Set viewport to desktop size
+    await page.setViewport({ width: 1920, height: 1080 });
 
     console.log(`🌐 Visiting job page: ${jobUrl}`);
     await page.goto(jobUrl, {
@@ -438,70 +449,195 @@ async function extractJobDetails(
       timeout: 30000,
     });
 
-    let applyUrl = jobUrl; // Default to original job URL
+    // Wait for dynamic content to load
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
-    // --- NEW STRATEGY: Extract from hidden code tag ---
+    let applyUrl = jobUrl; // Default to original job URL
+    let extractionMethod = "none";
+
+    // === STRATEGY 1: Hidden code tag (most reliable) ===
     try {
-      console.log("🔍 Trying to extract URL from hidden `<code>` tag...");
+      console.log("🔍 Strategy 1: Checking hidden code tag...");
       const codeElementContent = await page.$eval(
         "#applyUrl",
         (el) => el.innerHTML,
       );
 
-      // The URL is inside an HTML comment: <!--"URL"-->
       const urlMatch = codeElementContent.match(/<!--"([^"]+)"-->/);
-
       if (urlMatch && urlMatch[1]) {
         const extractedUrl = urlMatch[1];
 
-        // It might be an externalApply URL that needs further decoding
-        if (
-          extractedUrl.includes("externalApply") &&
-          extractedUrl.includes("url=")
-        ) {
+        if (extractedUrl.includes("externalApply") && extractedUrl.includes("url=")) {
           const nestedUrlMatch = extractedUrl.match(/url=([^&]+)/);
           if (nestedUrlMatch && nestedUrlMatch[1]) {
             applyUrl = decodeURIComponent(nestedUrlMatch[1]);
-            console.log(`✅ SUCCESS: Decoded external URL: ${applyUrl}`);
+            extractionMethod = "hidden_code_decoded";
           }
         } else if (!extractedUrl.includes("linkedin.com")) {
           applyUrl = extractedUrl;
-          console.log(`✅ SUCCESS: Found direct external URL: ${applyUrl}`);
+          extractionMethod = "hidden_code_direct";
         }
       }
-    } catch {
-      console.log(
-        "- INFO: Hidden `<code>` tag not found. Falling back to other methods.",
-      );
+    } catch (error) {
+      console.log("❌ Strategy 1 failed:", error instanceof Error ? error.message : String(error));
+    }
 
-      // --- FALLBACK STRATEGY: The previous multi-selector approach ---
+    // === STRATEGY 2: Direct link extraction (most common) ===
+    if (applyUrl === jobUrl) {
+      console.log("🔍 Strategy 2: Looking for apply button links...");
+
       const applySelectors = [
-        'a[href*="externalApply"]',
-        ".jobs-apply-button--top-card a",
+        // Primary apply button
+        '.jobs-apply-button--top-card button',
+        '.jobs-apply-button--top-card a',
         '[data-tracking-control-name="public_jobs_apply-link-offsite"]',
+        '[data-tracking-control-name="public_jobs_apply-link-onsite"]',
+
+        // External apply links
+        'a[href*="externalApply"]',
+        'a[href*="apply?"]',
+        'a[href*="application"]',
+
+        // Company specific buttons
+        '.apply-button',
+        '.btn-apply',
+        '.apply-now',
+        '[class*="apply"]',
+
+        // Generic link extraction
+        'a[href^="http"]:not([href*="linkedin.com"])',
       ];
 
       for (const selector of applySelectors) {
         try {
-          const href = await page.$eval(selector, (el) =>
-            el.getAttribute("href"),
-          );
-          if (href) {
-            if (href.includes("externalApply") && href.includes("url=")) {
+          const elements = await page.$$(selector);
+          for (const element of elements) {
+            const href = await element.evaluate(el => el.getAttribute('href'));
+
+            if (href && !href.includes('linkedin.com') && !href.startsWith('#')) {
+              // Validate it's not a LinkedIn internal link
+              if (href.includes('externalApply') && href.includes('url=')) {
               const urlMatch = href.match(/url=([^&]+)/);
-              if (urlMatch) {
+                if (urlMatch && urlMatch[1]) {
                 applyUrl = decodeURIComponent(urlMatch[1]);
+                  extractionMethod = `external_apply_${selector}`;
+                  break;
+                }
+              } else if (href.startsWith('http') && !href.includes('linkedin.com')) {
+                applyUrl = href;
+                extractionMethod = `direct_link_${selector}`;
                 break;
               }
-            } else if (!href.includes("linkedin.com")) {
+            }
+          }
+          if (applyUrl !== jobUrl) break;
+        } catch (error) {
+          console.log(`❌ Selector ${selector} failed:`, error instanceof Error ? error.message : String(error));
+        }
+      }
+    }
+
+    // === STRATEGY 3: JavaScript click simulation ===
+    if (applyUrl === jobUrl) {
+      console.log("🔍 Strategy 3: Simulating apply button click...");
+
+      try {
+        // Look for apply buttons and click them to reveal URLs
+        const applyButtons = [
+          '.jobs-apply-button--top-card button',
+          '[data-tracking-control-name*="apply"]',
+          'button[class*="apply"]',
+        ];
+
+        for (const buttonSelector of applyButtons) {
+          try {
+            const button = await page.$(buttonSelector);
+            if (button) {
+              await button.click();
+              await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for modal/form to load
+
+              // Check for new links that appeared
+              const newLinks = await page.$$('a[href^="http"]:not([href*="linkedin.com"])');
+              for (const link of newLinks) {
+                const href = await link.evaluate(el => el.getAttribute('href'));
+                if (href && href.startsWith('http') && !href.includes('linkedin.com')) {
               applyUrl = href;
+                  extractionMethod = `click_revealed_${buttonSelector}`;
+                  break;
+                }
+              }
+              if (applyUrl !== jobUrl) break;
+            }
+          } catch (error) {
+            console.log(`❌ Click simulation ${buttonSelector} failed:`, error instanceof Error ? error.message : String(error));
+          }
+        }
+      } catch (error) {
+        console.log("❌ Strategy 3 failed:", error instanceof Error ? error.message : String(error));
+      }
+    }
+
+    // === STRATEGY 4: Network request interception ===
+    if (applyUrl === jobUrl) {
+      console.log("🔍 Strategy 4: Monitoring network requests...");
+
+      const applyUrls: string[] = [];
+      const client = await page.target().createCDPSession();
+
+      await client.send('Network.enable');
+      client.on('Network.requestWillBeSent', (params) => {
+        const url = params.request.url;
+        if (url.includes('apply') && !url.includes('linkedin.com') && url.startsWith('http')) {
+          applyUrls.push(url);
+        }
+      });
+
+      // Trigger any lazy loading
+      await page.evaluate(() => {
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      if (applyUrls.length > 0) {
+        applyUrl = applyUrls[0];
+        extractionMethod = "network_intercept";
+      }
+    }
+
+    // === STRATEGY 5: Fallback to page source analysis ===
+    if (applyUrl === jobUrl) {
+      console.log("🔍 Strategy 5: Analyzing page source...");
+
+      try {
+        const pageSource = await page.content();
+
+        // Look for URLs in various patterns
+        const urlPatterns = [
+          /"applyUrl"\s*:\s*"([^"]+)"/g,
+          /apply.*url.*["\']([^"\']+)["\']/gi,
+          /href=["\']([^"\']*apply[^"\']*)["\']/gi,
+        ];
+
+        for (const pattern of urlPatterns) {
+          const matches = pageSource.matchAll(pattern);
+          for (const match of matches) {
+            if (match[1] && match[1].startsWith('http') && !match[1].includes('linkedin.com')) {
+              applyUrl = match[1];
+              extractionMethod = `source_pattern_${pattern.source}`;
               break;
             }
           }
-        } catch {
-          /* Continue */
+          if (applyUrl !== jobUrl) break;
         }
+      } catch (error) {
+        console.log("❌ Strategy 5 failed:", error instanceof Error ? error.message : String(error));
       }
+    }
+
+    if (applyUrl !== jobUrl) {
+      console.log(`✅ SUCCESS: Extracted apply URL using ${extractionMethod}: ${applyUrl}`);
+    } else {
+      console.log("❌ FAILED: Could not extract apply URL from job page");
     }
 
     // Now, continue with extracting other details as before
@@ -583,6 +719,8 @@ async function processJobsWithDetails(
 
   return results;
 }
+
+export { extractJobDetails };
 
 export async function query(queryObject: QueryOptions): Promise<LinkedInJob[]> {
   const allJobs: LinkedInJob[] = [];
