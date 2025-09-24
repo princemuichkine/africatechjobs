@@ -199,6 +199,24 @@ BEGIN
 END;
 $$ language 'plpgsql' SET search_path = public;
 
+-- Function to deactivate jobs older than a specified number of days
+CREATE OR REPLACE FUNCTION deactivate_old_jobs(days_old INTEGER DEFAULT 21)
+RETURNS INTEGER AS $$
+DECLARE
+    deactivated_count INTEGER;
+BEGIN
+    WITH deactivated_jobs AS (
+        UPDATE jobs
+        SET is_active = false, updated_at = NOW()
+        WHERE posted_at < (NOW() - INTERVAL '1 day' * days_old) AND is_active = true
+        RETURNING id
+    )
+    SELECT COUNT(*) INTO deactivated_count FROM deactivated_jobs;
+
+    RETURN deactivated_count;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
 -- Function to clean up old job views (GDPR compliance)
 CREATE OR REPLACE FUNCTION cleanup_old_data(days_to_keep INTEGER DEFAULT 90)
 RETURNS TABLE (
