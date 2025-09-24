@@ -42,7 +42,7 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.4",
-    "@trigger.dev/sdk": "4.0.2",
+    "@trigger.dev/sdk": "4.0.4",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
     "@vercel/analytics": "^1.5.0",
@@ -83,7 +83,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@trigger.dev/build": "4.0.2",
+    "@trigger.dev/build": "4.0.4",
     "@types/node": "^20",
     "@types/random-useragent": "^0.3.3",
     "@types/react": "^19",
