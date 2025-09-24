@@ -53,7 +53,10 @@ export const linkedinScraper = schemaTask({
         payload: {
           source: `LinkedIn-${category}`,
           country: location, // Pass the country for better location processing
-          job,
+          job: {
+            ...job,
+            location: job.city, // Add the missing location field
+          },
         },
       }));
 
