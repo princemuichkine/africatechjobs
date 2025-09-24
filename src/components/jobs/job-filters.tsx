@@ -155,7 +155,7 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => { }}
+              onValueChange={() => {}}
               open={isCategoryDropdownOpen}
               onOpenChange={setIsCategoryDropdownOpen}
             >
@@ -214,7 +214,7 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => { }}
+              onValueChange={() => {}}
               open={isTypeDropdownOpen}
               onOpenChange={setIsTypeDropdownOpen}
             >
@@ -273,7 +273,7 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => { }}
+              onValueChange={() => {}}
               open={isExperienceDropdownOpen}
               onOpenChange={setIsExperienceDropdownOpen}
             >
@@ -332,7 +332,7 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => { }}
+              onValueChange={() => {}}
               open={isCompanySizeDropdownOpen}
               onOpenChange={setIsCompanySizeDropdownOpen}
             >

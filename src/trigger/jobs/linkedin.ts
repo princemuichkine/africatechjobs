@@ -12,7 +12,9 @@ export const linkedinScraper = schemaTask({
     category: z.string(),
     keywords: z.array(z.string()),
     limit: z.number().default(25),
-    dateSincePosted: z.enum(["past month", "past week", "24hr"]).default("past week"),
+    dateSincePosted: z
+      .enum(["past month", "past week", "24hr"])
+      .default("past week"),
   }),
   run: async (payload) => {
     logger.info(

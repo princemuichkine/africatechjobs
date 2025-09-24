@@ -140,7 +140,9 @@ export function JobSearchWrapper({
 
     // Country filter (can be comma-separated)
     if (filters.country) {
-      const countries = filters.country.split(",").filter(c => c.trim() !== "");
+      const countries = filters.country
+        .split(",")
+        .filter((c) => c.trim() !== "");
       count += countries.length;
     }
 
@@ -155,7 +157,7 @@ export function JobSearchWrapper({
       ) {
         // For arrays or comma-separated values, count each item
         if (typeof value === "string" && value.includes(",")) {
-          const items = value.split(",").filter(item => item.trim() !== "");
+          const items = value.split(",").filter((item) => item.trim() !== "");
           count += items.length;
         } else {
           count++;
@@ -213,9 +215,8 @@ export function JobSearchWrapper({
                 {jobCount > 0 && (
                   <>
                     {hasActiveFilters
-                      ? `${jobs.length} jobs on ${jobCount.toLocaleString()} matching your ${activeFilterCount === 1 ? 'criteria' : 'criterias'}`
-                      : `${jobs.length} jobs | ${jobCount.toLocaleString()} jobs available`
-                    }
+                      ? `${jobs.length} jobs on ${jobCount.toLocaleString()} matching your ${activeFilterCount === 1 ? "criteria" : "criterias"}`
+                      : `${jobs.length} jobs | ${jobCount.toLocaleString()} jobs available`}
                   </>
                 )}
               </div>

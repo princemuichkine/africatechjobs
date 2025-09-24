@@ -144,7 +144,6 @@ export function JobList({
 
   return (
     <div className="space-y-6">
-
       {/* Job cards in grid layout - made wider */}
       <div className="grid gap-6 grid-cols-1">
         {jobs.map((job) => (
@@ -224,7 +223,6 @@ export function JobList({
           </div>
         </div>
       )}
-
     </div>
   );
 }

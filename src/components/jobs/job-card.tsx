@@ -207,16 +207,18 @@ export function JobCard({ job }: JobCardProps) {
             {(job.remote ||
               (job as { is_sponsored?: boolean }).is_sponsored ||
               job.clicks > 10) && (
-                <span className="text-muted-foreground text-xs self-center">
-                  |
-                </span>
-              )}
+              <span className="text-muted-foreground text-xs self-center">
+                |
+              </span>
+            )}
 
             {/* Category badge */}
             {(job as { job_category?: string }).job_category && (
               <Badge className="text-xs bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-100 dark:hover:bg-orange-900/40 hover:text-orange-800 dark:hover:text-orange-200">
-                {JOB_CATEGORIES.find((c) => c.value === (job as { job_category?: string }).job_category)?.label ||
-                  (job as { job_category?: string }).job_category}
+                {JOB_CATEGORIES.find(
+                  (c) =>
+                    c.value === (job as { job_category?: string }).job_category,
+                )?.label || (job as { job_category?: string }).job_category}
               </Badge>
             )}
 
@@ -227,8 +229,8 @@ export function JobCard({ job }: JobCardProps) {
             <Badge className="text-xs bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200">
               {getExperienceLabel(
                 job.experienceLevel ||
-                (job as { experience_level?: string }).experience_level ||
-                "ENTRY_LEVEL",
+                  (job as { experience_level?: string }).experience_level ||
+                  "ENTRY_LEVEL",
               )}
             </Badge>
           </div>

@@ -132,7 +132,9 @@ export class JobProcessingPipeline {
       // 6. Quality Scoring with AI input
       const qualityScore = await this.calculateQualityScore(classifiedJob);
       if (qualityScore < 0.5) {
-        console.log(`🚫 REJECTED: Low quality score (${qualityScore.toFixed(2)}) for "${classifiedJob.title}" at ${classifiedJob.company_name}`);
+        console.log(
+          `🚫 REJECTED: Low quality score (${qualityScore.toFixed(2)}) for "${classifiedJob.title}" at ${classifiedJob.company_name}`,
+        );
         return { status: "low_quality" };
       }
 

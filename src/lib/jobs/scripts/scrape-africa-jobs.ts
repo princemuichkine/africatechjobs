@@ -93,7 +93,9 @@ async function scrapeAfricaJobs() {
 
     // Safety check: Don't overwhelm LinkedIn
     const totalRequests =
-      africanCountries.length * categoriesToProcess.length * (testMode ? 2 : 12);
+      africanCountries.length *
+      categoriesToProcess.length *
+      (testMode ? 2 : 12);
     if (totalRequests > 1000 && !testMode) {
       console.log(
         `⚠️  Warning: This will make approximately ${totalRequests} LinkedIn requests. Consider using SCRAPE_TEST=true for smaller runs.`,

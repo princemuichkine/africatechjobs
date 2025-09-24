@@ -10,7 +10,10 @@ export async function POST(
     const { id: jobId } = params;
 
     if (!jobId) {
-      return NextResponse.json({ error: "Job ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Job ID is required" },
+        { status: 400 },
+      );
     }
 
     const { error } = await supabase.rpc("increment_job_click", {

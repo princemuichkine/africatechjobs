@@ -71,7 +71,10 @@ export function CustomScrollbar({ children, className }: CustomScrollbarProps) {
       const maxTop = scrollbarHeight - thumbHeight;
 
       // Calculate new thumb position based on mouse position minus drag offset
-      const newTop = Math.max(0, Math.min(maxTop, mouseY - dragOffsetRef.current));
+      const newTop = Math.max(
+        0,
+        Math.min(maxTop, mouseY - dragOffsetRef.current),
+      );
 
       thumb.style.transform = `translateY(${newTop}px)`;
 
@@ -107,7 +110,10 @@ export function CustomScrollbar({ children, className }: CustomScrollbarProps) {
       const scrollRatio = clickY / scrollbarHeight;
       const { scrollHeight, clientHeight } = container;
       const maxScrollTop = scrollHeight - clientHeight;
-      const newScrollTop = Math.max(0, Math.min(maxScrollTop, scrollRatio * maxScrollTop));
+      const newScrollTop = Math.max(
+        0,
+        Math.min(maxScrollTop, scrollRatio * maxScrollTop),
+      );
 
       container.scrollTop = newScrollTop;
     };

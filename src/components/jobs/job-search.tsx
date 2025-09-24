@@ -249,7 +249,7 @@ export function JobSearch({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => { }}
+              onValueChange={() => {}}
               open={isCountryDropdownOpen}
               onOpenChange={setIsCountryDropdownOpen}
             >
@@ -402,10 +402,11 @@ export function JobSearch({
       {/* Default Toggle Badges */}
       <div className="flex flex-wrap gap-2 max-w-4xl mx-auto px-4 sm:px-0 -mt-2 sm:translate-x-3 transition-transform duration-300 ease-in-out">
         <Badge
-          className={`cursor-pointer transition-colors ${filters.remote
-            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:text-emerald-900 dark:hover:text-emerald-200"
-            : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
-            }`}
+          className={`cursor-pointer transition-colors ${
+            filters.remote
+              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/40 hover:text-emerald-900 dark:hover:text-emerald-200"
+              : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
+          }`}
           onClick={() => {
             playClickSound();
             const updatedFilters = {
@@ -419,10 +420,11 @@ export function JobSearch({
         </Badge>
 
         <Badge
-          className={`cursor-pointer transition-colors ${filters.is_sponsored
-            ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-900/40 hover:text-indigo-900 dark:hover:text-indigo-200"
-            : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
-            }`}
+          className={`cursor-pointer transition-colors ${
+            filters.is_sponsored
+              ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-900/40 hover:text-indigo-900 dark:hover:text-indigo-200"
+              : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
+          }`}
           onClick={() => {
             playClickSound();
             const updatedFilters = {
@@ -437,10 +439,11 @@ export function JobSearch({
 
         {/* Date Posted Badge */}
         <Badge
-          className={`cursor-pointer transition-colors ${filters.date_posted
-            ? "bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/40 hover:text-orange-900 dark:hover:text-orange-200"
-            : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
-            }`}
+          className={`cursor-pointer transition-colors ${
+            filters.date_posted
+              ? "bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/40 hover:text-orange-900 dark:hover:text-orange-200"
+              : "bg-accent dark:bg-muted text-accent-foreground dark:text-muted-foreground hover:bg-accent/80 dark:hover:bg-accent hover:text-accent-foreground dark:hover:text-accent-foreground"
+          }`}
           onClick={() => {
             playClickSound();
             // Cycle through date options: none -> past_24h -> past_week -> past_month -> none

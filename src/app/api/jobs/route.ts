@@ -152,10 +152,11 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const { data: jobs, error, count } = await query.range(
-      offset,
-      offset + limit - 1,
-    );
+    const {
+      data: jobs,
+      error,
+      count,
+    } = await query.range(offset, offset + limit - 1);
 
     if (error) {
       console.error("Error fetching jobs:", error);

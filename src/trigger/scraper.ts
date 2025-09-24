@@ -8,7 +8,9 @@ export const weeklyScraper = schedules.task({
   id: "weekly-job-scraper",
   cron: "0 10 * * 2", // Runs every Tuesday at 10 AM
   run: async () => {
-    logger.info("🚀 Kicking off the comprehensive weekly job scraping process.");
+    logger.info(
+      "🚀 Kicking off the comprehensive weekly job scraping process.",
+    );
     const supabase = createTriggerClient();
 
     // 1. Fetch all active countries from the database
