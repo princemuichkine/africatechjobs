@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.png",
+        url: "/banner.png",
         width: 800,
         height: 600,
       },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
       "Find your dream tech job in Africa. Connect with top companies and build your career in the growing African tech ecosystem.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/banner.png",
         width: 800,
         height: 600,
       },

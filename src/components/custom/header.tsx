@@ -4,6 +4,8 @@ import { cn } from "@/lib/actions/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { AuthModal } from "@/components/custom/auth-modal";
 
@@ -14,6 +16,7 @@ const navigationLinks = [
 
 export function Header() {
   const pathname = usePathname();
+  const { theme } = useTheme();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
@@ -37,7 +40,19 @@ export function Header() {
 
   return (
     <>
-      <div className="md:fixed z-20 flex justify-end items-center top-0 px-4 md:px-6 py-4 left-0 right-0 bg-background backdrop-filter backdrop-blur-sm bg-opacity-30">
+      <div className="md:fixed z-20 flex justify-between items-center top-0 px-4 md:px-6 py-4 left-0 right-0 bg-background backdrop-filter backdrop-blur-sm bg-opacity-30">
+        {/* Logo - Hidden on mobile/tablet, visible on desktop */}
+        <Link href="/" className="hidden md:flex items-center">
+          <Image
+            src={theme === "dark" ? "/africatechjobs_w.png" : "/africatechjobs_b.png"}
+            alt="Africa Tech Jobs"
+            width={200}
+            height={36}
+            className="h-8 w-auto"
+            priority
+          />
+        </Link>
+
         <div className="flex items-center gap-3 md:gap-5 -translate-x-1">
           {navigationLinks.map((link: { href: string; label: string }) => (
             <Link
