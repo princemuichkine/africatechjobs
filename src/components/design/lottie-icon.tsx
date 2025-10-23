@@ -146,7 +146,7 @@ const LottieIconComponent = ({
         style={{ width: size, height: size }}
       >
         {isLoading ? (
-          <div className="w-3 h-3 border border-current border-t-transparent rounded-sm animate-spin opacity-50" />
+          <div className="w-3 h-3 border border-current border-t-transparent rounded-sm opacity-50" />
         ) : (
           <div className="w-full h-full bg-muted-foreground/20 rounded-sm animate-pulse" />
         )}
@@ -170,9 +170,8 @@ const LottieIconComponent = ({
 
   return (
     <div
-      className={`inline-flex items-center justify-center transition-all duration-200 ease-out ${
-        isHovered ? "scale-110" : ""
-      } ${className}`}
+      className={`inline-flex items-center justify-center transition-all duration-200 ease-out ${isHovered ? "scale-110" : ""
+        } ${className}`}
       style={{ width: size, height: size }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
