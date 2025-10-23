@@ -39,7 +39,9 @@ export const setSoundEnabled = (enabled: boolean): void => {
   window.__africatechjobsSoundEnabled = enabled;
   try {
     window.dispatchEvent(
-      new CustomEvent("africatechjobs.xyz:sound-changed", { detail: { enabled } }),
+      new CustomEvent("africatechjobs.xyz:sound-changed", {
+        detail: { enabled },
+      }),
     );
   } catch {
     // ignore

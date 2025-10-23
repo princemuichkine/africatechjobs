@@ -50,7 +50,11 @@ export function Header() {
         <Link href="/" className="hidden md:flex items-center">
           {mounted ? (
             <Image
-              src={theme === "dark" ? "/africatechjobs_w.png" : "/africatechjobs_b.png"}
+              src={
+                theme === "dark"
+                  ? "/africatechjobs_w.png"
+                  : "/africatechjobs_b.png"
+              }
               alt="Africa Tech Jobs"
               width={323}
               height={67}

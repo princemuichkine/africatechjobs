@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "types": "/opt/homebrew/bin/supabase gen types typescript --project-id gmqfnzwsqlvsodrpvbfb > src/lib/types/database.ts",
     "type-check": "tsc --noEmit",
-    "trigger": "npx trigger.dev@latest dev"
+    "trigger": "npx trigger.dev@latest dev",
+    "generate-seo": "tsx src/lib/scripts/generate-seo-files.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.37",

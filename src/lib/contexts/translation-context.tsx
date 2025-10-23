@@ -15,7 +15,7 @@ interface TranslationContextType {
 
 const TranslationContext = createContext<TranslationContextType>({
   currentLanguage: "en",
-  setLanguage: () => { },
+  setLanguage: () => {},
 });
 
 // Main provider component

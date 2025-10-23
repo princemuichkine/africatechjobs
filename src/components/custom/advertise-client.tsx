@@ -116,7 +116,9 @@ export default function AdvertiseClient() {
                 asChild
                 className="w-full h-10 sm:h-9 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/40 hover:text-blue-900 dark:hover:text-blue-200 border border-blue-300 dark:border-blue-800"
               >
-                <a href="mailto:babacar@lomi.africa?subject=Advertising Inquiry">Buy ad slot</a>
+                <a href="mailto:babacar@lomi.africa?subject=Advertising Inquiry">
+                  Buy ad slot
+                </a>
               </Button>
             </p>
           </section>

@@ -51,8 +51,8 @@ export default function TermsClient() {
               Description of service
             </h2>
             <p className="text-foreground/90 text-base leading-relaxed tracking-tight">
-              africatechjobs.xyz is Africa&apos;s premier tech job board platform
-              that connects talented developers, designers, and tech
+              africatechjobs.xyz is Africa&apos;s premier tech job board
+              platform that connects talented developers, designers, and tech
               professionals with leading African companies and startups. Our
               platform aggregates daily updated, high-quality tech job
               opportunities across the continent.

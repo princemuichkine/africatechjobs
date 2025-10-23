@@ -12,6 +12,8 @@ import { LottieIcon } from "@/components/design/lottie-icon";
 import { animations } from "@/lib/utils/lottie-animations";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import { Info } from "lucide-react";
 import Image from "next/image";
 
 interface JobCardProps {
@@ -21,6 +23,7 @@ interface JobCardProps {
 
 export function JobCard({ job }: JobCardProps) {
   const { trackJobView, trackUserAction } = useAnalytics();
+  const router = useRouter();
 
   const handleCardClick = () => {
     // Track job view
@@ -43,6 +46,12 @@ export function JobCard({ job }: JobCardProps) {
     window.open(job.url, "_blank");
   };
 
+  const handleInfoClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    // Navigate to job details page
+    router.push(`/jobs/${job.id}`);
+  };
+
   return (
     <Card
       className="h-full flex flex-col hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 cursor-pointer rounded-sm"
@@ -51,9 +60,18 @@ export function JobCard({ job }: JobCardProps) {
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-zinc-800 dark:text-white mb-1 line-clamp-2">
-              {job.title}
-            </h3>
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-lg font-semibold text-zinc-800 dark:text-white line-clamp-2 flex-1">
+                {job.title}
+              </h3>
+              <button
+                onClick={handleInfoClick}
+                className="flex-shrink-0 p-1 rounded-md hover:bg-muted transition-colors group"
+                aria-label="View job details"
+              >
+                <Info className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              </button>
+            </div>
             <div className="flex items-center gap-2 text-sm text-foreground/90">
               <LottieIcon
                 animationData={animations.store}

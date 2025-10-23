@@ -25,7 +25,7 @@ export const Footer = () => {
     // Initialize sound state from storage
     try {
       setSoundEnabledState(getSoundEnabled());
-    } catch { }
+    } catch {}
   }, []);
 
   const playClickSound = () => {
@@ -54,7 +54,7 @@ export const Footer = () => {
         const audio = new Audio("/sounds/light.mp3");
         audio.volume = 0.4;
         void audio.play();
-      } catch { }
+      } catch {}
     }
   };
 
@@ -156,11 +156,7 @@ export const Footer = () => {
             <button
               onClick={toggleSound}
               className="h-11 w-11 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors [&_svg]:fill-current"
-              aria-label={
-                soundEnabled
-                  ? "Turn sound off"
-                  : "Turn sound on"
-              }
+              aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
             >
               <LottieIcon
                 animationData={

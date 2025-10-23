@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /auth/
+Disallow: /admin/
+
+Sitemap: https://africatechjobs.xyz/sitemap.xml
