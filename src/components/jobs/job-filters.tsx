@@ -155,11 +155,11 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               open={isCategoryDropdownOpen}
               onOpenChange={setIsCategoryDropdownOpen}
             >
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select job categories">
                 <SelectValue
                   placeholder={
                     selectedCategories.length > 0
@@ -214,11 +214,11 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               open={isTypeDropdownOpen}
               onOpenChange={setIsTypeDropdownOpen}
             >
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select job types">
                 <SelectValue
                   placeholder={
                     selectedTypes.length > 0
@@ -273,11 +273,11 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               open={isExperienceDropdownOpen}
               onOpenChange={setIsExperienceDropdownOpen}
             >
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select experience levels">
                 <SelectValue
                   placeholder={
                     selectedExperiences.length > 0
@@ -332,11 +332,11 @@ export function JobFiltersModal({
           {isClient ? (
             <Select
               value=""
-              onValueChange={() => {}}
+              onValueChange={() => { }}
               open={isCompanySizeDropdownOpen}
               onOpenChange={setIsCompanySizeDropdownOpen}
             >
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select company sizes">
                 <SelectValue
                   placeholder={
                     selectedCompanySizes.length > 0

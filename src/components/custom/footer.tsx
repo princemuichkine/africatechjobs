@@ -25,7 +25,7 @@ export const Footer = () => {
     // Initialize sound state from storage
     try {
       setSoundEnabledState(getSoundEnabled());
-    } catch {}
+    } catch { }
   }, []);
 
   const playClickSound = () => {
@@ -54,7 +54,7 @@ export const Footer = () => {
         const audio = new Audio("/sounds/light.mp3");
         audio.volume = 0.4;
         void audio.play();
-      } catch {}
+      } catch { }
     }
   };
 
@@ -68,6 +68,7 @@ export const Footer = () => {
               prefetch={true}
               onClick={playClickSound}
               className="text-sm text-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent dark:hover:bg-sidebar-accent px-2 py-1.5 rounded-sm transition-colors"
+              aria-label="Privacy Policy"
             >
               {t("footer.privacy", currentLanguage)}
             </Link>
@@ -77,6 +78,7 @@ export const Footer = () => {
               prefetch={true}
               onClick={playClickSound}
               className="text-sm text-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent dark:hover:bg-sidebar-accent px-2 py-1.5 rounded-sm transition-colors"
+              aria-label="Terms of Service"
             >
               {t("footer.terms", currentLanguage)}
             </Link>
@@ -89,7 +91,7 @@ export const Footer = () => {
               rel="noopener noreferrer"
               onClick={playClickSound}
               className="text-black dark:text-white hover:text-[#000000] dark:hover:text-[#FFFFFF] transition-colors"
-              aria-label={t("footer.follow_x", currentLanguage)}
+              aria-label="Follow us on X"
             >
               <XIcon className="h-5 w-5" />
             </Link>
@@ -99,7 +101,7 @@ export const Footer = () => {
               rel="noopener noreferrer"
               onClick={playClickSound}
               className="text-black dark:text-white hover:text-[#6f42c1] dark:hover:text-[#6f42c1] transition-colors"
-              aria-label={t("footer.follow_github", currentLanguage)}
+              aria-label="Follow us on GitHub"
             >
               <GitHubIcon className="h-5 w-5" />
             </Link>
@@ -117,6 +119,7 @@ export const Footer = () => {
               rel="noopener noreferrer"
               onClick={playClickSound}
               className="hover:text-white transition-colors"
+              aria-label="Visit lomi.africa website"
             >
               {t("footer.copyright_link", currentLanguage)}
             </Link>
@@ -126,13 +129,13 @@ export const Footer = () => {
             <LanguageSwitcher className="mr-2 translate-x-6" />
             <button
               onClick={toggleTheme}
-              className="h-6 w-6 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors [&_svg]:fill-current"
+              className="h-11 w-11 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors [&_svg]:fill-current"
               aria-label={
                 mounted
-                  ? t("footer.toggle_theme", currentLanguage, {
-                      mode: theme === "dark" ? "light" : "dark",
-                    })
-                  : t("footer.toggle_theme", currentLanguage, { mode: "theme" })
+                  ? theme === "dark"
+                    ? "Switch to light mode"
+                    : "Switch to dark mode"
+                  : "Switch theme"
               }
             >
               {mounted ? (
@@ -152,11 +155,11 @@ export const Footer = () => {
             </button>
             <button
               onClick={toggleSound}
-              className="h-6 w-6 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors [&_svg]:fill-current"
+              className="h-11 w-11 flex items-center justify-center text-foreground/80 hover:text-foreground transition-colors [&_svg]:fill-current"
               aria-label={
                 soundEnabled
-                  ? t("footer.turn_sound_off", currentLanguage)
-                  : t("footer.turn_sound_on", currentLanguage)
+                  ? "Turn sound off"
+                  : "Turn sound on"
               }
             >
               <LottieIcon

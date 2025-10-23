@@ -54,7 +54,7 @@ export const LanguageSwitcher = memo(
       <button
         onClick={toggleLanguage}
         type="button" // Explicitly set type to prevent form submission
-        className={`relative overflow-visible text-xs text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors bg-transparent ${className}`}
+        className={`relative overflow-visible text-sm text-jumbo-elements-textSecondary hover:text-jumbo-elements-textPrimary transition-colors bg-transparent px-2 py-2 min-h-[44px] flex items-center ${className}`}
         aria-label="Switch language"
       >
         <div className="relative w-[70px] h-[16px] overflow-visible">

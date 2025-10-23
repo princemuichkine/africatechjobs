@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { JobSearchWrapper } from "@/components/jobs/job-search-wrapper";
-import CookieConsent from "@/components/design/tracking-cookie";
+// import CookieConsent from "@/components/design/tracking-cookie";
 import { Job } from "@/lib/types/job";
 
 interface HomeClientProps {
@@ -45,7 +45,7 @@ export default function HomeClient({
         initialJobs={initialJobs}
         initialJobCount={initialJobCount}
       />
-      <CookieConsent />
+      {/* <CookieConsent /> */}
     </div>
   );
 }
