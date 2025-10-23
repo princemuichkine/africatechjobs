@@ -13,7 +13,6 @@ import { animations } from "@/lib/utils/lottie-animations";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { Info } from "lucide-react";
 import Image from "next/image";
 
 interface JobCardProps {
@@ -66,10 +65,17 @@ export function JobCard({ job }: JobCardProps) {
               </h3>
               <button
                 onClick={handleInfoClick}
-                className="flex-shrink-0 p-1 rounded-md hover:bg-muted transition-colors group"
+                className="flex-shrink-0 w-10 h-10 rounded-md hover:bg-muted transition-colors group flex items-center justify-center"
                 aria-label="View job details"
               >
-                <Info className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                <LottieIcon
+                  animationData={animations.info}
+                  size={22}
+                  loop={false}
+                  autoplay={false}
+                  initialFrame={0}
+                  className="text-muted-foreground group-hover:text-foreground transition-colors"
+                />
               </button>
             </div>
             <div className="flex items-center gap-2 text-sm text-foreground/90">
@@ -225,10 +231,10 @@ export function JobCard({ job }: JobCardProps) {
             {(job.remote ||
               (job as { is_sponsored?: boolean }).is_sponsored ||
               job.clicks > 10) && (
-              <span className="text-muted-foreground text-xs self-center">
-                |
-              </span>
-            )}
+                <span className="text-muted-foreground text-xs self-center">
+                  |
+                </span>
+              )}
 
             {/* Category badge */}
             {(job as { job_category?: string }).job_category && (
@@ -247,8 +253,8 @@ export function JobCard({ job }: JobCardProps) {
             <Badge className="text-xs bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200">
               {getExperienceLabel(
                 job.experienceLevel ||
-                  (job as { experience_level?: string }).experience_level ||
-                  "ENTRY_LEVEL",
+                (job as { experience_level?: string }).experience_level ||
+                "ENTRY_LEVEL",
               )}
             </Badge>
           </div>
