@@ -1,35 +1,6 @@
-"use client";
-
-import React from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { FuzzyText } from "@/components/design/fuzzy-text";
 
 export default function NotFound() {
-  const router = useRouter();
-
-  // Sound utility function
-  const playSound = (soundFile: string) => {
-    try {
-      const audio = new Audio(soundFile);
-      audio.volume = 0.4;
-      audio.play().catch(() => {
-        // Silently handle audio play errors
-      });
-    } catch {
-      // Silently handle audio loading errors
-    }
-  };
-
-  const playClickSound = () => {
-    playSound("/sounds/light.mp3");
-  };
-
-  const handleGoBack = () => {
-    playClickSound();
-    router.back();
-  };
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 sm:px-6">
       <div className="max-w-2xl mx-auto w-full text-center">
@@ -60,17 +31,6 @@ export default function NotFound() {
             </a>{" "}
             and we&apos;ll help you out.
           </p>
-        </div>
-
-        {/* Action buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center max-w-md mx-auto">
-          <Button
-            onClick={handleGoBack}
-            size="lg"
-            className="w-full sm:w-auto bg-slate-50 dark:bg-slate-900/30 text-slate-700 dark:text-slate-300 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground border border-slate-200 dark:border-slate-800 rounded-sm px-4"
-          >
-            Go back
-          </Button>
         </div>
       </div>
     </div>
