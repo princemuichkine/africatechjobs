@@ -14,10 +14,30 @@ export async function generateMetadata({ params }: { params: Params }) {
     };
   }
 
+  const companyName = job.companyName || (job as { company_name?: string }).company_name;
+  const title = `${job.title} at ${companyName}`;
+  const description = job.description?.slice(0, 160) || `View job details for ${job.title}`;
+
   return {
-    title: `${job.title} at ${job.companyName || job.company_name}`,
-    description:
-      job.description?.slice(0, 160) || `View job details for ${job.title}`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      url: `https://africatechjobs.xyz/jobs/${id}`,
+      siteName: "africatechjobs.xyz",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      creator: "@bm_diop",
+    },
+    other: {
+      "article:author": companyName,
+      "article:published_time": job.postedAt?.toISOString(),
+    },
   };
 }
 
