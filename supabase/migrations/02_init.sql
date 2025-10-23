@@ -227,6 +227,30 @@ BEGIN
 END;
 $$ language 'plpgsql' SET search_path = public;
 
+-- Function to get all active jobs for SEO sitemap generation
+CREATE OR REPLACE FUNCTION get_jobs_for_seo()
+RETURNS TABLE (
+    id UUID,
+    created_at TIMESTAMP WITH TIME ZONE,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    clicks INTEGER,
+    is_sponsored BOOLEAN
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        j.id,
+        j.created_at,
+        j.updated_at,
+        j.clicks,
+        j.is_sponsored
+    FROM jobs j
+    WHERE j.is_active = true
+    ORDER BY j.is_sponsored DESC, j.clicks DESC, j.created_at DESC
+    LIMIT 10000;
+END;
+$$ language 'plpgsql' SET search_path = public;
+
 -- Function to deactivate jobs older than a specified number of days
 CREATE OR REPLACE FUNCTION deactivate_old_jobs(days_old INTEGER DEFAULT 21)
 RETURNS INTEGER AS $$

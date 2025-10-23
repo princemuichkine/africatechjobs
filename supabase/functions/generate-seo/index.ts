@@ -34,15 +34,9 @@ serve(async (req) => {
 
     console.log('🔍 Generating SEO files...')
 
-    // Get all active jobs
+    // Get all active jobs using RPC function
     const { data: jobs, error } = await supabaseClient
-      .from('jobs')
-      .select('id, created_at, updated_at, clicks, is_sponsored')
-      .eq('is_active', true)
-      .order('is_sponsored', { ascending: false })
-      .order('clicks', { ascending: false })
-      .order('created_at', { ascending: false })
-      .limit(10000)
+      .rpc('get_jobs_for_seo')
 
     if (error) {
       throw new Error(`Failed to fetch jobs: ${error.message}`)

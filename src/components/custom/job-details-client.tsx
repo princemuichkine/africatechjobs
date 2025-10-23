@@ -66,7 +66,7 @@ export default function JobDetailsClient({ job }: JobDetailsClientProps) {
         {/* Hero Section */}
         <div className="relative pt-8 sm:pt-20 md:pt-20 pb-2 sm:pb-4 mb-0 text-center">
           <motion.h1
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tighter font-regular text-zinc-800 dark:text-white mb-2 sm:mb-4 leading-tight"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl tracking-tighter font-regular text-zinc-800 dark:text-white mb-2 sm:mb-4 leading-tight"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -200,10 +200,10 @@ export default function JobDetailsClient({ job }: JobDetailsClientProps) {
               {(job.remote ||
                 (job as { is_sponsored?: boolean }).is_sponsored ||
                 job.clicks > 10) && (
-                <span className="text-muted-foreground text-xs self-center">
-                  |
-                </span>
-              )}
+                  <span className="text-muted-foreground text-xs self-center">
+                    |
+                  </span>
+                )}
 
               {/* Category badge */}
               {(job as { job_category?: string }).job_category && (
@@ -223,8 +223,8 @@ export default function JobDetailsClient({ job }: JobDetailsClientProps) {
               <Badge className="text-xs bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/40 hover:text-cyan-800 dark:hover:text-cyan-200">
                 {getExperienceLabel(
                   job.experienceLevel ||
-                    (job as { experience_level?: string }).experience_level ||
-                    "ENTRY_LEVEL",
+                  (job as { experience_level?: string }).experience_level ||
+                  "ENTRY_LEVEL",
                 )}
               </Badge>
             </div>
