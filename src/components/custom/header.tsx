@@ -3,7 +3,7 @@
 import { cn } from "@/lib/actions/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,11 @@ export function Header() {
   const { theme } = useTheme();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const playClickSound = () => {
     if (typeof window !== "undefined") {
@@ -43,14 +48,18 @@ export function Header() {
       <div className="md:fixed z-20 flex justify-between items-center top-0 px-4 md:px-6 py-4 left-0 right-0 bg-background backdrop-filter backdrop-blur-sm bg-opacity-30">
         {/* Logo - Hidden on mobile/tablet, visible on desktop */}
         <Link href="/" className="hidden md:flex items-center">
-          <Image
-            src={theme === "dark" ? "/africatechjobs_w.png" : "/africatechjobs_b.png"}
-            alt="Africa Tech Jobs"
-            width={200}
-            height={36}
-            className="h-8 w-auto"
-            priority
-          />
+          {mounted ? (
+            <Image
+              src={theme === "dark" ? "/africatechjobs_w.png" : "/africatechjobs_b.png"}
+              alt="Africa Tech Jobs"
+              width={323}
+              height={67}
+              className="h-8 w-auto"
+              priority
+            />
+          ) : (
+            <div className="h-8 w-32 bg-muted rounded-sm" />
+          )}
         </Link>
 
         <div className="flex items-center gap-3 md:gap-5 -translate-x-1">
