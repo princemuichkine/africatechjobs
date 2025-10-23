@@ -1,0 +1,50 @@
+# Generates updated sitemap.xml and robots.txt files for SEO optimization
+# Runs every Tuesday at 02:00 UTC to keep SEO files fresh with new jobs
+name: Generate SEO Files
+
+on:
+  schedule:
+    # Runs every Tuesday at 02:00 UTC (8 PM EST / 9 PM EDT)
+    - cron: "0 2 * * 2"
+  workflow_dispatch:
+
+jobs:
+  generate-seo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Call generate-seo Edge Function
+        run: |
+          RESPONSE=$(curl -s -X POST "https://gmqfnzwsqlvsodrpvbfb.supabase.co/functions/v1/generate-seo" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json")
+
+          echo "Response: $RESPONSE"
+
+          if echo "$RESPONSE" | grep -q '"success":true'; then
+            echo "✅ SEO files generated successfully."
+
+            # Extract and save robots.txt
+            echo "$RESPONSE" | jq -r '.robotsTxt' > public/robots.txt
+            echo "📄 robots.txt saved"
+
+            # Extract and save sitemap.xml
+            echo "$RESPONSE" | jq -r '.sitemapXml' > public/sitemap.xml
+            echo "🗺️  sitemap.xml saved"
+
+            # Log stats
+            JOBS_COUNT=$(echo "$RESPONSE" | jq -r '.jobsCount')
+            echo "📊 Included $JOBS_COUNT jobs in sitemap"
+          else
+            echo "❌ Failed to generate SEO files."
+            exit 1
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add public/sitemap.xml public/robots.txt
+          git diff --staged --quiet || (git commit -m "🤖 Update SEO files (sitemap.xml & robots.txt)" && git push)
