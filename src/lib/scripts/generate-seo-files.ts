@@ -116,7 +116,7 @@ Sitemap: ${baseUrl}/sitemap.xml
         job.clicks > 50 ? "0.9" : job.is_sponsored ? "0.8" : "0.7";
       const changeFreq = job.clicks > 10 ? "weekly" : "monthly";
 
-      return `  <url>
+      return `<url>
     <loc>${baseUrl}/jobs/${job.id}</loc>
     <lastmod>${lastModified}</lastmod>
     <changefreq>${changeFreq}</changefreq>
