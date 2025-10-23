@@ -14,9 +14,11 @@ export async function generateMetadata({ params }: { params: Params }) {
     };
   }
 
-  const companyName = job.companyName || (job as { company_name?: string }).company_name;
+  const companyName =
+    job.companyName || (job as { company_name?: string }).company_name;
   const title = `${job.title} at ${companyName}`;
-  const description = job.description?.slice(0, 160) || `View job details for ${job.title}`;
+  const description =
+    job.description?.slice(0, 160) || `View job details for ${job.title}`;
 
   return {
     title,

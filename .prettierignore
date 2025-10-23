@@ -1,0 +1,5 @@
+# Exclude config files from formatting
+package.json
+tsconfig.json
+sitemap.xml
+robots.txt
