@@ -47,7 +47,7 @@ function hasValidApiKey(modelName: string): boolean {
   switch (modelName) {
     case "gemini":
       return !!(
-        process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY
+        process.env.GOOGLE_API_KEY
       );
     case "openai":
       return !!process.env.OPENAI_API_KEY;

@@ -13,7 +13,7 @@
 .pnpm-debug.log*
 
 # env files
-.env*
+.env
 
 # vercel
 .vercel
